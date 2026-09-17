@@ -10,8 +10,12 @@ const routes = [
   {
     path: '/login',
     name: 'login',
-    // بارگذاری تنبل برای جلوگیری از ارور قبل از ساخت کامپوننت
     component: () => import('../views/LoginView.vue')
+  },
+  {
+    path: '/register',
+    name: 'register',
+    component: () => import('../views/RegisterView.vue')
   },
   {
     path: '/dashboard',
@@ -20,10 +24,10 @@ const routes = [
     meta: { requiresAuth: true }
   },
   {
-    path: '/register',
-    name: 'register',
-    // بارگذاری تنبل برای جلوگیری از ارور قبل از ساخت کامپوننت
-    component: () => import('../views/RegisterView.vue')
+    path: '/profile',
+    name: 'profile',
+    component: () => import('../views/ProfileView.vue'),
+    meta: { requiresAuth: true }
   }
 ]
 
@@ -32,9 +36,7 @@ const router = createRouter({
   routes
 })
 
-// Navigation Guard برای امنیت مسیرها
 router.beforeEach((to, from, next) => {
-  // بررسی وجود توکن لاگین در LocalStorage بدون وابستگی مستقیم در این مرحله
   const token = localStorage.getItem('access_token')
 
   if (to.meta.requiresAuth && !token) {
