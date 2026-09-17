@@ -1,6 +1,6 @@
 <template>
   <div
-    class="min-h-screen bg-[#faf9ff] flex items-center justify-center px-6"
+    class="min-h-screen bg-[#faf9ff] flex items-center justify-center px-6 bg-linear-210 from-purple-300 to-purple-600"
   >
 
     <div

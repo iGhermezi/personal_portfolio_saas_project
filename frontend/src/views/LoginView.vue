@@ -7,8 +7,8 @@
       items-center
       justify-center
       px-6
+      bg-linear-130 from-purple-300 to-purple-600
     "
-    dir="rtl"
   >
 
     <div

@@ -116,16 +116,16 @@
 import { ref } from 'vue'
 
 import DashboardSidebar
-  from '../components/dashboard/DashboardSidebar.vue'
+  from '../components/Dashboard/DashboardSidebar.vue'
 
 import DashboardHeader
-  from '../components/dashboard/DashboardHeader.vue'
+  from '../components/Dashboard/DashboardHeader.vue'
 
 import PortfolioEmpty
-  from '../components/dashboard/PortfolioEmpty.vue'
+  from '../components/Dashboard/PortfolioEmpty.vue'
 
 import PortfolioCard
-  from '../components/dashboard/PortfolioCard.vue'
+  from '../components/Dashboard/PortfolioCard.vue'
 
 
 /*
