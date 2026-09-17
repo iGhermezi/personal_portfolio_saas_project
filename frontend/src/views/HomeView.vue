@@ -1,93 +1,254 @@
 <template>
-  <div class="min-h-screen bg-slate-950 text-slate-100 font-sans p-4 md:p-8 flex flex-col items-center justify-center dir-rtl" dir="rtl">
-    
-    <!-- Main UI Card Container (طرح اصلی بر اساس عکس) -->
-    <main class="w-full max-w-6xl bg-gradient-to-br from-indigo-700 via-purple-700 to-indigo-900 rounded-3xl p-6 md:p-12 shadow-2xl relative overflow-hidden border border-indigo-500/30">
-      
-      <!-- Navbar inside Card -->
-      <nav class="flex items-center justify-between pb-8 mb-4 border-b border-white/10 relative z-20">
-        <!-- Logo -->
-        <div class="flex items-center gap-2">
-          <div class="w-8 h-8 bg-white text-indigo-700 rounded-lg flex items-center justify-center font-black text-lg shadow-md">
-            P
-          </div>
-          <span class="font-extrabold text-xl text-white tracking-tight">Portfolio SaaS</span>
+  <div class="min-h-screen bg-[#faf9ff] text-slate-900">
+
+    <section id="home" class="px-4 py-4 sm:px-6 lg:px-8">
+      <div
+        class="relative mx-auto min-h-[calc(100vh-32px)] max-w-[1400px] overflow-hidden rounded-[32px] bg-violet-500"
+      >
+
+        <div class="pointer-events-none absolute inset-0 z-0 overflow-hidden">
+
+          <div
+            class="absolute left-1/2 top-[72%] h-[900px] w-[900px] -translate-x-1/2 rounded-full bg-violet-300/25"
+          ></div>
+
+
+          <div
+            class="absolute left-1/2 top-[76%] h-[760px] w-[760px] -translate-x-1/2 rounded-full bg-violet-300/30"
+          ></div>
+
+
+          <div
+            class="absolute left-1/2 top-[80%] h-[620px] w-[620px] -translate-x-1/2 rounded-full bg-violet-300/35"
+          ></div>
+
+
+          <div
+            class="absolute left-1/2 top-[84%] h-[480px] w-[480px] -translate-x-1/2 rounded-full bg-violet-300/40"
+          ></div>
         </div>
 
-        <!-- Links -->
-        <div class="hidden md:flex items-center gap-8 text-sm font-medium text-purple-100">
-          <a href="#templates" class="hover:text-white transition-colors">قالب‌ها</a>
-          <a href="#features" class="hover:text-white transition-colors">امکانات</a>
-          <a href="#pricing" class="hover:text-white transition-colors">تعرفه‌ها</a>
-          <a href="#about" class="hover:text-white transition-colors">درباره ما</a>
-        </div>
 
-        <!-- Auth Button -->
-        <router-link to="/login" class="bg-white hover:bg-slate-100 text-indigo-800 font-bold px-5 py-2.5 rounded-full text-sm shadow-md transition-all hover:scale-105">
-          ورود / ثبت‌نام
-        </router-link>
-      </nav>
+        <header
+          class="relative z-30 px-5 pt-5 sm:px-8 sm:pt-7 lg:px-12 lg:pt-8"
+        >
+          <div class="relative mx-auto h-[76px] max-w-6xl">
 
-      <!-- Decorative Elements (ستاره‌ها و افکت‌های پس‌زمینه) -->
-      <div class="absolute top-28 right-12 text-yellow-300 text-2xl animate-pulse">✦</div>
-      <div class="absolute bottom-20 left-16 text-yellow-300 text-3xl animate-bounce">✦</div>
-      <div class="absolute -bottom-20 -right-20 w-80 h-80 bg-pink-500/20 rounded-full blur-3xl pointer-events-none"></div>
 
-      <!-- Hero Content -->
-      <div class="text-center max-w-2xl mx-auto mt-4 relative z-10">
-        <h1 class="text-3xl md:text-5xl font-black text-white leading-tight mb-4">
-          قالب مناسب را برای <br />
-          پورتفولیو و رزومه خود انتخاب کنید
-        </h1>
-        <p class="text-purple-100 text-sm md:text-base leading-relaxed mb-8 opacity-90">
-          با بیش از ۱۰ تمپلیت حرفه‌ای، پورتفولیوی اختصاصی خود را بدون نیاز به کدنویسی در چند دقیقه بسازید و لینک اختصاصی دریافت کنید.
-        </p>
-      </div>
+            <div
+              class="absolute left-10 right-10 top-7 h-[76px] rounded-[26px] bg-violet-200"
+            ></div>
 
-      <!-- Hero Visual Section with Floating Cards -->
-      <div class="relative max-w-4xl mx-auto mt-6 flex justify-center items-end min-h-[320px]">
-        
-        <!-- Left Floating Card (امتیاز کاربران / ویژگی) -->
-        <div class="absolute top-8 right-4 md:right-12 z-20 bg-white/95 backdrop-blur-md text-slate-900 p-4 rounded-2xl shadow-2xl border border-white/50 max-w-[200px] transform -rotate-3 hover:rotate-0 transition-transform">
-          <div class="flex items-center gap-1 text-yellow-400 mb-1 text-sm">
-            ★ ★ ★ ★ ★ <span class="text-slate-700 font-bold text-xs mr-1">4.9</span>
-          </div>
-          <p class="text-xs text-slate-600 font-semibold leading-snug">
-            مورد اعتماد بیش از ۱,۰۰۰ توسعه‌دهنده و طراح
-          </p>
-        </div>
+            <div
+              class="absolute left-7 right-7 top-5 h-[76px] rounded-[26px] bg-violet-300"
+            ></div>
 
-        <!-- Center Image (تصویر شاخص) -->
-        <div class="relative z-10 w-64 md:w-80 h-72 md:h-80 overflow-hidden rounded-t-full border-4 border-white/20 shadow-2xl bg-gradient-to-b from-purple-400 to-indigo-600 flex items-center justify-center">
-          <img 
-            src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=800&auto=format&fit=crop" 
-            alt="User Portfolio Preview" 
-            class="w-full h-full object-cover object-top"
-          />
-        </div>
 
-        <!-- Right Floating Card (آمار قالب‌ها / نمونه‌ها) -->
-        <div class="absolute top-16 left-4 md:left-12 z-20 bg-white/95 backdrop-blur-md text-slate-900 p-4 rounded-2xl shadow-2xl border border-white/50 max-w-[210px] transform rotate-3 hover:rotate-0 transition-transform">
-          <div class="flex items-center gap-2 mb-2">
-            <!-- Avatar Stack -->
-            <div class="flex -space-x-2 space-x-reverse">
-              <span class="w-7 h-7 rounded-full bg-indigo-500 text-white text-xs font-bold flex items-center justify-center border-2 border-white">UI</span>
-              <span class="w-7 h-7 rounded-full bg-purple-500 text-white text-xs font-bold flex items-center justify-center border-2 border-white">Py</span>
-              <span class="w-7 h-7 rounded-full bg-pink-500 text-white text-xs font-bold flex items-center justify-center border-2 border-white">JS</span>
+            <div
+              class="absolute left-3 right-3 top-2 h-[76px] rounded-[26px] bg-violet-400"
+            ></div>
+
+            <div
+              class="absolute inset-x-0 top-0 z-40 h-[76px] rounded-[26px] border border-white/10 bg-violet-500 shadow-xl shadow-violet-700/10"
+            >
+              <div
+                class="flex h-full items-center justify-between px-5 sm:px-7"
+              >
+
+                <a href="#home" class="flex items-center gap-2.5">
+                  <div
+                    class="flex h-9 w-9 items-center justify-center rounded-xl bg-white"
+                  >
+                    <span class="text-base font-black text-violet-500">
+                      P
+                    </span>
+                  </div>
+
+                  <span class="text-lg font-bold tracking-tight text-white">
+                    Portify
+                  </span>
+                </a>
+
+                <nav class="hidden items-center gap-8 md:flex">
+                  <a href="#home" class="text-sm font-medium text-white">
+                    Home
+                  </a>
+
+                  <a
+                    href="#templates"
+                    class="text-sm font-medium text-white/65 transition hover:text-white"
+                  >
+                    Templates
+                  </a>
+
+                  <a
+                    href="#features"
+                    class="text-sm font-medium text-white/65 transition hover:text-white"
+                  >
+                    Features
+                  </a>
+
+                  <a
+                    href="#about"
+                    class="text-sm font-medium text-white/65 transition hover:text-white"
+                  >
+                    About
+                  </a>
+
+                  <a
+                    href="#contact"
+                    class="text-sm font-medium text-white/65 transition hover:text-white"
+                  >
+                    Contact
+                  </a>
+                </nav>
+
+
+                <div class="flex items-center gap-3">
+                  
+                  <router-link
+                    to="/login"
+                    class="hidden text-sm font-medium text-white/80 sm:block"
+                  >
+                    Login
+                  </router-link>
+
+                  <router-link
+                    to="/register"
+                    class="rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-violet-500 shadow-sm"
+                  >
+                    Get Started
+                  </router-link>
+                </div>
+              </div>
             </div>
-            <span class="font-black text-indigo-700 text-base">+۱۰ قالب</span>
           </div>
-          <p class="text-xs text-slate-600 font-semibold leading-snug">
-            تمپلیت‌های اماده برای برنامه نویسان، طراحان و فریلنسرها
+        </header>
+
+
+        <div
+          class="relative z-20 mx-auto flex min-h-[calc(100vh-32px)] max-w-5xl flex-col items-center px-6 pb-32 pt-28 text-center sm:pt-32"
+        >
+
+          <div
+            class="mb-6 rounded-full border border-white/15 bg-white/10 px-4 py-2 backdrop-blur-sm"
+          >
+            <span
+              class="text-xs font-medium tracking-wide text-white/90 sm:text-sm"
+            >
+              Build your personal portfolio
+            </span>
+          </div>
+
+
+
+          <h1
+            class="max-w-4xl text-4xl font-bold leading-[1.08] tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl"
+          >
+            Create a portfolio
+
+            <span class="block text-violet-100"> that represents you. </span>
+          </h1>
+
+
+          <p
+            class="mt-6 max-w-2xl text-sm leading-7 text-violet-100/75 sm:text-base sm:leading-8 lg:text-lg"
+          >
+            Create, customize and publish your personal portfolio with a
+            beautiful design that showcases your work, skills and experience.
           </p>
+
+
+          <div class="mt-8 flex flex-col items-center gap-3 sm:flex-row">
+            <router-link
+              to="/register"
+              class="inline-flex h-12 items-center justify-center rounded-full bg-white px-7 text-sm font-semibold text-violet-500 shadow-lg transition hover:-translate-y-0.5"
+            >
+              Create my portfolio
+            </router-link>
+
+            <a
+              href="#templates"
+              class="inline-flex h-12 items-center justify-center rounded-full border border-white/20 bg-white/10 px-7 text-sm font-semibold text-white backdrop-blur-sm transition duration-200 hover:bg-white/15"
+            >
+              Explore templates
+            </a>
+          </div>
+
+
+
+          <div class="mt-10 flex items-center gap-2">
+            <span class="h-1.5 w-1.5 rounded-full bg-white/40"></span>
+
+            <span class="h-1.5 w-1.5 rounded-full bg-white/60"></span>
+
+            <span class="h-1.5 w-1.5 rounded-full bg-white/40"></span>
+          </div>
         </div>
 
+
+        <div
+          class="pointer-events-none absolute bottom-0 left-0 right-0 z-10 h-32 bg-gradient-to-t from-violet-500 to-transparent"
+        ></div>
       </div>
+    </section>
 
-    </main>
 
+    <section id="templates" class="px-6 py-28 sm:px-8">
+      <div class="mx-auto max-w-6xl">
+        <div class="text-center">
+          <span class="text-sm font-semibold text-violet-400"> Templates </span>
+
+          <h2
+            class="mt-3 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl"
+          >
+            Choose your starting point
+          </h2>
+
+          <p class="mx-auto mt-4 max-w-xl text-slate-500">
+            Start with a template and customize it to match your personal style.
+          </p>
+        </div>
+      </div>
+    </section>
+
+
+    <section id="features" class="bg-white px-6 py-28 sm:px-8">
+      <div class="mx-auto max-w-6xl">
+        <div class="text-center">
+          <span class="text-sm font-semibold text-violet-400"> Features </span>
+
+          <h2
+            class="mt-3 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl"
+          >
+            Everything for your portfolio
+          </h2>
+        </div>
+      </div>
+    </section>
+
+
+    <section id="about" class="px-6 py-28 sm:px-8">
+      <div class="mx-auto max-w-4xl text-center">
+        <span class="text-sm font-semibold text-violet-400">
+          About Portify
+        </span>
+
+        <h2
+          class="mt-3 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl"
+        >
+          Your work deserves a place to shine.
+        </h2>
+      </div>
+    </section>
+
+
+    <section id="contact" class="bg-slate-50 px-6 py-28 sm:px-8">
+      <div class="mx-auto max-w-4xl text-center">
+        <h2 class="text-3xl font-bold text-slate-900">
+          Ready to build your portfolio?
+        </h2>
+      </div>
+    </section>
   </div>
 </template>
-
-<script setup>
-</script>

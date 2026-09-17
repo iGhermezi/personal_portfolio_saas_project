@@ -18,6 +18,12 @@ const routes = [
     name: 'dashboard',
     component: () => import('../views/DashboardView.vue'),
     meta: { requiresAuth: true }
+  },
+  {
+    path: '/register',
+    name: 'register',
+    // بارگذاری تنبل برای جلوگیری از ارور قبل از ساخت کامپوننت
+    component: () => import('../views/RegisterView.vue')
   }
 ]
 

@@ -7,7 +7,6 @@ const api = axios.create({
   },
 });
 
-// اضافه کردن توکن JWT به هدر درخواست‌ها در صورت وجود
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('access_token');
   if (token) {

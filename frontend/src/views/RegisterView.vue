@@ -1,14 +1,6 @@
 <template>
   <div
-    class="
-      min-h-screen
-      bg-[#faf9ff]
-      flex
-      items-center
-      justify-center
-      px-6
-    "
-    dir="rtl"
+    class="min-h-screen bg-[#faf9ff] flex items-center justify-center px-6"
   >
 
     <div
@@ -16,17 +8,16 @@
         w-full
         max-w-md
         rounded-3xl
+        bg-white
         border
         border-violet-100
-        bg-white
         p-8
         shadow-xl
         shadow-violet-100
       "
     >
 
-
-      <div class="mb-8 text-center">
+      <div class="text-center mb-8">
 
         <h1
           class="
@@ -35,7 +26,7 @@
             text-slate-900
           "
         >
-          Log in to your account
+        Create your account
         </h1>
 
         <p
@@ -45,11 +36,10 @@
             text-slate-500
           "
         >
-          Sign in to your account
+        make your personal portfolio and showcase your work, skills and experience.
         </p>
 
       </div>
-
 
 
       <div
@@ -57,9 +47,9 @@
         class="
           mb-5
           rounded-xl
+          bg-red-50
           border
           border-red-100
-          bg-red-50
           px-4
           py-3
           text-sm
@@ -70,9 +60,8 @@
       </div>
 
 
-
       <form
-        @submit.prevent="login"
+        @submit.prevent="register"
         class="space-y-5"
       >
 
@@ -88,15 +77,14 @@
               text-slate-700
             "
           >
-            Email
+          Username
           </label>
 
           <input
-            v-model="email"
-            type="email"
-            placeholder="example@gmail.com"
+            v-model="form.username"
+            type="text"
+            placeholder="username"
             required
-            autocomplete="email"
             class="
               w-full
               rounded-xl
@@ -118,7 +106,6 @@
         </div>
 
 
-        <!-- Password -->
 
         <div>
 
@@ -131,15 +118,95 @@
               text-slate-700
             "
           >
-            Password
+          Email
           </label>
 
           <input
-            v-model="password"
+            v-model="form.email"
+            type="email"
+            placeholder="example@gmail.com"
+            required
+            class="
+              w-full
+              rounded-xl
+              border
+              border-slate-200
+              bg-slate-50
+              px-4
+              py-3
+              text-sm
+              outline-none
+              transition
+              focus:border-violet-300
+              focus:bg-white
+              focus:ring-4
+              focus:ring-violet-100
+            "
+          />
+
+        </div>
+
+
+        <div>
+
+          <label
+            class="
+              mb-2
+              block
+              text-sm
+              font-medium
+              text-slate-700
+            "
+          >
+          Password
+          </label>
+
+          <input
+            v-model="form.password"
             type="password"
             placeholder="Password"
             required
-            autocomplete="current-password"
+            class="
+              w-full
+              rounded-xl
+              border
+              border-slate-200
+              bg-slate-50
+              px-4
+              py-3
+              text-sm
+              outline-none
+              transition
+              focus:border-violet-300
+              focus:bg-white
+              focus:ring-4
+              focus:ring-violet-100
+            "
+          />
+
+        </div>
+
+
+
+        <div>
+
+          <label
+            class="
+              mb-2
+              block
+              text-sm
+              font-medium
+              text-slate-700
+            "
+          >
+          Confirm Password
+          </label>
+
+          <input
+            v-model="form.password2"
+            type="password"
+            placeholder="Confirm Password"
+            required
             class="
               w-full
               rounded-xl
@@ -182,13 +249,13 @@
             disabled:opacity-60
           "
         >
-          {{ loading ? 'Signing in...' : 'Sign In' }}
+
+          {{ loading ? 'Creating account...' : 'Create Account' }}
+
         </button>
 
       </form>
 
-
-      <!-- Register -->
 
       <div
         class="
@@ -199,18 +266,17 @@
         "
       >
 
-        Don't have an account?
+        Already have an account?
 
         <router-link
-          to="/register"
+          to="/login"
           class="
             font-semibold
             text-violet-400
-            transition
             hover:text-violet-500
           "
         >
-          Register
+          Log in
         </router-link>
 
       </div>
@@ -223,26 +289,28 @@
 
 <script setup>
 
-import { ref } from 'vue'
+import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { useAuthStore } from '../stores/auth'
+import api from '../api/axios'
 
 
 const router = useRouter()
 
-const authStore = useAuthStore()
 
+const form = reactive({
+  username: '',
+  email: '',
+  password: '',
+  password2: ''
+})
 
-const email = ref('')
-
-const password = ref('')
 
 const loading = ref(false)
 
 const errorMessage = ref('')
 
 
-const login = async () => {
+const register = async () => {
 
   errorMessage.value = ''
 
@@ -250,18 +318,18 @@ const login = async () => {
 
   try {
 
-    await authStore.login(
-      email.value,
-      password.value
+    const response = await api.post(
+      'accounts/register/',
+      form
     )
 
-    // Login successful
+    console.log('Register successful:', response.data)
 
-    router.push('/dashboard')
+    router.push('/login')
 
   } catch (error) {
 
-    console.error('Login failed:', error)
+    console.error('Register failed:', error)
 
     if (error.response?.data) {
 
