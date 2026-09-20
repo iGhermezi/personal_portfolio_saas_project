@@ -5,4 +5,4 @@ from .serializers import PortfolioTemplateSerializer
 class PortfolioTemplateListView(generics.ListAPIView):
     queryset = PortfolioTemplate.objects.filter(is_active=True)
     serializer_class = PortfolioTemplateSerializer
-    permission_classes = (permissions.AllowAny,)  # همه کاربران (حتی لاگین نشده‌ها) برای دیدن تم‌ها دسترسی دارند
+    permission_classes = (permissions.AllowAny,)

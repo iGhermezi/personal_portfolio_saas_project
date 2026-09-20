@@ -9,28 +9,23 @@ class EmailLoginSerializer(TokenObtainPairSerializer):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # جایگزین کردن فیلد username با email در ورودی
         self.fields['email'] = serializers.EmailField()
 
     
     def validate(self, attrs):
         email = attrs.get('email')
         password = attrs.get('password')
-
-        # ۱. پیدا کردن کاربر بر اساس ایمیل
         try:
             user = User.objects.get(email=email)
         except User.DoesNotExist:
-            raise serializers.ValidationError({"detail": "کاربری با این ایمیل پیدا نشد."})
+            raise serializers.ValidationError({"detail": "invalid email"})
 
-        # ۲. بررسی درست بودن رمز عبور
         if not user.check_password(password):
-            raise serializers.ValidationError({"detail": "رمز عبور اشتباه است."})
+            raise serializers.ValidationError({"detail": "invalid password"})
         
         if not user.is_active:
-            raise serializers.ValidationError({"detail": "این حساب کاربری غیرفعال است."})
+            raise serializers.ValidationError({"detail":"account has been banned !"})
 
-        # ۳. تولید توکن‌های JWT و خروجی
         refresh = self.get_token(user)
 
         return {

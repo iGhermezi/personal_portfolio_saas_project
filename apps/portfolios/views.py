@@ -4,10 +4,6 @@ from .PortfolioSerializer import (
     PortfolioSerializer, ProjectSerializer, SkillSerializer,
 )
 
-
-# ==============================
-# ۱. مدیریت پورتفولیوها
-# ==============================
 class PortfolioListCreateView(generics.ListCreateAPIView):
     serializer_class = PortfolioSerializer
     permission_classes = (permissions.IsAuthenticated,)
@@ -36,9 +32,6 @@ class PublicPortfolioDetailView(generics.RetrieveAPIView):
         return Portfolio.objects.filter(is_published=True)
 
 
-# ==============================
-# ۲. مدیریت پروژه‌ها (Nested زیر یک Portfolio مشخص)
-# ==============================
 class ProjectListCreateView(generics.ListCreateAPIView):
     serializer_class = ProjectSerializer
     permission_classes = (permissions.IsAuthenticated,)
@@ -67,10 +60,6 @@ class ProjectDetailView(generics.RetrieveUpdateDestroyAPIView):
             portfolio__user=self.request.user
         )
 
-
-# ==============================
-# ۳. مدیریت مهارت‌ها (Nested زیر یک Portfolio مشخص)
-# ==============================
 class SkillListCreateView(generics.ListCreateAPIView):
     serializer_class = SkillSerializer
     permission_classes = (permissions.IsAuthenticated,)

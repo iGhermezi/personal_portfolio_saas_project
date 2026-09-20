@@ -73,6 +73,20 @@ export const useAuthStore = defineStore('auth', {
     },
 
 
+    // به‌روزرسانی اطلاعات کاربر در state و localStorage
+    // (مثلاً بعد از ویرایش موفق پروفایل در ProfileView.vue)
+    updateUser(userData) {
+
+      this.user = userData
+
+      localStorage.setItem(
+        'user',
+        JSON.stringify(userData)
+      )
+
+    },
+
+
     logout() {
 
       this.accessToken = null

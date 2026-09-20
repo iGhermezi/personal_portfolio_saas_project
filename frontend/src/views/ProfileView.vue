@@ -1,19 +1,16 @@
 <template>
   <div class="min-h-screen bg-[#faf9ff] px-5 py-5">
 
-    <!-- Sidebar -->
     <DashboardSidebar
       :collapsed="sidebarCollapsed"
       @toggle="sidebarCollapsed = !sidebarCollapsed"
     />
 
-    <!-- Main Area -->
     <main
       class="min-h-[calc(100vh-40px)] transition-transform duration-300 ease-in-out"
       :class="sidebarCollapsed ? 'ml-[98px]' : 'ml-[284px]'"
     >
 
-      <!-- Simple header -->
       <header
         class="flex items-center justify-between rounded-3xl border border-violet-100 bg-white px-6 py-4 shadow-[0_10px_40px_rgba(139,92,246,0.12)]"
       >
@@ -30,7 +27,6 @@
         </router-link>
       </header>
 
-      <!-- Content -->
       <div class="mx-auto max-w-3xl px-6 py-8">
 
         <div
@@ -46,7 +42,6 @@
           class="rounded-[28px] border border-violet-100 bg-white p-8 shadow-sm"
         >
 
-          <!-- Avatar + email (read-only) -->
           <div class="mb-8 flex items-center gap-4">
             <div
               class="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-full bg-violet-100 text-xl font-bold text-violet-500"
@@ -66,7 +61,6 @@
             </div>
           </div>
 
-          <!-- Success / error banners -->
           <div
             v-if="successMessage"
             class="mb-5 rounded-xl border border-emerald-100 bg-emerald-50 px-4 py-3 text-sm text-emerald-600"
@@ -211,7 +205,7 @@ onMounted(async () => {
     form.profile_image_url = data.profile_image_url || ''
   } catch (error) {
     console.error('Failed to load profile:', error)
-    errorMessage.value = 'دریافت اطلاعات پروفایل با خطا مواجه شد.'
+    errorMessage.value = "Error loading profile. Please try again later."
   } finally {
     loading.value = false
   }
@@ -225,17 +219,16 @@ const saveProfile = async () => {
   try {
     const response = await api.patch('accounts/me/', form)
 
-    // هماهنگ کردن Sidebar/Header با نام جدید کاربر
     authStore.updateUser(response.data)
 
-    successMessage.value = 'پروفایل با موفقیت به‌روزرسانی شد.'
+    successMessage.value = 'Profile updated successfully.'
   } catch (error) {
     console.error('Failed to update profile:', error)
     if (error.response?.data) {
       const errors = error.response.data
       errorMessage.value = Object.values(errors).flat().join(' ')
     } else {
-      errorMessage.value = 'ارتباط با سرور برقرار نشد.'
+      errorMessage.value = "Error updating profile. Please try again later."
     }
   } finally {
     saving.value = false

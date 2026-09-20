@@ -8,7 +8,6 @@ User = get_user_model()
 class UserRegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, required=True, validators=[validate_password])
     password2 = serializers.CharField(write_only=True, required=True)
-
     class Meta:
         model = User
         fields = ('username', 'email', 'password', 'password2')
@@ -18,12 +17,12 @@ class UserRegisterSerializer(serializers.ModelSerializer):
 
     def validate_email(self, value):
         if User.objects.filter(email=value).exists():
-            raise serializers.ValidationError("این ایمیل قبلاً ثبت شده است.")
+            raise serializers.ValidationError("this email already exist")
         return value
 
     def validate(self, attrs):
         if attrs['password'] != attrs['password2']:
-            raise serializers.ValidationError({"password": "رمز عبور و تکرار آن یکسان نیستند."})
+            raise serializers.ValidationError({"password": "passwords are not sync"})
         return attrs
 
     def create(self, validated_data):

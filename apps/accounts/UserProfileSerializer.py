@@ -11,4 +11,4 @@ class UserProfileSerializer(serializers.ModelSerializer):
             'last_name', 'profile_image_url', 'job_title', 
             'phone', 'location'
         )
-        read_only_fields = ('id', 'email')  # ایمیل نباید از این اندپوینت ویرایش شود
+        read_only_fields = ('id', 'email')

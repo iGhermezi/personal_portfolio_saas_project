@@ -36,11 +36,8 @@ class SocialLinkSerializer(serializers.ModelSerializer):
         fields = '__all__'
         read_only_fields = ('portfolio',)
 
-
-# سریالایزر اصلی پورتفولیو
 class PortfolioSerializer(serializers.ModelSerializer):
-    # دریافت لیست تمام بخش‌های مرتبط با استفاده از related_nameها
-    projects = ProjectSerializer(many=True, read_only=True, source='project') # اگر related_name را جمع کردی source لازم نیست
+    projects = ProjectSerializer(many=True, read_only=True, source='project')
     skills = SkillSerializer(many=True, read_only=True)
     educations = EducationSerializer(many=True, read_only=True)
     experiences = ExperienceSerializer(many=True, read_only=True)
