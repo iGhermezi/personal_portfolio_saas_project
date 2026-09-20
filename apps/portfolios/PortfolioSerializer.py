@@ -51,3 +51,4 @@ class PortfolioSerializer(serializers.ModelSerializer):
             'projects', 'skills', 'educations', 'experiences', 'social'
         )
         read_only_fields = ('id', 'user', 'created_at', 'updated_at')
+

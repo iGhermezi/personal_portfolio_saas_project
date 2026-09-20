@@ -7,6 +7,8 @@ from .views import (
     UserProfileView,
     EmailChangeRequestView,
     EmailChangeConfirmView,
+    PasswordForgotView,
+    PasswordResetView,
 )
 
 urlpatterns = [
@@ -17,4 +19,6 @@ urlpatterns = [
     path('me/', UserProfileView.as_view(), name='user_profile'),
     path('change-email/request/', EmailChangeRequestView.as_view(), name='change_email_request'),
     path('change-email/confirm/', EmailChangeConfirmView.as_view(), name='change_email_confirm'),
+    path('password/forgot/',PasswordForgotView.as_view(),name='password_forgot'),
+    path('password/reset/',PasswordResetView.as_view(),name='password_reset'),
 ]
