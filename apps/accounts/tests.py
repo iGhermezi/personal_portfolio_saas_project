@@ -24,40 +24,58 @@ class AccountsTests(APITestCase):
             password='TestPassword123'
         )
 
+        self.user.email_verified = True
+        self.user.save()
+
         self.other_user = User.objects.create_user(
             username='otheruser',
             email='other@example.com',
             password='TestPassword123'
         )
 
+        self.other_user.email_verified = True
+        self.other_user.save()
+
     # =========================================================
     # Register
     # =========================================================
 
-    def test_user_can_register(self):
-        data = {
-            'username': 'newuser',
-            'email': 'new@example.com',
-            'password': 'NewPassword123',
-            'password2': 'NewPassword123',
-        }
+        def test_user_can_register(self):
+            data = {
+                'username': 'newuser',
+                'email': 'new@example.com',
+                'password': 'NewPassword123',
+                'password2': 'NewPassword123',
+            }
 
-        response = self.client.post(
-            '/api/accounts/register/',
-            data,
-            format='json'
-        )
+            response = self.client.post(
+                '/api/accounts/register/',
+                data,
+                format='json'
+            )
 
-        self.assertEqual(
-            response.status_code,
-            status.HTTP_201_CREATED
-        )
+            self.assertEqual(
+                response.status_code,
+                status.HTTP_201_CREATED
+            )
 
-        self.assertTrue(
-            User.objects.filter(
+            user = User.objects.get(
                 email='new@example.com'
-            ).exists()
-        )
+            )
+
+            self.assertFalse(
+                user.email_verified
+            )
+
+            self.assertEqual(
+                len(mail.outbox),
+                1
+            )
+
+            self.assertEqual(
+                mail.outbox[0].to,
+                ['new@example.com']
+            )
 
     def test_register_rejects_duplicate_email(self):
         data = {
@@ -503,6 +521,480 @@ class AccountsTests(APITestCase):
             self.user.pending_email
         )
 
+        # =========================================================
+    # Email Verification
+    # =========================================================
+
+    def test_register_creates_unverified_user(self):
+        data = {
+            'username': 'verificationuser',
+            'email': 'verification@example.com',
+            'password': 'NewPassword123',
+            'password2': 'NewPassword123',
+        }
+
+        response = self.client.post(
+            '/api/accounts/register/',
+            data,
+            format='json'
+        )
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_201_CREATED
+        )
+
+        user = User.objects.get(
+            email='verification@example.com'
+        )
+
+        self.assertFalse(
+            user.email_verified
+        )
+
+    def test_register_sends_verification_email(self):
+        data = {
+            'username': 'verificationuser',
+            'email': 'verification@example.com',
+            'password': 'NewPassword123',
+            'password2': 'NewPassword123',
+        }
+
+        response = self.client.post(
+            '/api/accounts/register/',
+            data,
+            format='json'
+        )
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_201_CREATED
+        )
+
+        self.assertEqual(
+            len(mail.outbox),
+            1
+        )
+
+        self.assertEqual(
+            mail.outbox[0].to,
+            ['verification@example.com']
+        )
+
+        self.assertIn(
+            '/api/accounts/email/verify/',
+            mail.outbox[0].body
+        )
+
+    def test_unverified_user_cannot_login(self):
+        user = User.objects.create_user(
+            username='unverifieduser',
+            email='unverified@example.com',
+            password='TestPassword123'
+        )
+
+        self.assertFalse(
+            user.email_verified
+        )
+
+        response = self.client.post(
+            '/api/accounts/login/',
+            {
+                'email': 'unverified@example.com',
+                'password': 'TestPassword123',
+            },
+            format='json'
+        )
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_400_BAD_REQUEST
+        )
+
+        self.assertIn(
+            'not verified',
+            str(response.data).lower()
+        )
+
+    def test_user_can_verify_email(self):
+        user = User.objects.create_user(
+            username='verifyuser',
+            email='verify@example.com',
+            password='TestPassword123'
+        )
+
+        token_generator = PasswordResetTokenGenerator()
+
+        uid = urlsafe_base64_encode(
+            force_bytes(user.pk)
+        )
+
+        token = token_generator.make_token(
+            user
+        )
+
+        response = self.client.get(
+            f'/api/accounts/email/verify/{uid}/{token}/'
+        )
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_200_OK
+        )
+
+        user.refresh_from_db()
+
+        self.assertTrue(
+            user.email_verified
+        )
+
+    def test_verified_user_can_login(self):
+        user = User.objects.create_user(
+            username='verifieduser',
+            email='verified@example.com',
+            password='TestPassword123'
+        )
+
+        user.email_verified = True
+        user.save()
+
+        response = self.client.post(
+            '/api/accounts/login/',
+            {
+                'email': 'verified@example.com',
+                'password': 'TestPassword123',
+            },
+            format='json'
+        )
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_200_OK
+        )
+
+        self.assertIn(
+            'access',
+            response.data
+        )
+
+        self.assertIn(
+            'refresh',
+            response.data
+        )
+
+    def test_email_verification_token_cannot_be_used_twice(self):
+        user = User.objects.create_user(
+            username='verifytwice',
+            email='verifytwice@example.com',
+            password='TestPassword123'
+        )
+
+        token_generator = PasswordResetTokenGenerator()
+
+        uid = urlsafe_base64_encode(
+            force_bytes(user.pk)
+        )
+
+        token = token_generator.make_token(
+            user
+        )
+
+        first_response = self.client.get(
+            f'/api/accounts/email/verify/{uid}/{token}/'
+        )
+
+        self.assertEqual(
+            first_response.status_code,
+            status.HTTP_200_OK
+        )
+
+        second_response = self.client.get(
+            f'/api/accounts/email/verify/{uid}/{token}/'
+        )
+
+        self.assertEqual(
+            second_response.status_code,
+            status.HTTP_400_BAD_REQUEST
+        )
+
+    def test_invalid_email_verification_token_is_rejected(self):
+        user = User.objects.create_user(
+            username='invalidtoken',
+            email='invalidtoken@example.com',
+            password='TestPassword123'
+        )
+
+        uid = urlsafe_base64_encode(
+            force_bytes(user.pk)
+        )
+
+        response = self.client.get(
+            f'/api/accounts/email/verify/{uid}/invalid-token/'
+        )
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_400_BAD_REQUEST
+        )
+
+        user.refresh_from_db()
+
+        self.assertFalse(
+            user.email_verified
+        )
+
+    def test_email_verification_with_other_users_token_is_rejected(self):
+        first_user = User.objects.create_user(
+            username='firstverify',
+            email='firstverify@example.com',
+            password='TestPassword123'
+        )
+
+        second_user = User.objects.create_user(
+            username='secondverify',
+            email='secondverify@example.com',
+            password='TestPassword123'
+        )
+
+        token_generator = PasswordResetTokenGenerator()
+
+        first_uid = urlsafe_base64_encode(
+            force_bytes(first_user.pk)
+        )
+
+        second_token = token_generator.make_token(
+            second_user
+        )
+
+        response = self.client.get(
+            f'/api/accounts/email/verify/'
+            f'{first_uid}/{second_token}/'
+        )
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_400_BAD_REQUEST
+        )
+
+        first_user.refresh_from_db()
+        second_user.refresh_from_db()
+
+        self.assertFalse(
+            first_user.email_verified
+        )
+
+        self.assertFalse(
+            second_user.email_verified
+        )
+
+    def test_resend_verification_email(self):
+        user = User.objects.create_user(
+            username='resenduser',
+            email='resend@example.com',
+            password='TestPassword123'
+        )
+
+        response = self.client.post(
+            '/api/accounts/email/verification/resend/',
+            {
+                'email': 'resend@example.com'
+            },
+            format='json'
+        )
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_200_OK
+        )
+
+        self.assertEqual(
+            len(mail.outbox),
+            1
+        )
+
+        self.assertEqual(
+            mail.outbox[0].to,
+            ['resend@example.com']
+        )
+
+        self.assertIn(
+            '/api/accounts/email/verify/',
+            mail.outbox[0].body
+        )
+
+    def test_resend_verification_does_not_reveal_unknown_email(self):
+        response = self.client.post(
+            '/api/accounts/email/verification/resend/',
+            {
+                'email': 'unknown-verification@example.com'
+            },
+            format='json'
+        )
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_200_OK
+        )
+
+        self.assertEqual(
+            len(mail.outbox),
+            0
+        )
+
+        self.assertIn(
+            'If an account with this email exists',
+            response.data['detail']
+        )
+
+    def test_resend_verification_for_already_verified_user_does_not_send_email(self):
+        user = User.objects.create_user(
+            username='alreadyverified',
+            email='alreadyverified@example.com',
+            password='TestPassword123'
+        )
+
+        user.email_verified = True
+        user.save()
+
+        response = self.client.post(
+            '/api/accounts/email/verification/resend/',
+            {
+                'email': 'alreadyverified@example.com'
+            },
+            format='json'
+        )
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_200_OK
+        )
+
+        self.assertEqual(
+            len(mail.outbox),
+            0
+        )
+
+    def test_email_change_requires_new_email_verification(self):
+        self.client.force_authenticate(
+            user=self.user
+        )
+
+        request_response = self.client.post(
+            '/api/accounts/change-email/request/',
+            {
+                'new_email': 'changed@example.com'
+            },
+            format='json'
+        )
+
+        self.assertEqual(
+            request_response.status_code,
+            status.HTTP_200_OK
+        )
+
+        self.user.refresh_from_db()
+
+        code = self.user.email_change_code
+
+        confirm_response = self.client.post(
+            '/api/accounts/change-email/confirm/',
+            {
+                'code': code
+            },
+            format='json'
+        )
+
+        self.assertEqual(
+            confirm_response.status_code,
+            status.HTTP_200_OK
+        )
+
+        self.user.refresh_from_db()
+
+        self.assertEqual(
+            self.user.email,
+            'changed@example.com'
+        )
+
+        self.assertFalse(
+            self.user.email_verified
+        )
+
+        self.assertEqual(
+            len(mail.outbox),
+            2
+        )
+
+        self.assertIn(
+            '/api/accounts/email/verify/',
+            mail.outbox[1].body
+        )
+
+    def test_changed_email_cannot_login_before_verification(self):
+        self.client.force_authenticate(
+            user=self.user
+        )
+
+        request_response = self.client.post(
+            '/api/accounts/change-email/request/',
+            {
+                'new_email': 'changed-login@example.com'
+            },
+            format='json'
+        )
+
+        self.assertEqual(
+            request_response.status_code,
+            status.HTTP_200_OK
+        )
+
+        self.user.refresh_from_db()
+
+        code = self.user.email_change_code
+
+        confirm_response = self.client.post(
+            '/api/accounts/change-email/confirm/',
+            {
+                'code': code
+            },
+            format='json'
+        )
+
+        self.assertEqual(
+            confirm_response.status_code,
+            status.HTTP_200_OK
+        )
+
+        self.user.refresh_from_db()
+
+        self.assertFalse(
+            self.user.email_verified
+        )
+
+        self.client.force_authenticate(
+            user=None
+        )
+
+        login_response = self.client.post(
+            '/api/accounts/login/',
+            {
+                'email': 'changed-login@example.com',
+                'password': 'TestPassword123',
+            },
+            format='json'
+        )
+
+        self.assertEqual(
+            login_response.status_code,
+            status.HTTP_400_BAD_REQUEST
+        )
+
+        self.assertIn(
+            'not verified',
+            str(login_response.data).lower()
+        )
+
+
     # =========================================================
     # Forgot Password
     # =========================================================
@@ -804,4 +1296,336 @@ class AccountsTests(APITestCase):
         self.assertEqual(
             login_response.status_code,
             status.HTTP_400_BAD_REQUEST
+        )
+class ChangePasswordTests(APITestCase):
+
+    def setUp(self):
+        self.user = User.objects.create_user(
+            username='changepassuser',
+            email='changepass@example.com',
+            password='OldPassword123!',
+            email_verified=True,
+        )
+
+        login_response = self.client.post(
+            '/api/accounts/login/',
+            {
+                'email': 'changepass@example.com',
+                'password': 'OldPassword123!',
+            },
+            format='json',
+        )
+
+        self.access_token = login_response.data['access']
+        self.refresh_token = login_response.data['refresh']
+
+        self.client.credentials(
+            HTTP_AUTHORIZATION=f'Bearer {self.access_token}'
+        )
+
+    def test_change_password_success(self):
+        response = self.client.post(
+            '/api/accounts/change-password/',
+            {
+                'current_password': 'OldPassword123!',
+                'new_password': 'NewPassword123!',
+                'confirm_password': 'NewPassword123!',
+            },
+            format='json',
+        )
+
+        self.assertEqual(response.status_code, 200)
+
+        self.user.refresh_from_db()
+
+        self.assertTrue(
+            self.user.check_password('NewPassword123!')
+        )
+
+    def test_change_password_wrong_current_password(self):
+        response = self.client.post(
+            '/api/accounts/change-password/',
+            {
+                'current_password': 'WrongPassword123!',
+                'new_password': 'NewPassword123!',
+                'confirm_password': 'NewPassword123!',
+            },
+            format='json',
+        )
+
+        self.assertEqual(response.status_code, 400)
+
+        self.user.refresh_from_db()
+
+        self.assertTrue(
+            self.user.check_password('OldPassword123!')
+        )
+
+    def test_change_password_mismatched_passwords(self):
+        response = self.client.post(
+            '/api/accounts/change-password/',
+            {
+                'current_password': 'OldPassword123!',
+                'new_password': 'NewPassword123!',
+                'confirm_password': 'DifferentPassword123!',
+            },
+            format='json',
+        )
+
+        self.assertEqual(response.status_code, 400)
+
+        self.user.refresh_from_db()
+
+        self.assertTrue(
+            self.user.check_password('OldPassword123!')
+        )
+
+    def test_change_password_cannot_use_same_password(self):
+        response = self.client.post(
+            '/api/accounts/change-password/',
+            {
+                'current_password': 'OldPassword123!',
+                'new_password': 'OldPassword123!',
+                'confirm_password': 'OldPassword123!',
+            },
+            format='json',
+        )
+
+        self.assertEqual(response.status_code, 400)
+
+    def test_change_password_requires_authentication(self):
+        self.client.credentials()
+
+        response = self.client.post(
+            '/api/accounts/change-password/',
+            {
+                'current_password': 'OldPassword123!',
+                'new_password': 'NewPassword123!',
+                'confirm_password': 'NewPassword123!',
+            },
+            format='json',
+        )
+
+        self.assertEqual(response.status_code, 401)
+
+    def test_change_password_invalidates_refresh_token(self):
+        response = self.client.post(
+            '/api/accounts/change-password/',
+            {
+                'current_password': 'OldPassword123!',
+                'new_password': 'NewPassword123!',
+                'confirm_password': 'NewPassword123!',
+            },
+            format='json',
+        )
+
+        self.assertEqual(response.status_code, 200)
+
+        refresh_response = self.client.post(
+            '/api/accounts/token/refresh/',
+            {
+                'refresh': self.refresh_token,
+            },
+            format='json',
+        )
+
+        self.assertEqual(refresh_response.status_code, 401)
+
+
+class UserProfileSecurityTests(APITestCase):
+
+    def setUp(self):
+        self.user = User.objects.create_user(
+            username='profileuser',
+            email='profile@example.com',
+            password='ProfilePassword123!',
+            email_verified=True,
+        )
+
+        login_response = self.client.post(
+            '/api/accounts/login/',
+            {
+                'email': 'profile@example.com',
+                'password': 'ProfilePassword123!',
+            },
+            format='json',
+        )
+
+        self.client.credentials(
+            HTTP_AUTHORIZATION=f"Bearer {login_response.data['access']}"
+        )
+
+    def test_user_can_update_allowed_profile_fields(self):
+        response = self.client.patch(
+            '/api/accounts/me/',
+            {
+                'username': 'newusername',
+                'job_title': 'Backend Developer',
+                'phone': '09123456789',
+                'location': 'Tehran',
+                'profile_image_url': 'https://example.com/avatar.jpg',
+            },
+            format='json',
+        )
+
+        self.assertEqual(response.status_code, 200)
+
+        self.user.refresh_from_db()
+
+        self.assertEqual(self.user.username, 'newusername')
+        self.assertEqual(self.user.job_title, 'Backend Developer')
+        self.assertEqual(self.user.phone, '09123456789')
+        self.assertEqual(self.user.location, 'Tehran')
+        self.assertEqual(
+            self.user.profile_image_url,
+            'https://example.com/avatar.jpg'
+        )
+
+    def test_user_cannot_modify_sensitive_fields(self):
+        response = self.client.patch(
+            '/api/accounts/me/',
+            {
+                'is_staff': True,
+                'is_superuser': True,
+                'is_active': False,
+                'email_verified': True,
+                'email': 'hacker@example.com',
+            },
+            format='json',
+        )
+
+        self.assertEqual(response.status_code, 200)
+
+        self.user.refresh_from_db()
+
+        self.assertFalse(self.user.is_staff)
+        self.assertFalse(self.user.is_superuser)
+        self.assertTrue(self.user.is_active)
+        self.assertTrue(self.user.email_verified)
+        self.assertEqual(
+            self.user.email,
+            'profile@example.com'
+        )
+
+    def test_profile_does_not_expose_sensitive_fields(self):
+        response = self.client.get(
+            '/api/accounts/me/'
+        )
+
+        self.assertEqual(response.status_code, 200)
+
+        self.assertNotIn('password', response.data)
+        self.assertNotIn('is_staff', response.data)
+        self.assertNotIn('is_superuser', response.data)
+        self.assertNotIn('email_verified', response.data)
+        self.assertNotIn('pending_email', response.data)
+        self.assertNotIn('email_change_code', response.data)
+
+
+class UserProfileSecurityTests(APITestCase):
+
+    def setUp(self):
+        self.user = User.objects.create_user(
+            username='securityuser',
+            email='security@example.com',
+            password='TestPassword123!'
+        )
+        self.client.force_authenticate(user=self.user)
+
+    def test_allowed_profile_fields_can_be_updated(self):
+        response = self.client.patch(
+            '/api/accounts/me/',
+            {
+                'username': 'updated_username',
+                'job_title': 'Backend Developer',
+                'phone': '09123456789',
+                'location': 'Tehran',
+                'profile_image_url': 'https://example.com/profile.jpg',
+            },
+            format='json',
+        )
+
+        self.assertEqual(response.status_code, 200)
+
+        self.user.refresh_from_db()
+
+        self.assertEqual(
+            self.user.username,
+            'updated_username'
+        )
+        self.assertEqual(
+            self.user.job_title,
+            'Backend Developer'
+        )
+        self.assertEqual(
+            self.user.phone,
+            '09123456789'
+        )
+        self.assertEqual(
+            self.user.location,
+            'Tehran'
+        )
+
+    def test_sensitive_profile_fields_cannot_be_modified(self):
+        original_email = self.user.email
+
+        response = self.client.patch(
+            '/api/accounts/me/',
+            {
+                'email': 'attacker@example.com',
+                'email_verified': True,
+                'is_staff': True,
+                'is_superuser': True,
+            },
+            format='json',
+        )
+
+        self.assertEqual(response.status_code, 200)
+
+        self.user.refresh_from_db()
+
+        self.assertEqual(
+            self.user.email,
+            original_email
+        )
+        self.assertFalse(
+            self.user.email_verified
+        )
+        self.assertFalse(
+            self.user.is_staff
+        )
+        self.assertFalse(
+            self.user.is_superuser
+        )
+
+    def test_sensitive_profile_fields_are_not_exposed(self):
+        response = self.client.get(
+            '/api/accounts/me/'
+        )
+
+        self.assertEqual(response.status_code, 200)
+
+        self.assertNotIn(
+            'password',
+            response.data
+        )
+        self.assertNotIn(
+            'email_verified',
+            response.data
+        )
+        self.assertNotIn(
+            'is_staff',
+            response.data
+        )
+        self.assertNotIn(
+            'is_superuser',
+            response.data
+        )
+        self.assertNotIn(
+            'pending_email',
+            response.data
+        )
+        self.assertNotIn(
+            'email_change_code',
+            response.data
         )

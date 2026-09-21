@@ -12,13 +12,13 @@ from .models import (
 
 from .PortfolioSerializer import (
     PortfolioSerializer,
+    PublicPortfolioSerializer,
     ProjectSerializer,
     SkillSerializer,
     EducationSerializer,
     ExperienceSerializer,
     SocialLinkSerializer,
 )
-
 class PortfolioListCreateView(generics.ListCreateAPIView):
     serializer_class = PortfolioSerializer
     permission_classes = (permissions.IsAuthenticated,)
@@ -45,15 +45,12 @@ class PortfolioDetailView(generics.RetrieveUpdateDestroyAPIView):
 
 
 class PublicPortfolioDetailView(generics.RetrieveAPIView):
-    serializer_class = PortfolioSerializer
+    serializer_class = PublicPortfolioSerializer
     permission_classes = (permissions.AllowAny,)
     lookup_field = 'slug'
 
     def get_queryset(self):
-        return Portfolio.objects.filter(
-            is_published=True
-        )
-
+        return Portfolio.objects.filter(is_published=True)
 
 class ProjectListCreateView(generics.ListCreateAPIView):
     serializer_class = ProjectSerializer

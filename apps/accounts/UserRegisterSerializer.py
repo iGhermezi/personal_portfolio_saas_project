@@ -1,28 +1,57 @@
-from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
+
+from rest_framework import serializers
 
 
 User = get_user_model()
 
+
 class UserRegisterSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True, required=True, validators=[validate_password])
-    password2 = serializers.CharField(write_only=True, required=True)
+    password = serializers.CharField(
+        write_only=True,
+        required=True,
+        validators=[validate_password]
+    )
+
+    password2 = serializers.CharField(
+        write_only=True,
+        required=True
+    )
+
     class Meta:
         model = User
-        fields = ('username', 'email', 'password', 'password2')
+        fields = (
+            'username',
+            'email',
+            'password',
+            'password2',
+        )
+
         extra_kwargs = {
-            'email': {'required': True},
+            'email': {
+                'required': True
+            },
         }
 
     def validate_email(self, value):
-        if User.objects.filter(email=value).exists():
-            raise serializers.ValidationError("this email already exist")
+        value = value.lower().strip()
+
+        if User.objects.filter(
+            email__iexact=value
+        ).exists():
+            raise serializers.ValidationError(
+                "this email already exist"
+            )
+
         return value
 
     def validate(self, attrs):
         if attrs['password'] != attrs['password2']:
-            raise serializers.ValidationError({"password": "passwords are not sync"})
+            raise serializers.ValidationError({
+                'password': 'passwords are not sync'
+            })
+
         return attrs
 
     def create(self, validated_data):
@@ -31,4 +60,5 @@ class UserRegisterSerializer(serializers.ModelSerializer):
             email=validated_data['email'],
             password=validated_data['password']
         )
+
         return user

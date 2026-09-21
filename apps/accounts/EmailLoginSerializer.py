@@ -1,30 +1,48 @@
-from rest_framework import serializers
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from django.contrib.auth import get_user_model
 
+from rest_framework import serializers
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+
+
 User = get_user_model()
+
 
 class EmailLoginSerializer(TokenObtainPairSerializer):
     username_field = 'email'
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
         self.fields['email'] = serializers.EmailField()
 
-    
     def validate(self, attrs):
         email = attrs.get('email')
         password = attrs.get('password')
+
         try:
-            user = User.objects.get(email=email)
+            user = User.objects.get(
+                email__iexact=email
+            )
+
         except User.DoesNotExist:
-            raise serializers.ValidationError({"detail": "invalid email"})
+            raise serializers.ValidationError({
+                'detail': 'invalid email'
+            })
 
         if not user.check_password(password):
-            raise serializers.ValidationError({"detail": "invalid password"})
-        
+            raise serializers.ValidationError({
+                'detail': 'invalid password'
+            })
+
         if not user.is_active:
-            raise serializers.ValidationError({"detail":"account has been banned !"})
+            raise serializers.ValidationError({
+                'detail': 'account has been banned !'
+            })
+
+        if not user.email_verified:
+            raise serializers.ValidationError({
+                'detail': 'email address is not verified'
+            })
 
         refresh = self.get_token(user)
 
