@@ -1595,115 +1595,65 @@ class UserProfileSecurityTests(AccountsAPITestCase):
         self.assertNotIn('email_change_code', response.data)
 
 
-class UserProfileSecurityTests(AccountsAPITestCase):
-
-    def setUp(self):
-        self.user = User.objects.create_user(
-            username='securityuser',
-            email='security@example.com',
-            password='TestPassword123!'
-        )
-        self.client.force_authenticate(user=self.user)
-
-    def test_allowed_profile_fields_can_be_updated(self):
-        response = self.client.patch(
-            '/api/accounts/me/',
-            {
-                'username': 'updated_username',
-                'job_title': 'Backend Developer',
-                'phone': '09123456789',
-                'location': 'Tehran',
-                'profile_image_url': 'https://example.com/profile.jpg',
-            },
-            format='json',
-        )
-
-        self.assertEqual(response.status_code, 200)
-
-        self.user.refresh_from_db()
-
-        self.assertEqual(
-            self.user.username,
-            'updated_username'
-        )
-        self.assertEqual(
-            self.user.job_title,
-            'Backend Developer'
-        )
-        self.assertEqual(
-            self.user.phone,
-            '09123456789'
-        )
-        self.assertEqual(
-            self.user.location,
-            'Tehran'
-        )
-
-    def test_sensitive_profile_fields_cannot_be_modified(self):
-        original_email = self.user.email
-
-        response = self.client.patch(
-            '/api/accounts/me/',
-            {
-                'email': 'attacker@example.com',
-                'email_verified': True,
-                'is_staff': True,
-                'is_superuser': True,
-            },
-            format='json',
-        )
-
-        self.assertEqual(response.status_code, 200)
-
-        self.user.refresh_from_db()
-
-        self.assertEqual(
-            self.user.email,
-            original_email
-        )
-        self.assertFalse(
-            self.user.email_verified
-        )
-        self.assertFalse(
-            self.user.is_staff
-        )
-        self.assertFalse(
-            self.user.is_superuser
-        )
-
-    def test_sensitive_profile_fields_are_not_exposed(self):
-        response = self.client.get(
-            '/api/accounts/me/'
-        )
-
-        self.assertEqual(response.status_code, 200)
-
-        self.assertNotIn(
-            'password',
-            response.data
-        )
-        self.assertNotIn(
-            'email_verified',
-            response.data
-        )
-        self.assertNotIn(
-            'is_staff',
-            response.data
-        )
-        self.assertNotIn(
-            'is_superuser',
-            response.data
-        )
-        self.assertNotIn(
-            'pending_email',
-            response.data
-        )
-        self.assertNotIn(
-            'email_change_code',
-            response.data
-        )
 
 class RateLimitingTests(AccountsAPITestCase):
+
+    def test_email_verification_resend_rate_limit(self):
+        cache.clear()
+        user = User.objects.create_user(
+            username='ratelimitverification',
+            email='ratelimitverification@example.com',
+            password='TestPassword123!',
+            email_verified=False,
+        )
+
+        url = '/api/accounts/email/verification/resend/'
+
+        for _ in range(10):
+            response = self.client.post(
+                url,
+                {'email': user.email},
+                format='json',
+            )
+            self.assertEqual(response.status_code, 200)
+
+        response = self.client.post(
+            url,
+            {'email': user.email},
+            format='json',
+        )
+
+        self.assertEqual(response.status_code, 429)
+
+    def test_password_reset_rate_limit(self):
+        cache.clear()
+        url = '/api/accounts/password/reset/'
+
+        for _ in range(10):
+            response = self.client.post(
+                url,
+                {
+                    'uid': 'invalid',
+                    'token': 'invalid',
+                    'new_password': 'NewPassword123!',
+                    'confirm_password': 'NewPassword123!',
+                },
+                format='json',
+            )
+            self.assertNotEqual(response.status_code, 429)
+
+        response = self.client.post(
+            url,
+            {
+                'uid': 'invalid',
+                'token': 'invalid',
+                'new_password': 'NewPassword123!',
+                'confirm_password': 'NewPassword123!',
+            },
+            format='json',
+        )
+
+        self.assertEqual(response.status_code, 429)
 
     def test_login_rate_limit(self):
         cache.clear()

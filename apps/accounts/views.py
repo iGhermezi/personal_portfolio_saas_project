@@ -1,4 +1,4 @@
-import random
+import secrets
 import string
 from datetime import timedelta
 
@@ -48,13 +48,14 @@ from .throttles import (
     AuthRateThrottle,
     SensitiveActionThrottle,
 )
-from drf_spectacular.utils import (
-    extend_schema,
-    OpenApiParameter,
-)
-from .LogoutSerializer import LogoutSerializer
-
 User = get_user_model()
+
+
+def invalidate_user_sessions(user):
+    outstanding_tokens = OutstandingToken.objects.filter(user=user)
+
+    for outstanding_token in outstanding_tokens:
+        BlacklistedToken.objects.get_or_create(token=outstanding_token)
 
 
 def send_email_verification_email(user):
@@ -130,12 +131,7 @@ class ChangePasswordView(generics.GenericAPIView):
         user.set_password(new_password)
         user.save(update_fields=['password'])
 
-        outstanding_tokens = OutstandingToken.objects.filter(user=user)
-
-        for outstanding_token in outstanding_tokens:
-            BlacklistedToken.objects.get_or_create(
-                token=outstanding_token
-            )
+        invalidate_user_sessions(user)
 
         return Response({
             'detail': (
@@ -144,10 +140,6 @@ class ChangePasswordView(generics.GenericAPIView):
             )
         })
 
-@extend_schema(
-    request=LogoutSerializer,
-    responses={205: None},
-)
 class LogoutView(APIView):
     permission_classes = (permissions.IsAuthenticated,)
 
@@ -209,10 +201,8 @@ class EmailChangeRequestView(generics.GenericAPIView):
         ]
 
         code = ''.join(
-            random.choices(
-                string.digits,
-                k=6
-            )
+            secrets.choice(string.digits)
+            for _ in range(6)
         )
 
         user = request.user
@@ -323,21 +313,6 @@ class EmailChangeConfirmView(generics.GenericAPIView):
             )
         })
 
-@extend_schema(
-    parameters=[
-        OpenApiParameter(
-            name='uid',
-            type=str,
-            location=OpenApiParameter.PATH,
-        ),
-        OpenApiParameter(
-            name='token',
-            type=str,
-            location=OpenApiParameter.PATH,
-        ),
-    ],
-    responses={200: None},
-)
 class EmailVerificationView(generics.GenericAPIView):
     serializer_class = EmailVerificationSerializer
     permission_classes = (permissions.AllowAny,)
@@ -371,11 +346,10 @@ class EmailVerificationView(generics.GenericAPIView):
         })
 
 
-class EmailVerificationResendView(
-    generics.GenericAPIView
-):
+class EmailVerificationResendView(generics.GenericAPIView):
     serializer_class = EmailVerificationResendSerializer
     permission_classes = (permissions.AllowAny,)
+    throttle_classes = (AuthRateThrottle,)
 
     def post(self, request):
         serializer = self.get_serializer(
@@ -470,6 +444,7 @@ class PasswordForgotView(generics.GenericAPIView):
 class PasswordResetView(generics.GenericAPIView):
     serializer_class = PasswordResetSerializer
     permission_classes = (permissions.AllowAny,)
+    throttle_classes = (AuthRateThrottle,)
 
     def post(self, request):
         serializer = self.get_serializer(
@@ -494,16 +469,7 @@ class PasswordResetView(generics.GenericAPIView):
 
         user.save()
 
-        outstanding_tokens = (
-            OutstandingToken.objects.filter(
-                user=user
-            )
-        )
-
-        for outstanding_token in outstanding_tokens:
-            BlacklistedToken.objects.get_or_create(
-                token=outstanding_token
-            )
+        invalidate_user_sessions(user)
 
         return Response({
             'detail': (

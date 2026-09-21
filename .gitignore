@@ -19,3 +19,8 @@ media/
 # IDEs
 .vscode/
 .idea/
+
+# Test and coverage artifacts
+.coverage
+htmlcov/
+.pytest_cache/
