@@ -44,6 +44,15 @@ from .EmailVerificationResendSerializer import (
 )
 from .ChangePasswordSerializer import ChangePasswordSerializer
 
+from .throttles import (
+    AuthRateThrottle,
+    SensitiveActionThrottle,
+)
+from drf_spectacular.utils import (
+    extend_schema,
+    OpenApiParameter,
+)
+from .LogoutSerializer import LogoutSerializer
 
 User = get_user_model()
 
@@ -77,11 +86,11 @@ def send_email_verification_email(user):
         recipient_list=[user.email],
     )
 
-
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
     permission_classes = (permissions.AllowAny,)
     serializer_class = UserRegisterSerializer
+    throttle_classes = (AuthRateThrottle,)
 
     def perform_create(self, serializer):
         user = serializer.save()
@@ -90,9 +99,9 @@ class RegisterView(generics.CreateAPIView):
             user
         )
 
-
 class LoginView(TokenObtainPairView):
     serializer_class = EmailLoginSerializer
+    throttle_classes = (AuthRateThrottle,)
 
 
 class UserProfileView(generics.RetrieveUpdateAPIView):
@@ -106,6 +115,7 @@ class UserProfileView(generics.RetrieveUpdateAPIView):
 class ChangePasswordView(generics.GenericAPIView):
     serializer_class = ChangePasswordSerializer
     permission_classes = (permissions.IsAuthenticated,)
+    throttle_classes = (SensitiveActionThrottle,)
 
     def post(self, request):
         serializer = self.get_serializer(
@@ -134,7 +144,10 @@ class ChangePasswordView(generics.GenericAPIView):
             )
         })
 
-
+@extend_schema(
+    request=LogoutSerializer,
+    responses={205: None},
+)
 class LogoutView(APIView):
     permission_classes = (permissions.IsAuthenticated,)
 
@@ -180,6 +193,7 @@ class LogoutView(APIView):
 class EmailChangeRequestView(generics.GenericAPIView):
     serializer_class = EmailChangeRequestSerializer
     permission_classes = (permissions.IsAuthenticated,)
+    throttle_classes = (SensitiveActionThrottle,)
 
     def post(self, request):
         serializer = self.get_serializer(
@@ -231,6 +245,7 @@ class EmailChangeRequestView(generics.GenericAPIView):
 class EmailChangeConfirmView(generics.GenericAPIView):
     serializer_class = EmailChangeConfirmSerializer
     permission_classes = (permissions.IsAuthenticated,)
+    throttle_classes = (SensitiveActionThrottle,)
 
     def post(self, request):
         serializer = self.get_serializer(
@@ -308,10 +323,25 @@ class EmailChangeConfirmView(generics.GenericAPIView):
             )
         })
 
-
+@extend_schema(
+    parameters=[
+        OpenApiParameter(
+            name='uid',
+            type=str,
+            location=OpenApiParameter.PATH,
+        ),
+        OpenApiParameter(
+            name='token',
+            type=str,
+            location=OpenApiParameter.PATH,
+        ),
+    ],
+    responses={200: None},
+)
 class EmailVerificationView(generics.GenericAPIView):
     serializer_class = EmailVerificationSerializer
     permission_classes = (permissions.AllowAny,)
+    throttle_classes = (AuthRateThrottle,)
 
     def get(self, request, uid, token):
         serializer = self.get_serializer(
@@ -381,6 +411,7 @@ class EmailVerificationResendView(
 class PasswordForgotView(generics.GenericAPIView):
     serializer_class = PasswordForgotSerializer
     permission_classes = (permissions.AllowAny,)
+    throttle_classes = (AuthRateThrottle,)
 
     def post(self, request):
         serializer = self.get_serializer(

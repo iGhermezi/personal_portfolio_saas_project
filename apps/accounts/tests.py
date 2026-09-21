@@ -10,12 +10,43 @@ from rest_framework.test import APITestCase
 
 from rest_framework_simplejwt.tokens import RefreshToken
 
+from django.core.cache import cache
+from django.urls import reverse
+from django.conf import settings
+
 User = get_user_model()
+
+
+class AccountsAPITestCase(APITestCase):
+
+    def setUp(self):
+        cache.clear()
+        super().setUp()
+
+    def tearDown(self):
+        cache.clear()
+        super().tearDown()
+        
+class SecurityConfigurationTests(AccountsAPITestCase):
+
+    def test_cors_is_not_open_to_all_origins(self):
+        self.assertFalse(
+            getattr(settings, 'CORS_ALLOW_ALL_ORIGINS', False)
+        )
+
+        allowed_origins = getattr(
+            settings,
+            'CORS_ALLOWED_ORIGINS',
+            []
+        )
+
+        self.assertNotIn('*', allowed_origins)
+
 
 @override_settings(
 EMAIL_BACKEND='django.core.mail.backends.locmem.EmailBackend'
 )
-class AccountsTests(APITestCase):
+class AccountsTests(AccountsAPITestCase):
 
     def setUp(self):
         self.user = User.objects.create_user(
@@ -40,7 +71,7 @@ class AccountsTests(APITestCase):
     # Register
     # =========================================================
 
-        def test_user_can_register(self):
+    def test_user_can_register(self):
             data = {
                 'username': 'newuser',
                 'email': 'new@example.com',
@@ -196,6 +227,48 @@ class AccountsTests(APITestCase):
             response.status_code,
             status.HTTP_400_BAD_REQUEST
         )
+
+def test_login_does_not_reveal_email_existence(self):
+    existing_user = User.objects.create_user(
+        username='existinguser',
+        email='existing@example.com',
+        password='CorrectPassword123!',
+        email_verified=True,
+    )
+
+    existing_response = self.client.post(
+        reverse('auth_login'),
+        {
+            'email': existing_user.email,
+            'password': 'WrongPassword123!',
+        },
+        format='json',
+    )
+
+    nonexistent_response = self.client.post(
+        reverse('auth_login'),
+        {
+            'email': 'doesnotexist@example.com',
+            'password': 'WrongPassword123!',
+        },
+        format='json',
+    )
+
+    self.assertEqual(
+        existing_response.status_code,
+        nonexistent_response.status_code,
+    )
+
+    self.assertEqual(
+        existing_response.data['detail'],
+        nonexistent_response.data['detail'],
+    )
+
+    self.assertEqual(
+        existing_response.data['detail'],
+        'Invalid email or password.',
+    )
+        
 
     # =========================================================
     # JWT / Protected endpoint
@@ -1297,7 +1370,7 @@ class AccountsTests(APITestCase):
             login_response.status_code,
             status.HTTP_400_BAD_REQUEST
         )
-class ChangePasswordTests(APITestCase):
+class ChangePasswordTests(AccountsAPITestCase):
 
     def setUp(self):
         self.user = User.objects.create_user(
@@ -1432,7 +1505,7 @@ class ChangePasswordTests(APITestCase):
         self.assertEqual(refresh_response.status_code, 401)
 
 
-class UserProfileSecurityTests(APITestCase):
+class UserProfileSecurityTests(AccountsAPITestCase):
 
     def setUp(self):
         self.user = User.objects.create_user(
@@ -1522,7 +1595,7 @@ class UserProfileSecurityTests(APITestCase):
         self.assertNotIn('email_change_code', response.data)
 
 
-class UserProfileSecurityTests(APITestCase):
+class UserProfileSecurityTests(AccountsAPITestCase):
 
     def setUp(self):
         self.user = User.objects.create_user(
@@ -1629,3 +1702,36 @@ class UserProfileSecurityTests(APITestCase):
             'email_change_code',
             response.data
         )
+
+class RateLimitingTests(AccountsAPITestCase):
+
+    def test_login_rate_limit(self):
+        cache.clear()
+
+        url = reverse('auth_login')
+
+        for _ in range(10):
+            response = self.client.post(
+                url,
+                {
+                    'email': 'nonexistent@example.com',
+                    'password': 'WrongPassword123!',
+                },
+                format='json',
+            )
+
+            self.assertIn(
+                response.status_code,
+                [400, 401],
+            )
+
+        response = self.client.post(
+            url,
+            {
+                'email': 'nonexistent@example.com',
+                'password': 'WrongPassword123!',
+            },
+            format='json',
+        )
+
+        self.assertEqual(response.status_code, 429)

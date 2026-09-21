@@ -26,12 +26,12 @@ class EmailLoginSerializer(TokenObtainPairSerializer):
 
         except User.DoesNotExist:
             raise serializers.ValidationError({
-                'detail': 'invalid email'
+                'detail': 'Invalid email or password.'
             })
 
         if not user.check_password(password):
             raise serializers.ValidationError({
-                'detail': 'invalid password'
+                'detail': 'Invalid email or password.'
             })
 
         if not user.is_active:
