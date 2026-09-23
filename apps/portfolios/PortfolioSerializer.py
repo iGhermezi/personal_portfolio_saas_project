@@ -115,8 +115,7 @@ class SocialLinkSerializer(serializers.ModelSerializer):
 class PortfolioSerializer(serializers.ModelSerializer):
     projects = ProjectSerializer(
         many=True,
-        read_only=True,
-        source='project'
+        read_only=True
     )
     skills = SkillSerializer(
         many=True,

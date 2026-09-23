@@ -16,7 +16,7 @@ class Portfolio(models.Model):
 
 
 class Project(models.Model):
-    portfolio = models.ForeignKey(Portfolio,on_delete=models.CASCADE,related_name="project")
+    portfolio = models.ForeignKey(Portfolio,on_delete=models.CASCADE,related_name="projects")
     pro_name = models.CharField(max_length=50)
     pro_description = models.TextField(null=True,blank=True)
     pro_image = models.TextField(null=True,blank=True)
