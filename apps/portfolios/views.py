@@ -29,10 +29,12 @@ class PortfolioListCreateView(generics.ListCreateAPIView):
         )
 
     def perform_create(self, serializer):
-        serializer.save(
-            user=self.request.user
-        )
+        if Portfolio.objects.filter(user=self.request.user).exists():
+            raise serializers.ValidationError(
+                'You already have a portfolio.'
+            )
 
+        serializer.save(user=self.request.user)
 
 class PortfolioDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = PortfolioSerializer

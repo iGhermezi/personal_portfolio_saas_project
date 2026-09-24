@@ -90,10 +90,56 @@
         </div>
 
 
+        <!-- Loading -->
+
+        <div
+          v-if="loading"
+          class="
+            rounded-3xl
+            border
+            border-slate-100
+            bg-white
+            p-10
+            text-center
+            shadow-sm
+          "
+        >
+
+          <p class="text-sm text-slate-400">
+            Loading your portfolio...
+          </p>
+
+        </div>
+
+
+        <!-- Error -->
+
+        <div
+          v-else-if="error"
+          class="
+            rounded-3xl
+            border
+            border-red-100
+            bg-red-50
+            p-6
+          "
+        >
+
+          <p class="text-sm font-medium text-red-600">
+            Failed to load your portfolio.
+          </p>
+
+          <p class="mt-1 text-sm text-red-400">
+            {{ error }}
+          </p>
+
+        </div>
+
+
         <!-- Portfolio -->
 
         <PortfolioEmpty
-          v-if="!portfolio"
+          v-else-if="!portfolio"
         />
 
 
@@ -113,7 +159,9 @@
 
 <script setup>
 
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
+
+import api from '../api/axios'
 
 import DashboardSidebar
   from '../components/Dashboard/DashboardSidebar.vue'
@@ -139,9 +187,65 @@ const sidebarCollapsed = ref(false)
 
 
 /*
- * فعلاً Mock Data
+ * Portfolio state
  */
 
-const portfolio = null
+const portfolio = ref(null)
+
+const loading = ref(true)
+
+const error = ref(null)
+
+
+/*
+ * Load user's portfolio
+ */
+
+const loadPortfolio = async () => {
+
+  loading.value = true
+  error.value = null
+
+  try {
+
+    const response = await api.get('/portfolios/')
+
+    const portfolios = response.data
+
+    /*
+     * فعلاً اولین Portfolio کاربر را نمایش می‌دهیم.
+     *
+     * چون در طراحی نهایی قرار است هر User
+     * فقط یک Portfolio داشته باشد.
+     */
+
+    portfolio.value =
+      Array.isArray(portfolios) && portfolios.length > 0
+        ? portfolios[0]
+        : null
+
+  } catch (err) {
+
+    console.error('Failed to load portfolio:', err)
+
+    error.value =
+      err.response?.data?.detail ||
+      'Unable to load your portfolio.'
+
+  } finally {
+
+    loading.value = false
+
+  }
+
+}
+
+
+
+onMounted(() => {
+
+  loadPortfolio()
+
+})
 
 </script>

@@ -1,8 +1,17 @@
 <template>
   <div
-    class="min-h-screen bg-[#faf9ff] flex items-center justify-center px-6 bg-linear-210 from-purple-300 to-purple-600"
+    class="
+      min-h-screen
+      bg-[#faf9ff]
+      flex
+      items-center
+      justify-center
+      px-6
+      bg-linear-210
+      from-purple-300
+      to-purple-600
+    "
   >
-
     <div
       class="
         w-full
@@ -16,9 +25,7 @@
         shadow-violet-100
       "
     >
-
       <div class="text-center mb-8">
-
         <h1
           class="
             text-3xl
@@ -26,7 +33,7 @@
             text-slate-900
           "
         >
-        Create your account
+          Create your account
         </h1>
 
         <p
@@ -36,11 +43,10 @@
             text-slate-500
           "
         >
-        make your personal portfolio and showcase your work, skills and experience.
+          Make your personal portfolio and showcase
+          your work, skills and experience.
         </p>
-
       </div>
-
 
       <div
         v-if="errorMessage"
@@ -59,15 +65,11 @@
         {{ errorMessage }}
       </div>
 
-
       <form
         @submit.prevent="register"
         class="space-y-5"
       >
-
-
         <div>
-
           <label
             class="
               mb-2
@@ -77,7 +79,7 @@
               text-slate-700
             "
           >
-          Username
+            Username
           </label>
 
           <input
@@ -85,6 +87,7 @@
             type="text"
             placeholder="username"
             required
+            autocomplete="username"
             class="
               w-full
               rounded-xl
@@ -102,13 +105,9 @@
               focus:ring-violet-100
             "
           />
-
         </div>
 
-
-
         <div>
-
           <label
             class="
               mb-2
@@ -118,7 +117,7 @@
               text-slate-700
             "
           >
-          Email
+            Email
           </label>
 
           <input
@@ -126,6 +125,7 @@
             type="email"
             placeholder="example@gmail.com"
             required
+            autocomplete="email"
             class="
               w-full
               rounded-xl
@@ -143,12 +143,9 @@
               focus:ring-violet-100
             "
           />
-
         </div>
 
-
         <div>
-
           <label
             class="
               mb-2
@@ -158,7 +155,7 @@
               text-slate-700
             "
           >
-          Password
+            Password
           </label>
 
           <input
@@ -166,6 +163,7 @@
             type="password"
             placeholder="Password"
             required
+            autocomplete="new-password"
             class="
               w-full
               rounded-xl
@@ -183,13 +181,9 @@
               focus:ring-violet-100
             "
           />
-
         </div>
 
-
-
         <div>
-
           <label
             class="
               mb-2
@@ -199,7 +193,7 @@
               text-slate-700
             "
           >
-          Confirm Password
+            Confirm Password
           </label>
 
           <input
@@ -207,6 +201,7 @@
             type="password"
             placeholder="Confirm Password"
             required
+            autocomplete="new-password"
             class="
               w-full
               rounded-xl
@@ -224,11 +219,7 @@
               focus:ring-violet-100
             "
           />
-
         </div>
-
-
-        <!-- Submit -->
 
         <button
           type="submit"
@@ -249,13 +240,13 @@
             disabled:opacity-60
           "
         >
-
-          {{ loading ? 'Creating account...' : 'Create Account' }}
-
+          {{
+            loading
+              ? 'Creating account...'
+              : 'Create Account'
+          }}
         </button>
-
       </form>
-
 
       <div
         class="
@@ -265,7 +256,6 @@
           text-slate-500
         "
       >
-
         Already have an account?
 
         <router-link
@@ -278,81 +268,57 @@
         >
           Log in
         </router-link>
-
       </div>
-
     </div>
-
   </div>
 </template>
 
-
 <script setup>
-
 import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import api from '../api/axios'
-
+import { useAuthStore } from '../stores/auth'
 
 const router = useRouter()
-
+const authStore = useAuthStore()
 
 const form = reactive({
   username: '',
   email: '',
   password: '',
-  password2: ''
+  password2: '',
 })
 
-
 const loading = ref(false)
-
 const errorMessage = ref('')
 
-
 const register = async () => {
-
   errorMessage.value = ''
-
   loading.value = true
 
   try {
+    await authStore.register({
+      username: form.username,
+      email: form.email,
+      password: form.password,
+      password2: form.password2,
+    })
 
-    const response = await api.post(
-      'accounts/register/',
-      form
-    )
-
-    console.log('Register successful:', response.data)
-
-    router.push('/login')
-
+    await router.push('/login')
   } catch (error) {
-
     console.error('Register failed:', error)
 
     if (error.response?.data) {
-
       const errors = error.response.data
 
-      errorMessage.value =
-        Object.values(errors)
-          .flat()
-          .join(' ')
-
+      errorMessage.value = Object.values(errors)
+        .flat()
+        .join(' ')
     } else {
-
       errorMessage.value =
         'ارتباط با سرور برقرار نشد.'
-
     }
-
   } finally {
-
     loading.value = false
-
   }
-
 }
-
 </script>

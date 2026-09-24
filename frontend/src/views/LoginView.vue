@@ -7,10 +7,11 @@
       items-center
       justify-center
       px-6
-      bg-linear-130 from-purple-300 to-purple-600
+      bg-linear-130
+      from-purple-300
+      to-purple-600
     "
   >
-
     <div
       class="
         w-full
@@ -24,10 +25,7 @@
         shadow-violet-100
       "
     >
-
-
       <div class="mb-8 text-center">
-
         <h1
           class="
             text-3xl
@@ -47,10 +45,7 @@
         >
           Sign in to your account
         </p>
-
       </div>
-
-
 
       <div
         v-if="errorMessage"
@@ -69,16 +64,11 @@
         {{ errorMessage }}
       </div>
 
-
-
       <form
         @submit.prevent="login"
         class="space-y-5"
       >
-
-
         <div>
-
           <label
             class="
               mb-2
@@ -114,14 +104,9 @@
               focus:ring-violet-100
             "
           />
-
         </div>
 
-
-        <!-- Password -->
-
         <div>
-
           <label
             class="
               mb-2
@@ -157,11 +142,7 @@
               focus:ring-violet-100
             "
           />
-
         </div>
-
-
-        <!-- Submit -->
 
         <button
           type="submit"
@@ -184,11 +165,7 @@
         >
           {{ loading ? 'Signing in...' : 'Sign In' }}
         </button>
-
       </form>
-
-
-      <!-- Register -->
 
       <div
         class="
@@ -198,7 +175,6 @@
           text-slate-500
         "
       >
-
         Don't have an account?
 
         <router-link
@@ -212,79 +188,51 @@
         >
           Register
         </router-link>
-
       </div>
-
     </div>
-
   </div>
 </template>
 
-
 <script setup>
-
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
 
-
 const router = useRouter()
-
 const authStore = useAuthStore()
 
-
 const email = ref('')
-
 const password = ref('')
 
 const loading = ref(false)
-
 const errorMessage = ref('')
 
-
 const login = async () => {
-
   errorMessage.value = ''
-
   loading.value = true
 
   try {
-
     await authStore.login(
       email.value,
       password.value
     )
 
-    // Login successful
-
-    router.push('/dashboard')
-
+    await router.push('/dashboard')
   } catch (error) {
-
     console.error('Login failed:', error)
 
     if (error.response?.data) {
-
       const errors = error.response.data
 
-      errorMessage.value =
-        Object.values(errors)
-          .flat()
-          .join(' ')
-
+      errorMessage.value = Object.values(errors)
+        .flat()
+        .join(' ')
     } else {
-
       errorMessage.value =
         'ارتباط با سرور برقرار نشد.'
-
     }
-
   } finally {
-
     loading.value = false
-
   }
-
 }
-
 </script>

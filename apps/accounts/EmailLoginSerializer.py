@@ -39,11 +39,6 @@ class EmailLoginSerializer(TokenObtainPairSerializer):
                 'detail': 'account has been banned !'
             })
 
-        if not user.email_verified:
-            raise serializers.ValidationError({
-                'detail': 'email address is not verified'
-            })
-
         refresh = self.get_token(user)
 
         return {

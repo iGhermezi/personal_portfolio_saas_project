@@ -54,8 +54,7 @@ class PortfolioTests(APITestCase):
     # --------------------------------------------------
     # Portfolio
     # --------------------------------------------------
-
-    def test_user_can_create_portfolio(self):
+    def test_user_cannot_create_second_portfolio(self):
         data = {
             'title': 'Second Portfolio',
             'slug': 'second-portfolio',
@@ -71,16 +70,14 @@ class PortfolioTests(APITestCase):
 
         self.assertEqual(
             response.status_code,
-            status.HTTP_201_CREATED
-        )
-
-        portfolio = Portfolio.objects.get(
-            slug='second-portfolio'
+            status.HTTP_400_BAD_REQUEST
         )
 
         self.assertEqual(
-            portfolio.user,
-            self.user
+            Portfolio.objects.filter(
+                user=self.user
+            ).count(),
+            1
         )
 
     def test_user_can_access_own_portfolio(self):
@@ -659,7 +656,6 @@ class PublicPortfolioSecurityTests(APITestCase):
         )
 
         self.assertEqual(response.status_code, 404)
-
 class PortfolioMassAssignmentSecurityTests(APITestCase):
 
     def setUp(self):
@@ -727,6 +723,27 @@ class PortfolioMassAssignmentSecurityTests(APITestCase):
         self.assertEqual(
             self.portfolio.id,
             original_id
+        )
+
+    def test_portfolio_ignores_unknown_sensitive_fields(self):
+        response = self.client.patch(
+            f'/api/portfolios/{self.portfolio.id}/',
+            {
+                'password': 'hacked',
+                'is_staff': True,
+                'is_superuser': True,
+                'title': 'Secure Portfolio',
+            },
+            format='json',
+        )
+
+        self.assertEqual(response.status_code, 200)
+
+        self.portfolio.refresh_from_db()
+
+        self.assertEqual(
+            self.portfolio.title,
+            'Secure Portfolio'
         )
 
 def test_portfolio_ignores_unknown_sensitive_fields(self):

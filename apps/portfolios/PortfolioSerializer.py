@@ -1,3 +1,4 @@
+
 from rest_framework import serializers
 
 from .models import (
@@ -32,6 +33,7 @@ class ProjectSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 'GitHub URL must start with http:// or https://.'
             )
+
         return value
 
     def validate_pro_live_demo_url(self, value):
@@ -39,6 +41,7 @@ class ProjectSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 'Live demo URL must start with http:// or https://.'
             )
+
         return value
 
 
@@ -53,6 +56,7 @@ class SkillSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 'Skill level must be between 1 and 5.'
             )
+
         return value
 
 
@@ -178,11 +182,42 @@ class PortfolioSerializer(serializers.ModelSerializer):
 
         return value
 
+    def validate_template(self, value):
+        user = self.context['request'].user
+
+        if not value.is_active:
+            raise serializers.ValidationError(
+                'This template is not available.'
+            )
+
+        if value.access_level == 'free':
+            return value
+
+        if value.access_level == 'verified':
+            if not user.email_verified:
+                raise serializers.ValidationError(
+                    'Email verification is required for this template.'
+                )
+
+            return value
+
+        if value.access_level == 'premium':
+            if not user.has_active_subscription:
+                raise serializers.ValidationError(
+                    'An active subscription is required for this template.'
+                )
+
+            return value
+
+        raise serializers.ValidationError(
+            'Invalid template access level.'
+        )
+
+
 class PublicPortfolioSerializer(serializers.ModelSerializer):
     projects = ProjectSerializer(
         many=True,
-        read_only=True,
-        source='project'
+        read_only=True
     )
     skills = SkillSerializer(
         many=True,

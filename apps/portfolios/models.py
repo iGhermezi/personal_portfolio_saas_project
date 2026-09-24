@@ -5,7 +5,7 @@ from django.conf import settings
 
 
 class Portfolio(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE,related_name="portfolios")
+    user = models.OneToOneField(settings.AUTH_USER_MODEL,on_delete=models.CASCADE,related_name="portfolio")
     template = models.ForeignKey(PortfolioTemplate,on_delete=models.SET_NULL,null=True,blank=True,related_name="portfolios")
     title =  models.CharField(max_length=100)
     slug = models.SlugField(max_length=255,unique=True)
