@@ -117,6 +117,8 @@ class SocialLinkSerializer(serializers.ModelSerializer):
 
 
 class PortfolioSerializer(serializers.ModelSerializer):
+    template_key = serializers.SerializerMethodField()
+
     projects = ProjectSerializer(
         many=True,
         read_only=True
@@ -136,6 +138,11 @@ class PortfolioSerializer(serializers.ModelSerializer):
     social = SocialLinkSerializer(
         read_only=True
     )
+    def get_template_key(self, obj):
+        if not obj.template:
+            return None
+
+        return obj.template.template_key
 
     class Meta:
         model = Portfolio
@@ -143,6 +150,7 @@ class PortfolioSerializer(serializers.ModelSerializer):
             'id',
             'user',
             'template',
+            'template_key',
             'title',
             'slug',
             'bio',
@@ -154,7 +162,8 @@ class PortfolioSerializer(serializers.ModelSerializer):
             'educations',
             'experiences',
             'social',
-        )
+        )   
+
         read_only_fields = (
             'id',
             'user',
@@ -215,6 +224,8 @@ class PortfolioSerializer(serializers.ModelSerializer):
 
 
 class PublicPortfolioSerializer(serializers.ModelSerializer):
+    template_key = serializers.SerializerMethodField()
+
     projects = ProjectSerializer(
         many=True,
         read_only=True
@@ -234,22 +245,28 @@ class PublicPortfolioSerializer(serializers.ModelSerializer):
     social = SocialLinkSerializer(
         read_only=True
     )
+    def get_template_key(self, obj):
+        if not obj.template:
+            return None
+
+        return obj.template.template_key
 
     class Meta:
         model = Portfolio
         fields = (
-            'id',
-            'template',
-            'title',
-            'slug',
-            'bio',
-            'is_published',
-            'created_at',
-            'updated_at',
-            'projects',
-            'skills',
-            'educations',
-            'experiences',
-            'social',
-        )
+        'id',
+        'template',
+        'template_key',
+        'title',
+        'slug',
+        'bio',
+        'is_published',
+        'created_at',
+        'updated_at',
+        'projects',
+        'skills',
+        'educations',
+        'experiences',
+        'social',
+         )
         read_only_fields = fields

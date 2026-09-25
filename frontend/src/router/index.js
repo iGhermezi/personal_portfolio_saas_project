@@ -1,22 +1,21 @@
-import {
-  createRouter,
-  createWebHistory,
-} from 'vue-router'
+import { createRouter, createWebHistory } from "vue-router";
 
-import HomeView from '../views/HomeView.vue'
-import CreatePortfolioView from '../views/CreatePortfolioView.vue'
+import HomeView from "../views/HomeView.vue";
+import CreatePortfolioView from "../views/CreatePortfolioView.vue";
+import PortfolioPreviewView from "../views/PortfolioPreviewView.vue";
+import PublicPortfolioView from "../views/PublicPortfolioView.vue";
+
 const routes = [
   {
-    path: '/',
-    name: 'home',
+    path: "/",
+    name: "home",
     component: HomeView,
   },
 
   {
-    path: '/login',
-    name: 'login',
-    component: () =>
-      import('../views/LoginView.vue'),
+    path: "/login",
+    name: "login",
+    component: () => import("../views/LoginView.vue"),
 
     meta: {
       guestOnly: true,
@@ -24,10 +23,9 @@ const routes = [
   },
 
   {
-    path: '/register',
-    name: 'register',
-    component: () =>
-      import('../views/RegisterView.vue'),
+    path: "/register",
+    name: "register",
+    component: () => import("../views/RegisterView.vue"),
 
     meta: {
       guestOnly: true,
@@ -35,10 +33,9 @@ const routes = [
   },
 
   {
-    path: '/dashboard',
-    name: 'dashboard',
-    component: () =>
-      import('../views/DashboardView.vue'),
+    path: "/dashboard",
+    name: "dashboard",
+    component: () => import("../views/DashboardView.vue"),
 
     meta: {
       requiresAuth: true,
@@ -46,63 +43,87 @@ const routes = [
   },
 
   {
-    path: '/profile',
-    name: 'profile',
-    component: () =>
-      import('../views/ProfileView.vue'),
+    path: "/profile",
+    name: "profile",
+    component: () => import("../views/ProfileView.vue"),
 
     meta: {
       requiresAuth: true,
     },
   },
-  
+
   {
-  path: '/portfolio/create',
-  name: 'create-portfolio',
-  component: CreatePortfolioView,
+    path: "/portfolio/create",
+    name: "create-portfolio",
+    component: CreatePortfolioView,
+
+    meta: {
+      requiresAuth: true,
+    },
+  },
+
+  {
+  path: '/portfolio/:id/edit',
+  name: 'edit-portfolio',
+  component: () =>
+    import('../views/EditPortfolioView.vue'),
   meta: {
     requiresAuth: true,
   },
 },
-  
-]
+
+  {
+    path: "/portfolio/:id/preview",
+    name: "portfolio-preview",
+    component: () => import("../views/PortfolioPreviewView.vue"),
+    meta: {
+      requiresAuth: true,
+    },
+  },
+
+  {
+    path: "/portfolio/:id/preview",
+    name: "portfolio-preview",
+    component: PortfolioPreviewView,
+
+    meta: {
+      requiresAuth: true,
+    },
+  },
+
+  {
+    path: "/portfolio/:slug",
+    name: "public-portfolio",
+    component: PublicPortfolioView,
+  },
+];
 
 const router = createRouter({
   history: createWebHistory(),
+
   routes,
-})
+});
 
 router.beforeEach((to) => {
-  const accessToken =
-    localStorage.getItem('access_token')
+  const accessToken = localStorage.getItem("access_token");
 
-  const refreshToken =
-    localStorage.getItem('refresh_token')
+  const refreshToken = localStorage.getItem("refresh_token");
 
-  const isAuthenticated =
-    !!accessToken || !!refreshToken
+  const isAuthenticated = !!accessToken || !!refreshToken;
 
-  // Protected route
-  if (
-    to.meta.requiresAuth &&
-    !isAuthenticated
-  ) {
+  if (to.meta.requiresAuth && !isAuthenticated) {
     return {
-      name: 'login',
-    }
+      name: "login",
+    };
   }
 
-  // Guest-only route
-  if (
-    to.meta.guestOnly &&
-    isAuthenticated
-  ) {
+  if (to.meta.guestOnly && isAuthenticated) {
     return {
-      name: 'dashboard',
-    }
+      name: "dashboard",
+    };
   }
 
-  return true
-})
+  return true;
+});
 
-export default router
+export default router;
