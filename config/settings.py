@@ -192,6 +192,10 @@ CORS_ALLOWED_ORIGINS = [
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 DEFAULT_FROM_EMAIL = 'noreply@portfoliosaas.local'
+SUPPORT_EMAIL = config(
+    'SUPPORT_EMAIL',
+    default='support@portfoliosaas.local',
+)
 
 
 

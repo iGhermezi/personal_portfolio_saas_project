@@ -48,8 +48,91 @@ from .throttles import (
     AuthRateThrottle,
     SensitiveActionThrottle,
 )
+from .models import PremiumRequest
+
 User = get_user_model()
 
+class PremiumRequestView(generics.GenericAPIView):
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get(self, request):
+        premium_request = (
+            PremiumRequest.objects
+            .filter(user=request.user)
+            .first()
+        )
+
+        return Response({
+            'has_subscription': request.user.has_active_subscription,
+            'request_status': (
+                premium_request.status
+                if premium_request
+                else None
+            ),
+        })
+
+    def post(self, request):
+        if request.user.has_active_subscription:
+            return Response(
+                {
+                    'detail': (
+                        'Your account already has '
+                        'Premium access.'
+                    )
+                },
+                status=400,
+            )
+
+        premium_request = (
+            PremiumRequest.objects
+            .filter(
+                user=request.user,
+                status=PremiumRequest.STATUS_PENDING,
+            )
+            .first()
+        )
+
+        if premium_request:
+            return Response(
+                {
+                    'detail': (
+                        'Your Premium request is already '
+                        'pending.'
+                    ),
+                    'status': premium_request.status,
+                },
+                status=200,
+            )
+
+        premium_request = PremiumRequest.objects.create(
+            user=request.user,
+        )
+
+        send_mail(
+            subject='New Premium Upgrade Request',
+            message=(
+                'A new Premium upgrade request has been '
+                'submitted.\n\n'
+                f'Username: {request.user.username}\n'
+                f'Email: {request.user.email}\n'
+                f'Request ID: {premium_request.id}\n\n'
+                'Please review this request in Django Admin.'
+            ),
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[
+                settings.SUPPORT_EMAIL,
+            ],
+        )
+
+        return Response(
+            {
+                'detail': (
+                    'Your Premium request has been submitted.'
+                ),
+                'status': premium_request.status,
+            },
+            status=201,
+        )
 
 def invalidate_user_sessions(user):
     outstanding_tokens = OutstandingToken.objects.filter(user=user)

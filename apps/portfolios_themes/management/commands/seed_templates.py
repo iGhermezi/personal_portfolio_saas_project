@@ -1,74 +1,81 @@
 from django.core.management.base import BaseCommand
-
 from apps.portfolios_themes.models import PortfolioTemplate
 
 
 TEMPLATES = [
     {
-        'template_key': 'template_1',
-        'name': 'Minimal Dark',
-        'description': 'A modern dark portfolio with a clean developer-focused layout.',
-        'access_level': PortfolioTemplate.ACCESS_FREE,
+        'template_key': 'arsam',
+        'name': 'Arsam',
+        'description': (
+            'A playful strawberry-kawaii portfolio with soft pastel '
+            'cards and cute details.'
+        ),
+        'preview_img': '',
+        'access_level': PortfolioTemplate.ACCESS_PREMIUM,
     },
     {
         'template_key': 'template_2',
-        'name': 'Professional',
-        'description': 'A structured professional portfolio for developers and professionals.',
+        'name': 'Minimal Dark',
+        'description': (
+            'A clean dark portfolio with modern typography, '
+            'subtle borders and violet accents.'
+        ),
+        'preview_img': '',
         'access_level': PortfolioTemplate.ACCESS_FREE,
     },
     {
         'template_key': 'template_3',
-        'name': 'Creative',
-        'description': 'A creative portfolio layout with a stronger visual personality.',
-        'access_level': PortfolioTemplate.ACCESS_VERIFIED,
+        'name': 'Creative Brutalist',
+        'description': (
+            'A bold brutalist portfolio with expressive typography, '
+            'strong borders and playful composition.'
+        ),
+        'preview_img': '',
+        'access_level': PortfolioTemplate.ACCESS_PREMIUM,
     },
     {
         'template_key': 'template_4',
-        'name': 'Executive',
-        'description': 'A premium portfolio designed for experienced professionals.',
+        'name': 'Editorial',
+        'description': (
+            'An elegant editorial portfolio inspired by magazine '
+            'layouts and refined typography.'
+        ),
+        'preview_img': '',
         'access_level': PortfolioTemplate.ACCESS_PREMIUM,
     },
     {
         'template_key': 'template_5',
-        'name': 'Premium Showcase',
-        'description': 'A premium showcase layout for a polished personal brand.',
+        'name': 'Developer Terminal',
+        'description': (
+            'A developer-focused portfolio inspired by terminal '
+            'interfaces and code editors.'
+        ),
+        'preview_img': '',
         'access_level': PortfolioTemplate.ACCESS_PREMIUM,
-    },
-    {
-    'template_key': 'arsam',
-    'name': 'Arsam Template',
-    'description': 'A cute strawberry-inspired kawaii portfolio with playful pastel details.',
-    'access_level': PortfolioTemplate.ACCESS_PREMIUM,
     },
 ]
 
 
 class Command(BaseCommand):
-    help = 'Create or update the default portfolio templates.'
+    help = 'Seed the default portfolio templates.'
 
     def handle(self, *args, **options):
-        for data in TEMPLATES:
-            template, created = PortfolioTemplate.objects.update_or_create(
-                template_key=data['template_key'],
+        for template_data in TEMPLATES:
+            template_key = template_data['template_key']
+
+            PortfolioTemplate.objects.update_or_create(
+                template_key=template_key,
                 defaults={
-                    'name': data['name'],
-                    'description': data['description'],
-                    'preview_img': '',
-                    'access_level': data['access_level'],
+                    'name': template_data['name'],
+                    'description': template_data['description'],
+                    'preview_img': template_data['preview_img'],
+                    'access_level': template_data['access_level'],
                     'is_active': True,
                 },
             )
 
-            action = 'Created' if created else 'Updated'
-
-            self.stdout.write(
-                self.style.SUCCESS(
-                    f'{action}: {template.name} ({template.template_key})'
-                )
-            )
-
         self.stdout.write(
             self.style.SUCCESS(
-                'Default portfolio templates are ready.'
+                'Portfolio templates seeded successfully.'
             )
         )

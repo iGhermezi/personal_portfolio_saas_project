@@ -101,6 +101,12 @@ const routes = [
       requiresAuth: true,
     },
   },
+  {
+  path: '/upgrade',
+  name: 'upgrade',
+  component: () => import('../views/UpgradeView.vue'),
+  meta: { requiresAuth: true },
+  },
 
   {
     path: "/portfolio/:slug",
@@ -113,6 +119,7 @@ const routes = [
     name: "not-found",
     component: () => import("../views/HomeView.vue"),
   },
+  
 ];
 
 const router = createRouter({

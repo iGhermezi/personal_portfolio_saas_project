@@ -1,3 +1,4 @@
+
 <template>
   <div class="min-h-screen bg-[#faf9ff] px-5 py-5">
     <DashboardSidebar
@@ -20,10 +21,10 @@
 
         <p class="mt-2 text-sm text-slate-400">
           Choose a template for your portfolio.
-          Locked templates can be unlocked by verifying your email
-          or activating Premium.
+          Premium templates are available after Premium approval.
         </p>
 
+        <!-- Loading -->
         <div
           v-if="loading"
           class="mt-8 rounded-3xl border border-slate-100 bg-white p-10 text-center shadow-sm"
@@ -33,6 +34,7 @@
           </p>
         </div>
 
+        <!-- Error -->
         <div
           v-else-if="error"
           class="mt-8 rounded-3xl border border-red-100 bg-red-50 p-6"
@@ -42,6 +44,7 @@
           </p>
         </div>
 
+        <!-- Templates -->
         <div
           v-else
           class="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3"
@@ -69,7 +72,7 @@
                 ◈
               </span>
 
-              <!-- Lock overlay -->
+              <!-- Premium lock overlay -->
               <div
                 v-if="!template.can_use"
                 class="absolute inset-0 flex items-center justify-center bg-slate-900/55 backdrop-blur-[2px]"
@@ -84,12 +87,13 @@
                   </div>
 
                   <p class="mt-2 text-sm font-semibold">
-                    Locked
+                    Premium
                   </p>
                 </div>
               </div>
             </div>
 
+            <!-- Content -->
             <div class="p-6">
               <div class="flex items-start justify-between gap-3">
                 <h2 class="text-lg font-bold text-slate-800">
@@ -123,19 +127,9 @@
                 }}
               </button>
 
-              <!-- Verification lock -->
+              <!-- Premium -->
               <button
-                v-else-if="template.lock_reason === 'verification'"
-                type="button"
-                class="mt-5 w-full rounded-2xl border border-emerald-200 bg-emerald-50 px-5 py-3 text-sm font-semibold text-emerald-700 transition hover:bg-emerald-100"
-                @click="goToVerification"
-              >
-                Verify email
-              </button>
-
-              <!-- Subscription lock -->
-              <button
-                v-else-if="template.lock_reason === 'subscription'"
+                v-else-if="template.access_level === 'premium'"
                 type="button"
                 class="mt-5 w-full rounded-2xl bg-amber-500 px-5 py-3 text-sm font-semibold text-white transition hover:bg-amber-600"
                 @click="goToUpgrade"
@@ -143,6 +137,7 @@
                 Unlock with Premium
               </button>
 
+              <!-- Other unavailable template -->
               <button
                 v-else
                 type="button"
@@ -182,20 +177,12 @@ const badgeClass = (level) => {
     return 'bg-amber-100 text-amber-700'
   }
 
-  if (level === 'verified') {
-    return 'bg-emerald-100 text-emerald-700'
-  }
-
   return 'bg-violet-100 text-violet-600'
 }
 
 const accessLabel = (level) => {
   if (level === 'premium') {
     return 'Premium'
-  }
-
-  if (level === 'verified') {
-    return 'Verified'
   }
 
   return 'Free'
@@ -231,8 +218,8 @@ const selectTemplate = async (template) => {
 
   try {
     /*
-     * We get the portfolio list first because the current
-     * Templates page is responsible only for template selection.
+     * Get the current user's portfolio.
+     * Each user can have only one portfolio.
      */
     const response = await api.get('portfolios/')
 
@@ -271,10 +258,6 @@ const selectTemplate = async (template) => {
 
 const goToUpgrade = () => {
   router.push('/upgrade')
-}
-
-const goToVerification = () => {
-  router.push('/profile')
 }
 
 onMounted(() => {

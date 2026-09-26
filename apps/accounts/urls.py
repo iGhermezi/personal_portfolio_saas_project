@@ -16,7 +16,9 @@ from .views import (
     PasswordResetView,
     EmailVerificationView,
     EmailVerificationResendView,
+    PremiumRequestView,
 )
+
 
 urlpatterns = [
     path(
@@ -90,4 +92,9 @@ urlpatterns = [
     ChangePasswordView.as_view(),
     name='change_password',
     ),
+    path(
+    'premium/request/',
+    PremiumRequestView.as_view(),
+    name='premium_request',
+),
 ]

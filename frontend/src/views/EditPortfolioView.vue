@@ -1,761 +1,782 @@
 <template>
   <div class="min-h-screen bg-[#faf9ff] px-5 py-5">
-    <main class="mx-auto max-w-5xl px-6 py-8">
-
-      <!-- Header -->
-
+    <main class="mx-auto max-w-6xl px-4 py-8">
       <div class="mb-8">
         <button
           type="button"
-          class="
-            mb-5
-            text-sm
-            font-medium
-            text-slate-400
-            transition
-            hover:text-violet-500
-          "
+          class="mb-5 text-sm font-medium text-slate-400 transition hover:text-violet-500"
           @click="router.back()"
         >
           ← Back
         </button>
 
-        <p class="text-sm font-medium text-violet-400">
-          Portfolio
-        </p>
-
-        <h1
-          class="
-            mt-1
-            text-3xl
-            font-bold
-            tracking-tight
-            text-slate-900
-          "
-        >
+        <p class="text-sm font-medium text-violet-400">Portfolio</p>
+        <h1 class="mt-1 text-3xl font-bold tracking-tight text-slate-900">
           Edit your portfolio
         </h1>
-
         <p class="mt-2 text-sm text-slate-400">
-          Update your portfolio information and choose a template.
+          Edit every section of your portfolio from one place.
         </p>
       </div>
-
-
-      <!-- Loading portfolio -->
 
       <div
-        v-if="loadingPortfolio"
-        class="
-          rounded-[28px]
-          border
-          border-violet-100
-          bg-white
-          p-10
-          text-center
-          shadow-sm
-        "
+        v-if="loading"
+        class="rounded-[28px] border border-violet-100 bg-white p-10 text-center shadow-sm"
       >
-        <p class="text-sm text-slate-400">
-          Loading your portfolio...
-        </p>
+        <p class="text-sm text-slate-400">Loading your portfolio...</p>
       </div>
 
+      <div v-else class="space-y-6">
+        <!-- BASIC -->
+        <section class="rounded-[28px] border border-violet-100 bg-white p-7 shadow-sm">
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-widest text-violet-400">
+              01 · Basic information
+            </p>
+            <h2 class="mt-1 text-xl font-bold text-slate-800">
+              Portfolio identity
+            </h2>
+          </div>
 
-      <!-- Form -->
+          <div class="mt-6 grid gap-5 md:grid-cols-2">
+            <Field v-model="basic.title" label="Portfolio title" />
+            <Field v-model="basic.slug" label="Portfolio URL" />
+          </div>
 
-      <form
-        v-else
-        class="
-          rounded-[28px]
-          border
-          border-violet-100
-          bg-white
-          p-7
-          shadow-sm
-        "
-        @submit.prevent="updatePortfolio"
-      >
-
-        <!-- Title -->
-
-        <div>
-          <label
-            for="title"
-            class="
-              block
-              text-sm
-              font-semibold
-              text-slate-700
-            "
-          >
-            Portfolio title
-          </label>
-
-          <input
-            id="title"
-            v-model="form.title"
-            type="text"
-            class="
-              mt-2
-              w-full
-              rounded-2xl
-              border
-              border-slate-200
-              px-4
-              py-3
-              text-sm
-              text-slate-800
-              outline-none
-              transition
-              focus:border-violet-300
-              focus:ring-4
-              focus:ring-violet-50
-            "
-          />
-        </div>
-
-
-        <!-- Slug -->
-
-        <div class="mt-6">
-          <label
-            for="slug"
-            class="
-              block
-              text-sm
-              font-semibold
-              text-slate-700
-            "
-          >
-            Portfolio URL
-          </label>
-
-          <input
-            id="slug"
-            v-model="form.slug"
-            type="text"
-            class="
-              mt-2
-              w-full
-              rounded-2xl
-              border
-              border-slate-200
-              px-4
-              py-3
-              text-sm
-              text-slate-800
-              outline-none
-              transition
-              focus:border-violet-300
-              focus:ring-4
-              focus:ring-violet-50
-            "
-          />
-
-          <p class="mt-2 text-xs text-slate-400">
-            This is used as your public portfolio URL.
-          </p>
-        </div>
-
-
-        <!-- Bio -->
-
-        <div class="mt-6">
-          <label
-            for="bio"
-            class="
-              block
-              text-sm
-              font-semibold
-              text-slate-700
-            "
-          >
+          <label class="mt-5 block text-sm font-semibold text-slate-700">
             Short bio
           </label>
-
           <textarea
-            id="bio"
-            v-model="form.bio"
-            rows="5"
-            class="
-              mt-2
-              w-full
-              resize-none
-              rounded-2xl
-              border
-              border-slate-200
-              px-4
-              py-3
-              text-sm
-              text-slate-800
-              outline-none
-              transition
-              focus:border-violet-300
-              focus:ring-4
-              focus:ring-violet-50
-            "
+            v-model="basic.bio"
+            rows="4"
+            class="mt-2 w-full resize-none rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-violet-300 focus:ring-4 focus:ring-violet-50"
           />
-        </div>
 
+          <div class="mt-7">
+            <div>
+              <p class="text-sm font-semibold text-slate-700">Choose a template</p>
+              <p class="mt-1 text-xs text-slate-400">
+                Locked templates cannot be selected until their requirement is met.
+              </p>
+            </div>
 
-        <!-- Templates -->
-
-        <div class="mt-8">
-
-          <div>
-            <h2
-              class="
-                text-sm
-                font-semibold
-                text-slate-700
-              "
+            <div
+              v-if="templatesLoading"
+              class="mt-4 rounded-2xl bg-slate-50 p-6 text-center text-sm text-slate-400"
             >
-              Choose a template
-            </h2>
-
-            <p class="mt-1 text-xs text-slate-400">
-              Available templates depend on your account access.
-            </p>
-          </div>
-
-
-          <!-- Loading templates -->
-
-          <div
-            v-if="templatesLoading"
-            class="
-              mt-4
-              rounded-2xl
-              border
-              border-slate-100
-              bg-slate-50
-              p-6
-              text-center
-            "
-          >
-            <p class="text-sm text-slate-400">
               Loading templates...
-            </p>
-          </div>
+            </div>
 
-
-          <!-- Templates -->
-
-          <div
-            v-else-if="templates.length"
-            class="
-              mt-4
-              grid
-              gap-4
-              sm:grid-cols-2
-              lg:grid-cols-3
-            "
-          >
-
-            <button
-              v-for="template in templates"
-              :key="template.id"
-              type="button"
-              class="
-                group
-                relative
-                overflow-hidden
-                rounded-2xl
-                border
-                text-left
-                transition
-              "
-              :class="
-                template.can_use
-                  ? (
-                      form.template === template.id
-                        ? 'border-violet-400 ring-4 ring-violet-50 hover:-translate-y-0.5 hover:shadow-md'
-                        : 'border-slate-200 hover:-translate-y-0.5 hover:shadow-md'
-                    )
-                  : 'cursor-not-allowed border-slate-200'
-              "
-              @click="selectTemplate(template)"
+            <div
+              v-else
+              class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
             >
-
-              <!-- Template preview -->
-
-              <div
-                class="
-                  relative
-                  flex
-                  h-36
-                  items-center
-                  justify-center
-                  overflow-hidden
-                  bg-slate-50
+              <button
+                v-for="template in templates"
+                :key="template.id"
+                type="button"
+                class="relative overflow-hidden rounded-2xl border text-left transition"
+                :class="
+                  template.can_use
+                    ? basic.template === template.id
+                      ? 'border-violet-400 ring-4 ring-violet-50'
+                      : 'border-slate-200 hover:-translate-y-0.5 hover:shadow-md'
+                    : 'cursor-not-allowed border-slate-200'
                 "
+                @click="selectTemplate(template)"
               >
+                <div class="relative flex h-32 items-center justify-center bg-slate-50">
+                  <img
+                    v-if="template.preview_img"
+                    :src="template.preview_img"
+                    :alt="template.name"
+                    class="h-full w-full object-cover"
+                  />
+                  <span v-else class="text-3xl text-violet-300">✦</span>
 
-                <img
-                  v-if="template.preview_img"
-                  :src="template.preview_img"
-                  :alt="template.name"
-                  class="h-full w-full object-cover"
-                />
-
-                <span
-                  v-else
-                  class="text-3xl text-violet-300"
-                >
-                  ✦
-                </span>
-
-
-                <!-- Locked overlay -->
-
-                <div
-                  v-if="!template.can_use"
-                  class="
-                    absolute
-                    inset-0
-                    flex
-                    items-center
-                    justify-center
-                    bg-slate-900/55
-                    backdrop-blur-[2px]
-                  "
-                >
                   <div
-                    class="
-                      flex
-                      flex-col
-                      items-center
-                      justify-center
-                      text-center
-                      text-white
-                    "
+                    v-if="!template.can_use"
+                    class="absolute inset-0 flex flex-col items-center justify-center bg-slate-900/55 text-white backdrop-blur-[2px]"
                   >
+                    <span class="text-2xl">🔒</span>
+                    <span class="mt-1 text-xs font-semibold">Locked</span>
+                  </div>
 
-                    <div
-                      class="
-                        flex
-                        h-12
-                        w-12
-                        items-center
-                        justify-center
-                        rounded-full
-                        bg-white/15
-                        text-xl
-                        backdrop-blur
-                      "
-                    >
-                      🔒
-                    </div>
-
-                    <p class="mt-2 text-xs font-semibold">
-                      Locked
-                    </p>
-
+                  <div
+                    v-if="template.can_use && basic.template === template.id"
+                    class="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full bg-violet-500 text-sm font-bold text-white"
+                  >
+                    ✓
                   </div>
                 </div>
 
+                <div class="p-4">
+                  <div class="flex items-start justify-between gap-2">
+                    <h3 class="text-sm font-semibold text-slate-800">
+                      {{ template.name }}
+                    </h3>
+                    <span
+                      class="rounded-full px-2.5 py-1 text-[10px] font-semibold"
+                      :class="accessBadgeClass(template.access_level)"
+                    >
+                      {{ accessLabel(template.access_level) }}
+                    </span>
+                  </div>
 
-                <!-- Selected -->
+                  <p class="mt-2 line-clamp-2 text-xs leading-5 text-slate-400">
+                    {{ template.description }}
+                  </p>
 
-                <div
-                  v-if="
-                    template.can_use &&
-                    form.template === template.id
-                  "
-                  class="
-                    absolute
-                    right-3
-                    top-3
-                    flex
-                    h-8
-                    w-8
-                    items-center
-                    justify-center
-                    rounded-full
-                    bg-violet-500
-                    text-sm
-                    font-bold
-                    text-white
-                    shadow-lg
-                  "
-                >
-                  ✓
-                </div>
-
-              </div>
-
-
-              <!-- Template information -->
-
-              <div class="p-4">
-
-                <div
-                  class="
-                    flex
-                    items-start
-                    justify-between
-                    gap-2
-                  "
-                >
-
-                  <h3
-                    class="
-                      text-sm
-                      font-semibold
-                      text-slate-800
-                    "
-                  >
-                    {{ template.name }}
-                  </h3>
-
-
-                  <span
-                    class="
-                      shrink-0
-                      rounded-full
-                      px-2.5
-                      py-1
-                      text-[10px]
-                      font-semibold
-                    "
-                    :class="accessBadgeClass(template.access_level)"
-                  >
-                    {{ accessLabel(template.access_level) }}
-                  </span>
-
-                </div>
-
-
-                <p
-                  class="
-                    mt-2
-                    line-clamp-2
-                    text-xs
-                    leading-5
-                    text-slate-400
-                  "
-                >
-                  {{ template.description }}
-                </p>
-
-
-                <!-- Locked reason -->
-
-                <div
-                  v-if="!template.can_use"
-                  class="
-                    mt-3
-                    flex
-                    items-center
-                    gap-1.5
-                    text-[11px]
-                    font-medium
-                  "
-                  :class="
-                    template.lock_reason === 'verification'
-                      ? 'text-emerald-600'
-                      : template.lock_reason === 'subscription'
-                        ? 'text-amber-600'
-                        : 'text-slate-400'
-                  "
-                >
-
-                  <span>
-                    🔒
-                  </span>
-
-                  <span
-                    v-if="
+                  <p
+                    v-if="!template.can_use"
+                    class="mt-3 text-[11px] font-medium"
+                    :class="
                       template.lock_reason === 'verification'
+                        ? 'text-emerald-600'
+                        : 'text-amber-600'
                     "
                   >
-                    Verify email to unlock
-                  </span>
-
-                  <span
-                    v-else-if="
-                      template.lock_reason === 'subscription'
-                    "
-                  >
-                    Premium required
-                  </span>
-
-                  <span v-else>
-                    Currently unavailable
-                  </span>
-
+                    🔒
+                    {{
+                      template.lock_reason === 'verification'
+                        ? 'Verify email to unlock'
+                        : 'Premium required'
+                    }}
+                  </p>
                 </div>
-
-
-                <!-- Available status -->
-
-                <div
-                  v-else
-                  class="
-                    mt-3
-                    text-[11px]
-                    font-medium
-                    text-violet-500
-                  "
-                >
-                  {{
-                    form.template === template.id
-                      ? 'Currently selected'
-                      : 'Available'
-                  }}
-                </div>
-
-              </div>
-
-            </button>
-
+              </button>
+            </div>
           </div>
-
-
-          <!-- No templates -->
 
           <div
-            v-else
-            class="
-              mt-4
-              rounded-2xl
-              border
-              border-slate-100
-              bg-slate-50
-              p-6
-              text-center
-            "
+            v-if="basicError"
+            class="mt-5 rounded-2xl border border-red-100 bg-red-50 px-4 py-3 text-sm text-red-500"
           >
-            <p class="text-sm text-slate-400">
-              No templates are currently available.
-            </p>
+            {{ basicError }}
           </div>
 
-        </div>
+          <div class="mt-6 flex justify-end">
+            <button
+              type="button"
+              :disabled="savingBasic"
+              class="rounded-full bg-violet-400 px-7 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-100 hover:bg-violet-500 disabled:cursor-not-allowed disabled:opacity-60"
+              @click="saveBasic"
+            >
+              {{ savingBasic ? 'Saving...' : 'Save Basic Information' }}
+            </button>
+          </div>
+        </section>
 
+        <!-- SKILLS -->
+        <section class="rounded-[28px] border border-violet-100 bg-white p-7 shadow-sm">
+          <SectionHeading
+            number="02"
+            title="Skills"
+            description="Add, edit or remove the skills shown on your portfolio."
+          />
 
-        <!-- Error -->
+          <div class="mt-6 rounded-2xl bg-slate-50 p-5">
+            <div class="grid gap-4 md:grid-cols-[1fr_180px_auto] md:items-end">
+              <Field
+                v-model="skillForm.skill_name"
+                label="Skill name"
+                placeholder="e.g. Django"
+              />
+
+              <div>
+                <label class="block text-sm font-semibold text-slate-700">
+                  Level
+                </label>
+                <select
+                  v-model.number="skillForm.skill_level_in_skill"
+                  class="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-violet-300 focus:ring-4 focus:ring-violet-50"
+                >
+                  <option :value="1">1 / 5</option>
+                  <option :value="2">2 / 5</option>
+                  <option :value="3">3 / 5</option>
+                  <option :value="4">4 / 5</option>
+                  <option :value="5">5 / 5</option>
+                </select>
+              </div>
+
+              <button
+                type="button"
+                class="rounded-full bg-violet-400 px-5 py-3 text-sm font-semibold text-white hover:bg-violet-500 disabled:opacity-60"
+                :disabled="actionLoading"
+                @click="addSkill"
+              >
+                + Add
+              </button>
+            </div>
+          </div>
+
+          <div class="mt-5 space-y-3">
+            <div
+              v-for="skill in skills"
+              :key="skill.id"
+              class="rounded-2xl border border-slate-100 p-4"
+            >
+              <div v-if="editing.skills !== skill.id" class="flex items-center justify-between gap-4">
+                <div>
+                  <p class="font-semibold text-slate-800">{{ skill.skill_name }}</p>
+                  <p class="mt-1 text-xs text-violet-500">
+                    Level {{ skill.skill_level_in_skill }} / 5
+                  </p>
+                </div>
+                <div class="flex gap-3">
+                  <button
+                    type="button"
+                    class="text-xs font-semibold text-violet-500"
+                    @click="startEdit('skills', skill)"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    type="button"
+                    class="text-xs font-semibold text-red-400"
+                    @click="deleteItem('skills', skill.id)"
+                  >
+                    Remove
+                  </button>
+                </div>
+              </div>
+
+              <div v-else class="grid gap-4 md:grid-cols-[1fr_180px_auto] md:items-end">
+                <Field v-model="editForms.skills[skill.id].skill_name" label="Skill name" />
+                <div>
+                  <label class="block text-sm font-semibold text-slate-700">Level</label>
+                  <select
+                    v-model.number="editForms.skills[skill.id].skill_level_in_skill"
+                    class="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm"
+                  >
+                    <option :value="1">1 / 5</option>
+                    <option :value="2">2 / 5</option>
+                    <option :value="3">3 / 5</option>
+                    <option :value="4">4 / 5</option>
+                    <option :value="5">5 / 5</option>
+                  </select>
+                </div>
+                <div class="flex gap-2">
+                  <button type="button" class="rounded-full bg-violet-400 px-4 py-3 text-xs font-semibold text-white" @click="saveEdit('skills', skill.id)">Save</button>
+                  <button type="button" class="rounded-full px-4 py-3 text-xs font-semibold text-slate-500 hover:bg-slate-50" @click="cancelEdit('skills')">Cancel</button>
+                </div>
+              </div>
+            </div>
+
+            <EmptyState v-if="!skills.length" text="No skills added yet." />
+          </div>
+        </section>
+
+        <!-- EDUCATION -->
+        <section class="rounded-[28px] border border-violet-100 bg-white p-7 shadow-sm">
+          <SectionHeading
+            number="03"
+            title="Education"
+            description="Manage your education history."
+          />
+
+          <div class="mt-6 flex gap-3 rounded-2xl bg-slate-50 p-5">
+            <input
+              v-model="educationForm.edu"
+              type="text"
+              placeholder="e.g. B.Sc. Computer Engineering — University of Tehran"
+              class="min-w-0 flex-1 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-violet-300 focus:ring-4 focus:ring-violet-50"
+              @keyup.enter="addEducation"
+            />
+            <button
+              type="button"
+              class="rounded-full bg-violet-400 px-5 py-3 text-sm font-semibold text-white hover:bg-violet-500"
+              @click="addEducation"
+            >
+              + Add
+            </button>
+          </div>
+
+          <div class="mt-5 space-y-3">
+            <div
+              v-for="education in educations"
+              :key="education.id"
+              class="rounded-2xl border border-slate-100 p-4"
+            >
+              <div v-if="editing.educations !== education.id" class="flex items-center justify-between gap-4">
+                <p class="font-semibold text-slate-800">{{ education.edu }}</p>
+                <div class="flex gap-3">
+                  <button type="button" class="text-xs font-semibold text-violet-500" @click="startEdit('educations', education)">Edit</button>
+                  <button type="button" class="text-xs font-semibold text-red-400" @click="deleteItem('educations', education.id)">Remove</button>
+                </div>
+              </div>
+
+              <div v-else class="flex gap-3">
+                <input
+                  v-model="editForms.educations[education.id].edu"
+                  type="text"
+                  class="min-w-0 flex-1 rounded-2xl border border-slate-200 px-4 py-3 text-sm"
+                />
+                <button type="button" class="rounded-full bg-violet-400 px-4 py-3 text-xs font-semibold text-white" @click="saveEdit('educations', education.id)">Save</button>
+                <button type="button" class="rounded-full px-4 py-3 text-xs font-semibold text-slate-500" @click="cancelEdit('educations')">Cancel</button>
+              </div>
+            </div>
+
+            <EmptyState v-if="!educations.length" text="No education added yet." />
+          </div>
+        </section>
+
+        <!-- EXPERIENCE -->
+        <section class="rounded-[28px] border border-violet-100 bg-white p-7 shadow-sm">
+          <SectionHeading
+            number="04"
+            title="Experience"
+            description="Manage your professional experience."
+          />
+
+          <div class="mt-6 rounded-2xl bg-slate-50 p-5">
+            <div class="grid gap-4 md:grid-cols-2">
+              <Field v-model="experienceForm.ex_company" label="Company" placeholder="e.g. Acme Inc." />
+              <Field v-model="experienceForm.ex_position" label="Position" placeholder="e.g. Backend Developer" />
+              <Field v-model="experienceForm.ex_start_date" label="Start date" type="date" />
+              <Field v-model="experienceForm.ex_end_date" label="End date" type="date" />
+            </div>
+            <label class="mt-4 block text-sm font-semibold text-slate-700">Description</label>
+            <textarea
+              v-model="experienceForm.ex_description"
+              rows="3"
+              class="mt-2 w-full resize-none rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-violet-300 focus:ring-4 focus:ring-violet-50"
+            />
+            <button
+              type="button"
+              class="mt-4 rounded-full bg-violet-400 px-5 py-3 text-sm font-semibold text-white hover:bg-violet-500"
+              @click="addExperience"
+            >
+              + Add Experience
+            </button>
+          </div>
+
+          <div class="mt-5 space-y-4">
+            <div v-for="experience in experiences" :key="experience.id" class="rounded-2xl border border-slate-100 p-5">
+              <div v-if="editing.experiences !== experience.id">
+                <div class="flex items-start justify-between gap-4">
+                  <div>
+                    <p class="font-semibold text-slate-800">{{ experience.ex_position }}</p>
+                    <p class="mt-1 text-sm text-violet-500">{{ experience.ex_company }}</p>
+                    <p class="mt-1 text-xs text-slate-400">
+                      {{ experience.ex_start_date }} → {{ experience.ex_end_date || 'Present' }}
+                    </p>
+                  </div>
+                  <div class="flex gap-3">
+                    <button type="button" class="text-xs font-semibold text-violet-500" @click="startEdit('experiences', experience)">Edit</button>
+                    <button type="button" class="text-xs font-semibold text-red-400" @click="deleteItem('experiences', experience.id)">Remove</button>
+                  </div>
+                </div>
+                <p v-if="experience.ex_description" class="mt-3 text-sm leading-6 text-slate-500">
+                  {{ experience.ex_description }}
+                </p>
+              </div>
+
+              <div v-else>
+                <div class="grid gap-4 md:grid-cols-2">
+                  <Field v-model="editForms.experiences[experience.id].ex_company" label="Company" />
+                  <Field v-model="editForms.experiences[experience.id].ex_position" label="Position" />
+                  <Field v-model="editForms.experiences[experience.id].ex_start_date" label="Start date" type="date" />
+                  <Field v-model="editForms.experiences[experience.id].ex_end_date" label="End date" type="date" />
+                </div>
+                <label class="mt-4 block text-sm font-semibold text-slate-700">Description</label>
+                <textarea
+                  v-model="editForms.experiences[experience.id].ex_description"
+                  rows="3"
+                  class="mt-2 w-full resize-none rounded-2xl border border-slate-200 px-4 py-3 text-sm"
+                />
+                <div class="mt-4 flex gap-2">
+                  <button type="button" class="rounded-full bg-violet-400 px-4 py-3 text-xs font-semibold text-white" @click="saveEdit('experiences', experience.id)">Save</button>
+                  <button type="button" class="rounded-full px-4 py-3 text-xs font-semibold text-slate-500" @click="cancelEdit('experiences')">Cancel</button>
+                </div>
+              </div>
+            </div>
+
+            <EmptyState v-if="!experiences.length" text="No experience added yet." />
+          </div>
+        </section>
+
+        <!-- PROJECTS -->
+        <section class="rounded-[28px] border border-violet-100 bg-white p-7 shadow-sm">
+          <SectionHeading
+            number="05"
+            title="Projects"
+            description="Manage the projects displayed on your portfolio."
+          />
+
+          <div class="mt-6 rounded-2xl bg-slate-50 p-5">
+            <div class="grid gap-4 md:grid-cols-2">
+              <Field v-model="projectForm.pro_name" label="Project name" />
+              <Field v-model="projectForm.pro_github_url" label="GitHub URL" />
+              <Field v-model="projectForm.pro_live_demo_url" label="Live demo URL" />
+              <Field v-model="projectForm.pro_techs" label="Technologies" />
+              <Field v-model="projectForm.pro_start" label="Start date" type="date" />
+              <Field v-model="projectForm.pro_end" label="End date" type="date" />
+            </div>
+            <label class="mt-4 block text-sm font-semibold text-slate-700">Description</label>
+            <textarea
+              v-model="projectForm.pro_description"
+              rows="3"
+              class="mt-2 w-full resize-none rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-violet-300 focus:ring-4 focus:ring-violet-50"
+            />
+            <button
+              type="button"
+              class="mt-4 rounded-full bg-violet-400 px-5 py-3 text-sm font-semibold text-white hover:bg-violet-500"
+              @click="addProject"
+            >
+              + Add Project
+            </button>
+          </div>
+
+          <div class="mt-5 grid gap-4 lg:grid-cols-2">
+            <div v-for="project in projects" :key="project.id" class="rounded-2xl border border-slate-100 p-5">
+              <div v-if="editing.projects !== project.id">
+                <div class="flex items-start justify-between gap-4">
+                  <div>
+                    <h3 class="font-semibold text-slate-800">{{ project.pro_name }}</h3>
+                    <p class="mt-1 text-xs text-violet-500">{{ project.pro_techs }}</p>
+                    <p class="mt-1 text-xs text-slate-400">
+                      {{ project.pro_start }} → {{ project.pro_end || 'Present' }}
+                    </p>
+                  </div>
+                  <div class="flex gap-3">
+                    <button type="button" class="text-xs font-semibold text-violet-500" @click="startEdit('projects', project)">Edit</button>
+                    <button type="button" class="text-xs font-semibold text-red-400" @click="deleteItem('projects', project.id)">Remove</button>
+                  </div>
+                </div>
+                <p v-if="project.pro_description" class="mt-3 text-sm leading-6 text-slate-500">
+                  {{ project.pro_description }}
+                </p>
+              </div>
+
+              <div v-else>
+                <div class="grid gap-4 md:grid-cols-2">
+                  <Field v-model="editForms.projects[project.id].pro_name" label="Project name" />
+                  <Field v-model="editForms.projects[project.id].pro_github_url" label="GitHub URL" />
+                  <Field v-model="editForms.projects[project.id].pro_live_demo_url" label="Live demo URL" />
+                  <Field v-model="editForms.projects[project.id].pro_techs" label="Technologies" />
+                  <Field v-model="editForms.projects[project.id].pro_start" label="Start date" type="date" />
+                  <Field v-model="editForms.projects[project.id].pro_end" label="End date" type="date" />
+                </div>
+                <label class="mt-4 block text-sm font-semibold text-slate-700">Description</label>
+                <textarea
+                  v-model="editForms.projects[project.id].pro_description"
+                  rows="3"
+                  class="mt-2 w-full resize-none rounded-2xl border border-slate-200 px-4 py-3 text-sm"
+                />
+                <div class="mt-4 flex gap-2">
+                  <button type="button" class="rounded-full bg-violet-400 px-4 py-3 text-xs font-semibold text-white" @click="saveEdit('projects', project.id)">Save</button>
+                  <button type="button" class="rounded-full px-4 py-3 text-xs font-semibold text-slate-500" @click="cancelEdit('projects')">Cancel</button>
+                </div>
+              </div>
+            </div>
+
+            <EmptyState v-if="!projects.length" text="No projects added yet." />
+          </div>
+        </section>
+
+        <!-- SOCIAL -->
+        <section class="rounded-[28px] border border-violet-100 bg-white p-7 shadow-sm">
+          <SectionHeading
+            number="06"
+            title="Social links"
+            description="Connect GitHub, LinkedIn and your personal website."
+          />
+
+          <div class="mt-6 grid gap-4 md:grid-cols-3">
+            <Field v-model="socialForm.sl_github" label="GitHub" placeholder="https://github.com/username" />
+            <Field v-model="socialForm.sl_linkedin" label="LinkedIn" placeholder="https://linkedin.com/in/username" />
+            <Field v-model="socialForm.sl_personal_web" label="Website" placeholder="https://example.com" />
+          </div>
+
+          <div class="mt-5 flex items-center justify-between gap-4">
+            <p class="text-xs text-slate-400">
+              {{ social ? 'Existing social links will be updated.' : 'No social links have been saved yet.' }}
+            </p>
+            <div class="flex gap-3">
+              <button
+                v-if="social"
+                type="button"
+                class="rounded-full border border-red-100 px-5 py-3 text-sm font-semibold text-red-400 hover:bg-red-50"
+                :disabled="actionLoading"
+                @click="deleteSocial"
+              >
+                Remove
+              </button>
+              <button
+                type="button"
+                class="rounded-full bg-violet-400 px-6 py-3 text-sm font-semibold text-white hover:bg-violet-500 disabled:opacity-60"
+                :disabled="actionLoading"
+                @click="saveSocial"
+              >
+                {{ actionLoading ? 'Saving...' : social ? 'Update Social Links' : 'Save Social Links' }}
+              </button>
+            </div>
+          </div>
+        </section>
 
         <div
           v-if="error"
-          class="
-            mt-6
-            rounded-2xl
-            border
-            border-red-100
-            bg-red-50
-            px-4
-            py-3
-            text-sm
-            text-red-500
-          "
+          class="rounded-2xl border border-red-100 bg-red-50 px-4 py-3 text-sm text-red-500"
         >
           {{ error }}
         </div>
 
-
-        <!-- Actions -->
-
-        <div
-          class="
-            mt-8
-            flex
-            flex-col-reverse
-            gap-3
-            sm:flex-row
-            sm:justify-end
-          "
-        >
-
+        <div class="flex flex-col gap-3 sm:flex-row sm:justify-between">
           <button
             type="button"
-            class="
-              rounded-full
-              px-6
-              py-3
-              text-sm
-              font-semibold
-              text-slate-500
-              transition
-              hover:bg-slate-50
-            "
-            @click="router.back()"
+            class="rounded-full px-6 py-3 text-sm font-semibold text-slate-500 hover:bg-slate-50"
+            @click="router.push('/dashboard')"
           >
-            Cancel
+            ← Dashboard
           </button>
-
-
           <button
-            type="submit"
-            :disabled="saving"
-            class="
-              rounded-full
-              bg-violet-400
-              px-7
-              py-3
-              text-sm
-              font-semibold
-              text-white
-              shadow-lg
-              shadow-violet-100
-              transition
-              hover:-translate-y-0.5
-              hover:bg-violet-500
-              disabled:cursor-not-allowed
-              disabled:opacity-60
-            "
+            type="button"
+            class="rounded-full border border-violet-200 bg-white px-6 py-3 text-sm font-semibold text-violet-500 hover:bg-violet-50"
+            @click="router.push(`/portfolio/${route.params.id}/preview`)"
           >
-            {{ saving ? 'Saving...' : 'Save Changes' }}
+            Preview Portfolio →
           </button>
-
         </div>
-
-      </form>
-
+      </div>
     </main>
   </div>
 </template>
 
-
 <script setup>
-
-import {
-  onMounted,
-  reactive,
-  ref,
-} from 'vue'
-
-import {
-  useRoute,
-  useRouter,
-} from 'vue-router'
-
+import { reactive, ref, defineComponent, h, onMounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import api from '../api/axios'
 
-
 const route = useRoute()
-
 const router = useRouter()
+const portfolioId = route.params.id
 
+const Field = defineComponent({
+  props: {
+    modelValue: { type: [String, Number], default: '' },
+    label: { type: String, default: '' },
+    placeholder: { type: String, default: '' },
+    type: { type: String, default: 'text' },
+  },
+  emits: ['update:modelValue'],
+  setup(props, { emit }) {
+    return () =>
+      h('div', {}, [
+        h(
+          'label',
+          {
+            class: 'block text-sm font-semibold text-slate-700',
+          },
+          props.label
+        ),
+        h('input', {
+          value: props.modelValue,
+          type: props.type,
+          placeholder: props.placeholder,
+          class:
+            'mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-violet-300 focus:ring-4 focus:ring-violet-50',
+          onInput: (event) => emit('update:modelValue', event.target.value),
+        }),
+      ])
+  },
+})
 
-/*
- * Form
- */
+const SectionHeading = defineComponent({
+  props: {
+    number: String,
+    title: String,
+    description: String,
+  },
+  setup(props) {
+    return () =>
+      h('div', {}, [
+        h(
+          'p',
+          { class: 'text-xs font-semibold uppercase tracking-widest text-violet-400' },
+          `${props.number} · ${props.title}`
+        ),
+        h(
+          'p',
+          { class: 'mt-1 text-sm text-slate-400' },
+          props.description
+        ),
+      ])
+  },
+})
 
-const form = reactive({
+const EmptyState = defineComponent({
+  props: {
+    text: String,
+  },
+  setup(props) {
+    return () =>
+      h(
+        'div',
+        {
+          class:
+            'rounded-2xl border border-dashed border-slate-200 p-6 text-center text-sm text-slate-400',
+        },
+        props.text
+      )
+  },
+})
+
+const basic = reactive({
   title: '',
   slug: '',
   bio: '',
   template: null,
 })
 
-
-/*
- * Templates
- */
-
 const templates = ref([])
-
 const templatesLoading = ref(true)
-
-
-/*
- * Page state
- */
-
-const loadingPortfolio = ref(true)
-
-const saving = ref(false)
-
+const loading = ref(true)
+const savingBasic = ref(false)
+const actionLoading = ref(false)
 const error = ref(null)
+const basicError = ref(null)
 
+const skills = ref([])
+const educations = ref([])
+const experiences = ref([])
+const projects = ref([])
+const social = ref(null)
 
-/*
- * Template helpers
- */
+const editing = reactive({
+  skills: null,
+  educations: null,
+  experiences: null,
+  projects: null,
+})
 
-const accessLabel = (level) => {
-  if (level === 'premium') {
-    return 'Premium'
-  }
+const editForms = reactive({
+  skills: {},
+  educations: {},
+  experiences: {},
+  projects: {},
+})
 
-  if (level === 'verified') {
-    return 'Verified'
-  }
+const skillForm = reactive({
+  skill_name: '',
+  skill_level_in_skill: 3,
+})
 
-  return 'Free'
+const educationForm = reactive({
+  edu: '',
+})
+
+const experienceForm = reactive({
+  ex_company: '',
+  ex_start_date: '',
+  ex_end_date: '',
+  ex_position: '',
+  ex_description: '',
+})
+
+const projectForm = reactive({
+  pro_name: '',
+  pro_description: '',
+  pro_image: '',
+  pro_github_url: '',
+  pro_techs: '',
+  pro_live_demo_url: '',
+  pro_start: '',
+  pro_end: '',
+})
+
+const socialForm = reactive({
+  sl_github: '',
+  sl_linkedin: '',
+  sl_personal_web: '',
+})
+
+const apiPaths = {
+  skills: `/portfolios/${portfolioId}/skills/`,
+  educations: `/portfolios/${portfolioId}/educations/`,
+  experiences: `/portfolios/${portfolioId}/experiences/`,
+  projects: `/portfolios/${portfolioId}/projects/`,
+  social: `/portfolios/${portfolioId}/social-links/`,
 }
 
-
-const accessBadgeClass = (level) => {
-  if (level === 'premium') {
-    return 'bg-amber-100 text-amber-700'
-  }
-
-  if (level === 'verified') {
-    return 'bg-emerald-100 text-emerald-700'
-  }
-
-  return 'bg-violet-50 text-violet-500'
+const getList = async (key) => {
+  const response = await api.get(apiPaths[key])
+  return Array.isArray(response.data)
+    ? response.data
+    : response.data.results || []
 }
 
+const handleApiError = (err, fallback) => {
+  console.error(err)
+  const data = err.response?.data
 
-/*
- * Select template
- */
-
-const selectTemplate = (template) => {
-
-  /*
-   * Important:
-   * Locked templates must NEVER modify
-   * form.template.
-   *
-   * Backend also validates this again.
-   */
-
-  if (!template.can_use) {
-    return
+  if (data && typeof data === 'object') {
+    const firstError = Object.values(data).flat().find(Boolean)
+    error.value = firstError || fallback
+  } else {
+    error.value = fallback
   }
-
-  form.template = template.id
-
 }
 
-
-/*
- * Load portfolio
- */
-
-const loadPortfolio = async () => {
-
-  loadingPortfolio.value = true
-
+const loadAll = async () => {
+  loading.value = true
   error.value = null
+  basicError.value = null
+
+  // Templates must load independently.
+  // A problem with skills/social/etc. should not hide templates.
+  loadTemplates()
 
   try {
-
-    const response = await api.get(
-      `/portfolios/${route.params.id}/`
+    const portfolioResponse = await api.get(
+      `/portfolios/${portfolioId}/`
     )
 
-    const portfolio = response.data
+    const portfolio = portfolioResponse.data
 
-    form.title =
-      portfolio.title || ''
+    basic.title = portfolio.title || ''
+    basic.slug = portfolio.slug || ''
+    basic.bio = portfolio.bio || ''
+    basic.template = portfolio.template || null
 
-    form.slug =
-      portfolio.slug || ''
+    const [
+      skillsData,
+      educationData,
+      experienceData,
+      projectsData,
+    ] = await Promise.all([
+      getList('skills'),
+      getList('educations'),
+      getList('experiences'),
+      getList('projects'),
+    ])
 
-    form.bio =
-      portfolio.bio || ''
+    skills.value = skillsData
+    educations.value = educationData
+    experiences.value = experienceData
+    projects.value = projectsData
 
-    form.template =
-      portfolio.template || null
+    try {
+      const response = await api.get(apiPaths.social)
 
+      social.value = response.data
+
+      socialForm.sl_github =
+        response.data.sl_github || ''
+
+      socialForm.sl_linkedin =
+        response.data.sl_linkedin || ''
+
+      socialForm.sl_personal_web =
+        response.data.sl_personal_web || ''
+    } catch (socialError) {
+      if (socialError.response?.status === 404) {
+        social.value = null
+      } else {
+        throw socialError
+      }
+    }
   } catch (err) {
-
     console.error(
       'Failed to load portfolio:',
       err
@@ -764,229 +785,429 @@ const loadPortfolio = async () => {
     error.value =
       err.response?.data?.detail ||
       'Unable to load your portfolio.'
-
   } finally {
-
-    loadingPortfolio.value = false
-
+    loading.value = false
   }
-
 }
-
-
-/*
- * Load templates
- */
-
 const loadTemplates = async () => {
-
   templatesLoading.value = true
+  basicError.value = null
 
   try {
-
     const response = await api.get('/themes/')
 
-    templates.value =
-      Array.isArray(response.data)
-        ? response.data
-        : response.data.results || []
+    const data = response.data
 
+    templates.value = Array.isArray(data)
+      ? data
+      : Array.isArray(data?.results)
+        ? data.results
+        : []
 
-    /*
-     * If the currently selected template is
-     * no longer available to the user,
-     * force the user to choose an available
-     * template before saving.
-     */
-
-    if (form.template) {
-
-      const currentTemplate =
-        templates.value.find(
-          (template) =>
-            template.id === form.template
-        )
-
-      if (
-        currentTemplate &&
-        !currentTemplate.can_use
-      ) {
-        form.template = null
-      }
-
+    if (!templates.value.length) {
+      basicError.value =
+        'No templates are available right now.'
+      return
     }
 
-  } catch (err) {
+    if (basic.template) {
+      const current = templates.value.find(
+        (item) => item.id === basic.template
+      )
 
+      // IMPORTANT:
+      // Do not clear the current template just because
+      // it is locked. It must remain visible in Edit.
+      if (!current) {
+        basic.template = null
+      }
+    }
+  } catch (err) {
     console.error(
       'Failed to load templates:',
       err
     )
 
-    error.value =
+    templates.value = []
+
+    basicError.value =
       err.response?.data?.detail ||
       'Unable to load templates.'
-
   } finally {
-
     templatesLoading.value = false
-
   }
-
 }
 
 
-/*
- * Update portfolio
- */
+const accessLabel = (level) => {
+  if (level === 'premium') return 'Premium'
+  if (level === 'verified') return 'Verified'
+  return 'Free'
+}
 
-const updatePortfolio = async () => {
+const accessBadgeClass = (level) => {
+  if (level === 'premium') return 'bg-amber-100 text-amber-700'
+  if (level === 'verified') return 'bg-emerald-100 text-emerald-700'
+  return 'bg-violet-50 text-violet-500'
+}
 
-  error.value = null
+const selectTemplate = (template) => {
+  if (!template.can_use) return
+  basic.template = template.id
+}
 
+const saveBasic = async () => {
+  basicError.value = null
 
-  /*
-   * Basic validation
-   */
-
-  if (!form.title.trim()) {
-
-    error.value =
-      'Please enter a portfolio title.'
-
+  if (!basic.title.trim()) {
+    basicError.value = 'Please enter a portfolio title.'
     return
-
   }
 
-
-  if (!form.slug.trim()) {
-
-    error.value =
-      'Please enter a portfolio URL.'
-
+  if (!basic.slug.trim()) {
+    basicError.value = 'Please enter a portfolio URL.'
     return
-
   }
 
-
-  if (!form.template) {
-
-    error.value =
-      'Please choose an available template.'
-
+  if (!basic.template) {
+    basicError.value = 'Please choose an available template.'
     return
-
   }
 
+  const selectedTemplate = templates.value.find(
+    (template) => template.id === basic.template
+  )
 
-  /*
-   * Extra frontend safety check
-   *
-   * Never send a locked template.
-   */
-
-  const selectedTemplate =
-    templates.value.find(
-      (template) =>
-        template.id === form.template
-    )
-
-
-  if (
-    !selectedTemplate ||
-    !selectedTemplate.can_use
-  ) {
-
-    error.value =
-      'The selected template is not available for your account.'
-
+  if (!selectedTemplate?.can_use) {
+    basicError.value = 'The selected template is not available for your account.'
     return
-
   }
 
-
-  saving.value = true
-
+  savingBasic.value = true
 
   try {
-
-    await api.patch(
-      `/portfolios/${route.params.id}/`,
-      {
-        title:
-          form.title.trim(),
-
-        slug:
-          form.slug.trim(),
-
-        bio:
-          form.bio.trim(),
-
-        template:
-          form.template,
-      }
-    )
-
-
-    await router.push('/dashboard')
-
+    await api.patch(`/portfolios/${portfolioId}/`, {
+      title: basic.title.trim(),
+      slug: basic.slug.trim(),
+      bio: basic.bio.trim(),
+      template: basic.template,
+    })
   } catch (err) {
+    console.error('Failed to save basic information:', err)
+    const data = err.response?.data
+    const firstError =
+      data && typeof data === 'object'
+        ? Object.values(data).flat().find(Boolean)
+        : null
 
-    console.error(
-      'Failed to update portfolio:',
-      err
-    )
-
-    const data =
-      err.response?.data
-
-
-    if (
-      data &&
-      typeof data === 'object'
-    ) {
-
-      const firstError =
-        Object.values(data)
-          .flat()
-          .find(Boolean)
-
-      error.value =
-        firstError ||
-        'Unable to update your portfolio.'
-
-    } else {
-
-      error.value =
-        'Unable to update your portfolio.'
-
-    }
-
+    basicError.value = firstError || 'Unable to save basic information.'
   } finally {
-
-    saving.value = false
-
+    savingBasic.value = false
   }
-
 }
 
+const resetSkillForm = () => {
+  skillForm.skill_name = ''
+  skillForm.skill_level_in_skill = 3
+}
 
-/*
- * Initial load
- */
+const addSkill = async () => {
+  error.value = null
 
-onMounted(async () => {
+  if (!skillForm.skill_name.trim()) {
+    error.value = 'Please enter a skill name.'
+    return
+  }
 
-  /*
-   * Portfolio must load first because
-   * we need its current template before
-   * checking template access.
-   */
+  actionLoading.value = true
+  try {
+    const response = await api.post(apiPaths.skills, {
+      skill_name: skillForm.skill_name.trim(),
+      skill_level_in_skill: skillForm.skill_level_in_skill,
+    })
+    skills.value.push(response.data)
+    resetSkillForm()
+  } catch (err) {
+    handleApiError(err, 'Unable to add this skill.')
+  } finally {
+    actionLoading.value = false
+  }
+}
 
-  await loadPortfolio()
+const addEducation = async () => {
+  error.value = null
 
-  await loadTemplates()
+  if (!educationForm.edu.trim()) {
+    error.value = 'Please enter your education.'
+    return
+  }
 
-})
+  actionLoading.value = true
+  try {
+    const response = await api.post(apiPaths.educations, {
+      edu: educationForm.edu.trim(),
+    })
+    educations.value.push(response.data)
+    educationForm.edu = ''
+  } catch (err) {
+    handleApiError(err, 'Unable to add this education.')
+  } finally {
+    actionLoading.value = false
+  }
+}
 
+const addExperience = async () => {
+  error.value = null
+
+  if (!experienceForm.ex_company.trim()) {
+    error.value = 'Please enter the company name.'
+    return
+  }
+
+  if (!experienceForm.ex_position.trim()) {
+    error.value = 'Please enter your position.'
+    return
+  }
+
+  if (!experienceForm.ex_start_date) {
+    error.value = 'Please select a start date.'
+    return
+  }
+
+  actionLoading.value = true
+  try {
+    const response = await api.post(apiPaths.experiences, {
+      ex_company: experienceForm.ex_company.trim(),
+      ex_start_date: experienceForm.ex_start_date,
+      ex_end_date: experienceForm.ex_end_date || null,
+      ex_position: experienceForm.ex_position.trim(),
+      ex_description: experienceForm.ex_description.trim(),
+    })
+    experiences.value.push(response.data)
+    Object.assign(experienceForm, {
+      ex_company: '',
+      ex_start_date: '',
+      ex_end_date: '',
+      ex_position: '',
+      ex_description: '',
+    })
+  } catch (err) {
+    handleApiError(err, 'Unable to add this experience.')
+  } finally {
+    actionLoading.value = false
+  }
+}
+
+const addProject = async () => {
+  error.value = null
+
+  if (!projectForm.pro_name.trim()) {
+    error.value = 'Please enter the project name.'
+    return
+  }
+
+  if (!projectForm.pro_github_url.trim()) {
+    error.value = 'Please enter the GitHub URL.'
+    return
+  }
+
+  if (!projectForm.pro_techs.trim()) {
+    error.value = 'Please enter the technologies.'
+    return
+  }
+
+  if (!projectForm.pro_start) {
+    error.value = 'Please select the project start date.'
+    return
+  }
+
+  actionLoading.value = true
+  try {
+    const response = await api.post(apiPaths.projects, {
+      pro_name: projectForm.pro_name.trim(),
+      pro_description: projectForm.pro_description.trim(),
+      pro_image: projectForm.pro_image.trim() || null,
+      pro_github_url: projectForm.pro_github_url.trim(),
+      pro_techs: projectForm.pro_techs.trim(),
+      pro_live_demo_url: projectForm.pro_live_demo_url.trim() || null,
+      pro_start: projectForm.pro_start,
+      pro_end: projectForm.pro_end || null,
+    })
+    projects.value.push(response.data)
+    Object.assign(projectForm, {
+      pro_name: '',
+      pro_description: '',
+      pro_image: '',
+      pro_github_url: '',
+      pro_techs: '',
+      pro_live_demo_url: '',
+      pro_start: '',
+      pro_end: '',
+    })
+  } catch (err) {
+    handleApiError(err, 'Unable to add this project.')
+  } finally {
+    actionLoading.value = false
+  }
+}
+
+const startEdit = (type, item) => {
+  editing[type] = item.id
+  editForms[type][item.id] = JSON.parse(JSON.stringify(item))
+  error.value = null
+}
+
+const cancelEdit = (type) => {
+  const id = editing[type]
+  if (id) delete editForms[type][id]
+  editing[type] = null
+}
+
+const replaceItem = (collection, id, data) => {
+  const index = collection.value.findIndex((item) => item.id === id)
+  if (index !== -1) collection.value[index] = data
+}
+
+const saveEdit = async (type, id) => {
+  error.value = null
+  const draft = editForms[type][id]
+
+  if (!draft) return
+
+  const payloads = {
+    skills: {
+      skill_name: draft.skill_name?.trim(),
+      skill_level_in_skill: Number(draft.skill_level_in_skill),
+    },
+    educations: {
+      edu: draft.edu?.trim(),
+    },
+    experiences: {
+      ex_company: draft.ex_company?.trim(),
+      ex_start_date: draft.ex_start_date,
+      ex_end_date: draft.ex_end_date || null,
+      ex_position: draft.ex_position?.trim(),
+      ex_description: draft.ex_description?.trim(),
+    },
+    projects: {
+      pro_name: draft.pro_name?.trim(),
+      pro_description: draft.pro_description?.trim(),
+      pro_image: draft.pro_image?.trim() || null,
+      pro_github_url: draft.pro_github_url?.trim(),
+      pro_techs: draft.pro_techs?.trim(),
+      pro_live_demo_url: draft.pro_live_demo_url?.trim() || null,
+      pro_start: draft.pro_start,
+      pro_end: draft.pro_end || null,
+    },
+  }
+
+  if (type === 'skills' && !payloads.skills.skill_name) {
+    error.value = 'Skill name cannot be empty.'
+    return
+  }
+
+  if (type === 'educations' && !payloads.educations.edu) {
+    error.value = 'Education cannot be empty.'
+    return
+  }
+
+  if (type === 'experiences') {
+    if (!payloads.experiences.ex_company || !payloads.experiences.ex_position || !payloads.experiences.ex_start_date) {
+      error.value = 'Company, position and start date are required.'
+      return
+    }
+  }
+
+  if (type === 'projects') {
+    if (!payloads.projects.pro_name || !payloads.projects.pro_github_url || !payloads.projects.pro_techs || !payloads.projects.pro_start) {
+      error.value = 'Project name, GitHub URL, technologies and start date are required.'
+      return
+    }
+  }
+
+  actionLoading.value = true
+
+  try {
+    const response = await api.patch(`${apiPaths[type]}${id}/`, payloads[type])
+    const collections = {
+      skills,
+      educations,
+      experiences,
+      projects,
+    }
+    replaceItem(collections[type], id, response.data)
+    cancelEdit(type)
+  } catch (err) {
+    handleApiError(err, `Unable to update this ${type.slice(0, -1)}.`)
+  } finally {
+    actionLoading.value = false
+  }
+}
+
+const deleteItem = async (type, id) => {
+  error.value = null
+  actionLoading.value = true
+
+  try {
+    await api.delete(`${apiPaths[type]}${id}/`)
+    const collections = {
+      skills,
+      educations,
+      experiences,
+      projects,
+    }
+    const index = collections[type].value.findIndex((item) => item.id === id)
+    if (index !== -1) collections[type].value.splice(index, 1)
+  } catch (err) {
+    handleApiError(err, `Unable to remove this ${type.slice(0, -1)}.`)
+  } finally {
+    actionLoading.value = false
+  }
+}
+
+const saveSocial = async () => {
+  error.value = null
+  actionLoading.value = true
+
+  const payload = {
+    sl_github: socialForm.sl_github.trim() || null,
+    sl_linkedin: socialForm.sl_linkedin.trim() || null,
+    sl_personal_web: socialForm.sl_personal_web.trim() || null,
+  }
+
+  try {
+    if (social.value) {
+      const response = await api.patch(`${apiPaths.social}${social.value.id}/`, payload)
+      social.value = response.data
+    } else {
+      const response = await api.post(apiPaths.social, payload)
+      social.value = response.data
+    }
+  } catch (err) {
+    handleApiError(err, 'Unable to save social links.')
+  } finally {
+    actionLoading.value = false
+  }
+}
+
+const deleteSocial = async () => {
+  if (!social.value) return
+
+  error.value = null
+  actionLoading.value = true
+
+  try {
+    await api.delete(`${apiPaths.social}${social.value.id}/`)
+    social.value = null
+    socialForm.sl_github = ''
+    socialForm.sl_linkedin = ''
+    socialForm.sl_personal_web = ''
+  } catch (err) {
+    handleApiError(err, 'Unable to remove social links.')
+  } finally {
+    actionLoading.value = false
+  }
+}
+
+onMounted(loadAll)
 </script>

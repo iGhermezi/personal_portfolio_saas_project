@@ -202,14 +202,6 @@ class PortfolioSerializer(serializers.ModelSerializer):
         if value.access_level == 'free':
             return value
 
-        if value.access_level == 'verified':
-            if not user.email_verified:
-                raise serializers.ValidationError(
-                    'Email verification is required for this template.'
-                )
-
-            return value
-
         if value.access_level == 'premium':
             if not user.has_active_subscription:
                 raise serializers.ValidationError(
@@ -221,7 +213,6 @@ class PortfolioSerializer(serializers.ModelSerializer):
         raise serializers.ValidationError(
             'Invalid template access level.'
         )
-
 
 class PublicPortfolioSerializer(serializers.ModelSerializer):
     template_key = serializers.SerializerMethodField()
