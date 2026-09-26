@@ -16,7 +16,6 @@ const routes = [
     path: "/login",
     name: "login",
     component: () => import("../views/LoginView.vue"),
-
     meta: {
       guestOnly: true,
     },
@@ -26,7 +25,6 @@ const routes = [
     path: "/register",
     name: "register",
     component: () => import("../views/RegisterView.vue"),
-
     meta: {
       guestOnly: true,
     },
@@ -36,7 +34,15 @@ const routes = [
     path: "/dashboard",
     name: "dashboard",
     component: () => import("../views/DashboardView.vue"),
+    meta: {
+      requiresAuth: true,
+    },
+  },
 
+  {
+    path: "/dashboard/portfolio",
+    name: "dashboard-portfolio",
+    component: () => import("../views/EditPortfolioView.vue"),
     meta: {
       requiresAuth: true,
     },
@@ -46,7 +52,6 @@ const routes = [
     path: "/profile",
     name: "profile",
     component: () => import("../views/ProfileView.vue"),
-
     meta: {
       requiresAuth: true,
     },
@@ -56,26 +61,24 @@ const routes = [
     path: "/portfolio/create",
     name: "create-portfolio",
     component: CreatePortfolioView,
-
     meta: {
       requiresAuth: true,
     },
   },
 
   {
-  path: '/portfolio/:id/edit',
-  name: 'edit-portfolio',
-  component: () =>
-    import('../views/EditPortfolioView.vue'),
-  meta: {
-    requiresAuth: true,
+    path: "/portfolio/:id/setup",
+    name: "portfolio-setup",
+    component: () => import("../views/PortfolioSetupView.vue"),
+    meta: {
+      requiresAuth: true,
+    },
   },
-},
 
   {
-    path: "/portfolio/:id/preview",
-    name: "portfolio-preview",
-    component: () => import("../views/PortfolioPreviewView.vue"),
+    path: "/portfolio/:id/edit",
+    name: "edit-portfolio",
+    component: () => import("../views/EditPortfolioView.vue"),
     meta: {
       requiresAuth: true,
     },
@@ -85,7 +88,15 @@ const routes = [
     path: "/portfolio/:id/preview",
     name: "portfolio-preview",
     component: PortfolioPreviewView,
+    meta: {
+      requiresAuth: true,
+    },
+  },
 
+  {
+    path: "/templates",
+    name: "templates",
+    component: () => import("../views/TemplatesView.vue"),
     meta: {
       requiresAuth: true,
     },
@@ -96,17 +107,21 @@ const routes = [
     name: "public-portfolio",
     component: PublicPortfolioView,
   },
+
+  {
+    path: "/:pathMatch(.*)*",
+    name: "not-found",
+    component: () => import("../views/HomeView.vue"),
+  },
 ];
 
 const router = createRouter({
   history: createWebHistory(),
-
   routes,
 });
 
 router.beforeEach((to) => {
   const accessToken = localStorage.getItem("access_token");
-
   const refreshToken = localStorage.getItem("refresh_token");
 
   const isAuthenticated = !!accessToken || !!refreshToken;

@@ -1,0 +1,293 @@
+--- orig/personal_portfolio_saas_project-main/apps/portfolios_themes/management/commands/seed_templates.py	2026-09-25 09:06:05.000000000 +0000
++++ pp/personal_portfolio_saas_project-main/apps/portfolios_themes/management/commands/seed_templates.py	2026-09-26 08:10:17.612947345 +0000
+@@ -34,6 +34,30 @@
+         'description': 'A premium showcase layout for a polished personal brand.',
+         'access_level': PortfolioTemplate.ACCESS_PREMIUM,
+     },
++    {
++        'template_key': 'arsam',
++        'name': 'Arsam Template',
++        'description': 'A playful strawberry-kawaii portfolio with soft pastel cards and cute details.',
++        'access_level': PortfolioTemplate.ACCESS_PREMIUM,
++    },
++    {
++        'template_key': 'template_6',
++        'name': 'Terminal',
++        'description': 'A developer-focused portfolio inspired by terminal interfaces and code editors.',
++        'access_level': PortfolioTemplate.ACCESS_PREMIUM,
++    },
++    {
++        'template_key': 'template_7',
++        'name': 'Editorial',
++        'description': 'An editorial portfolio with expressive typography and a refined magazine feel.',
++        'access_level': PortfolioTemplate.ACCESS_PREMIUM,
++    },
++    {
++        'template_key': 'template_8',
++        'name': 'Collage',
++        'description': 'A playful visual collage layout with layered cards and bold creative composition.',
++        'access_level': PortfolioTemplate.ACCESS_PREMIUM,
++    },
+ ]
+ 
+ 
+--- orig/personal_portfolio_saas_project-main/frontend/src/components/portfolio-templates/PortfolioTemplateRenderer.vue	2026-09-25 09:06:05.000000000 +0000
++++ pp/personal_portfolio_saas_project-main/frontend/src/components/portfolio-templates/PortfolioTemplateRenderer.vue	2026-09-26 08:10:17.612632812 +0000
+@@ -10,6 +10,7 @@
+ 
+ import TemplateOne from './templates/TemplateOne.vue'
+ import TemplateTwo from './templates/TemplateTwo.vue'
++import ArsamTemplate from './templates/ArsamTemplate.vue'
+ 
+ const props = defineProps({
+   portfolio: {
+@@ -21,6 +22,7 @@
+ const templateMap = {
+   template_1: TemplateOne,
+   template_2: TemplateTwo,
++  arsam: ArsamTemplate,
+ }
+ 
+ const templateComponent = computed(() => {
+--- /dev/null	2026-09-26 07:46:44.287547201 +0000
++++ pp/personal_portfolio_saas_project-main/frontend/src/components/portfolio-templates/templates/ArsamTemplate.vue	2026-09-26 08:10:34.503105071 +0000
+@@ -0,0 +1,239 @@
++<template>
++  <main class="min-h-screen overflow-hidden bg-[#fff8f7] text-[#5b3038]">
++    <div class="pointer-events-none fixed inset-0 opacity-40" aria-hidden="true">
++      <div class="absolute -left-16 top-20 h-44 w-44 rounded-full bg-[#ffd8df] blur-3xl"></div>
++      <div class="absolute right-0 top-96 h-56 w-56 rounded-full bg-[#ffe9b8] blur-3xl"></div>
++      <div class="absolute bottom-0 left-1/3 h-64 w-64 rounded-full bg-[#ffc7d2] blur-3xl"></div>
++    </div>
++
++    <nav class="relative mx-auto flex max-w-6xl items-center justify-between px-5 py-6 sm:px-8 lg:px-10">
++      <div class="flex items-center gap-3">
++        <div class="flex h-11 w-11 rotate-[-8deg] items-center justify-center rounded-2xl bg-[#ef5360] text-xl text-white shadow-[0_8px_0_#d83f4d]">
++          🍓
++        </div>
++        <div>
++          <p class="text-sm font-black tracking-wide text-[#ef5360]">arsam template</p>
++          <p class="text-xs font-medium text-[#9c7077]">sweet portfolio · made with love</p>
++        </div>
++      </div>
++
++      <a
++        v-if="portfolio.social?.sl_personal_web"
++        :href="portfolio.social.sl_personal_web"
++        target="_blank"
++        rel="noreferrer"
++        class="hidden rounded-full border-2 border-[#f2b4bc] bg-white px-5 py-2.5 text-sm font-bold text-[#ef5360] shadow-[0_4px_0_#f2d5d9] transition hover:-translate-y-0.5 sm:block"
++      >
++        say hello ♡
++      </a>
++    </nav>
++
++    <section class="relative mx-auto max-w-6xl px-5 pb-16 pt-8 sm:px-8 sm:pt-14 lg:px-10 lg:pb-24">
++      <div class="grid items-center gap-10 lg:grid-cols-[1.1fr_0.9fr]">
++        <div>
++          <div class="inline-flex rotate-[-2deg] items-center gap-2 rounded-full border-2 border-[#f3b8c0] bg-white px-4 py-2 text-xs font-black text-[#ef5360] shadow-[0_5px_0_#f4d7da]">
++            <span>✦</span>
++            hello, i'm
++            <span>🍓</span>
++          </div>
++
++          <h1 class="mt-7 max-w-4xl text-5xl font-black leading-[0.95] tracking-[-0.04em] text-[#542b33] sm:text-7xl lg:text-8xl">
++            {{ portfolio.title }}
++          </h1>
++
++          <p v-if="portfolio.bio" class="mt-7 max-w-2xl text-base font-medium leading-8 text-[#87646b] sm:text-lg">
++            {{ portfolio.bio }}
++          </p>
++
++          <div class="mt-8 flex flex-wrap gap-3">
++            <a
++              v-if="portfolio.projects?.length"
++              href="#projects"
++              class="rounded-full bg-[#ef5360] px-6 py-3 text-sm font-black text-white shadow-[0_6px_0_#c93d4b] transition hover:-translate-y-1"
++            >
++              see my work ✦
++            </a>
++            <a
++              v-if="portfolio.social?.sl_github"
++              :href="portfolio.social.sl_github"
++              target="_blank"
++              rel="noreferrer"
++              class="rounded-full border-2 border-[#efb0b8] bg-white px-6 py-3 text-sm font-black text-[#ef5360] shadow-[0_5px_0_#f2d5d9] transition hover:-translate-y-1"
++            >
++              github ♡
++            </a>
++          </div>
++        </div>
++
++        <div class="relative mx-auto w-full max-w-sm">
++          <div class="absolute -right-4 top-5 rotate-12 text-4xl">✦</div>
++          <div class="absolute -left-5 bottom-16 -rotate-12 text-3xl">♡</div>
++          <div class="absolute right-8 bottom-0 text-2xl">✿</div>
++
++          <div class="rotate-2 rounded-[2.5rem] border-2 border-[#f1aab4] bg-[#ffdfe4] p-4 shadow-[0_12px_0_#efb6bf] transition duration-300 hover:rotate-0">
++            <div class="flex aspect-square items-center justify-center overflow-hidden rounded-[2rem] border-2 border-white bg-[#fff7f7]">
++              <div class="text-center">
++                <div class="text-8xl">🍓</div>
++                <p class="mt-4 text-sm font-black text-[#ef5360]">cute &amp; creative</p>
++              </div>
++            </div>
++          </div>
++
++          <div class="absolute -bottom-5 -left-3 rotate-[-5deg] rounded-2xl border-2 border-[#efb0b8] bg-white px-4 py-3 text-xs font-black text-[#ef5360] shadow-[0_5px_0_#f0d9dc]">
++            building things ♡
++          </div>
++        </div>
++      </div>
++    </section>
++
++    <div class="relative mx-auto max-w-6xl px-5 sm:px-8 lg:px-10">
++      <div class="flex items-center gap-3 text-[#ef5360]">
++        <span class="text-xl">🍓</span>
++        <div class="h-px flex-1 border-t-2 border-dashed border-[#f2bbc2]"></div>
++        <span class="text-sm font-black">a little about me</span>
++        <div class="h-px flex-1 border-t-2 border-dashed border-[#f2bbc2]"></div>
++        <span class="text-xl">🍓</span>
++      </div>
++    </div>
++
++    <section v-if="portfolio.skills?.length" class="relative mx-auto max-w-6xl px-5 py-16 sm:px-8 lg:px-10 lg:py-20">
++      <div class="flex items-end justify-between gap-4">
++        <div>
++          <p class="text-sm font-black text-[#ef5360]">01 · my little toolbox</p>
++          <h2 class="mt-2 text-3xl font-black tracking-tight text-[#542b33] sm:text-4xl">Things I love to build</h2>
++        </div>
++        <span class="hidden rotate-3 text-4xl sm:block">🎀</span>
++      </div>
++
++      <div class="mt-8 flex flex-wrap gap-3">
++        <div
++          v-for="(skill, index) in portfolio.skills"
++          :key="skill.id"
++          class="rounded-2xl border-2 border-[#f2c1c8] bg-white px-5 py-3 text-sm font-black shadow-[0_4px_0_#f3dfe2] transition hover:-translate-y-1"
++          :class="index % 3 === 0 ? 'text-[#ef5360]' : index % 3 === 1 ? 'text-[#b06b78]' : 'text-[#d88a45]'"
++        >
++          {{ skill.skill_name }}
++          <span class="ml-1 text-xs">{{ index % 2 ? '✦' : '♡' }}</span>
++        </div>
++      </div>
++    </section>
++
++    <section v-if="portfolio.projects?.length" id="projects" class="relative bg-[#fff0f2] py-16 sm:py-20">
++      <div class="mx-auto max-w-6xl px-5 sm:px-8 lg:px-10">
++        <p class="text-sm font-black text-[#ef5360]">02 · little projects</p>
++        <div class="mt-2 flex items-center justify-between gap-5">
++          <h2 class="text-3xl font-black tracking-tight text-[#542b33] sm:text-4xl">Stuff I made 🍓</h2>
++          <span class="hidden rounded-full bg-white px-4 py-2 text-xs font-black text-[#ef5360] shadow-sm sm:block">made with ♡</span>
++        </div>
++
++        <div class="mt-9 grid gap-6 md:grid-cols-2">
++          <article
++            v-for="(project, index) in portfolio.projects"
++            :key="project.id"
++            class="group overflow-hidden rounded-[2rem] border-2 border-[#f3c0c7] bg-white shadow-[0_7px_0_#efd9dc] transition duration-300 hover:-translate-y-2"
++          >
++            <div class="relative h-52 overflow-hidden bg-[#ffdce2]">
++              <img
++                v-if="project.pro_image"
++                :src="project.pro_image"
++                :alt="project.pro_name"
++                class="h-full w-full object-cover transition duration-500 group-hover:scale-105"
++              />
++              <div v-else class="flex h-full items-center justify-center text-7xl">
++                {{ index % 3 === 0 ? '🍓' : index % 3 === 1 ? '🎀' : '🌸' }}
++              </div>
++              <span class="absolute left-4 top-4 rounded-full border-2 border-white bg-[#ef5360] px-3 py-1 text-xs font-black text-white shadow-sm">
++                {{ String(index + 1).padStart(2, '0') }}
++              </span>
++            </div>
++
++            <div class="p-6">
++              <h3 class="text-xl font-black text-[#542b33]">{{ project.pro_name }}</h3>
++              <p v-if="project.pro_description" class="mt-3 text-sm leading-7 text-[#87646b]">
++                {{ project.pro_description }}
++              </p>
++
++              <div v-if="project.pro_techs" class="mt-5 flex flex-wrap gap-2">
++                <span
++                  v-for="tech in project.pro_techs.split(',').map(item => item.trim()).filter(Boolean)"
++                  :key="tech"
++                  class="rounded-full bg-[#fff0f2] px-3 py-1 text-xs font-bold text-[#ef5360]"
++                >
++                  {{ tech }}
++                </span>
++              </div>
++
++              <div class="mt-6 flex flex-wrap gap-3">
++                <a v-if="project.pro_github_url" :href="project.pro_github_url" target="_blank" rel="noreferrer" class="text-sm font-black text-[#ef5360] hover:underline">github ↗</a>
++                <a v-if="project.pro_live_demo_url" :href="project.pro_live_demo_url" target="_blank" rel="noreferrer" class="text-sm font-black text-[#b06b78] hover:underline">live demo ↗</a>
++              </div>
++            </div>
++          </article>
++        </div>
++      </div>
++    </section>
++
++    <section v-if="portfolio.experiences?.length" class="relative mx-auto max-w-6xl px-5 py-16 sm:px-8 lg:px-10 lg:py-20">
++      <p class="text-sm font-black text-[#ef5360]">03 · my journey</p>
++      <h2 class="mt-2 text-3xl font-black tracking-tight text-[#542b33] sm:text-4xl">Where I've been ✿</h2>
++
++      <div class="mt-9 space-y-5">
++        <article
++          v-for="experience in portfolio.experiences"
++          :key="experience.id"
++          class="relative rounded-[2rem] border-2 border-[#f2c4ca] bg-white p-6 shadow-[0_5px_0_#f1dfe2] sm:p-7"
++        >
++          <div class="absolute -left-2 top-7 h-4 w-4 rounded-full border-2 border-white bg-[#ef5360] shadow-sm"></div>
++          <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
++            <div>
++              <h3 class="text-lg font-black text-[#542b33]">{{ experience.ex_position }}</h3>
++              <p class="mt-1 font-bold text-[#ef5360]">{{ experience.ex_company }}</p>
++            </div>
++            <p class="rounded-full bg-[#fff0f2] px-3 py-1 text-xs font-black text-[#b06b78]">
++              {{ experience.ex_start_date }} <span v-if="experience.ex_end_date">— {{ experience.ex_end_date }}</span><span v-else>— Present</span>
++            </p>
++          </div>
++          <p v-if="experience.ex_description" class="mt-4 max-w-3xl text-sm leading-7 text-[#87646b]">{{ experience.ex_description }}</p>
++        </article>
++      </div>
++    </section>
++
++    <section v-if="portfolio.educations?.length" class="bg-[#fff0f2] py-16 sm:py-20">
++      <div class="mx-auto max-w-6xl px-5 sm:px-8 lg:px-10">
++        <p class="text-sm font-black text-[#ef5360]">04 · learning</p>
++        <h2 class="mt-2 text-3xl font-black text-[#542b33] sm:text-4xl">A few chapters 🎀</h2>
++        <div class="mt-8 grid gap-4 sm:grid-cols-2">
++          <div v-for="education in portfolio.educations" :key="education.id" class="rounded-[1.75rem] border-2 border-[#f3c4cb] bg-white p-6 shadow-[0_5px_0_#f0dadd]">
++            <span class="text-2xl">🌸</span>
++            <p class="mt-4 font-black leading-7 text-[#542b33]">{{ education.edu }}</p>
++          </div>
++        </div>
++      </div>
++    </section>
++
++    <footer class="relative mx-auto max-w-6xl px-5 pb-10 pt-16 text-center sm:px-8 lg:px-10 lg:pt-20">
++      <div class="mx-auto max-w-2xl rounded-[2.5rem] border-2 border-[#f0b4bd] bg-white px-6 py-10 shadow-[0_8px_0_#f1dadd] sm:px-10">
++        <div class="text-4xl">🍓 ♡ 🍓</div>
++        <h2 class="mt-5 text-3xl font-black text-[#542b33]">Let's make something cute.</h2>
++        <p class="mx-auto mt-3 max-w-md text-sm leading-7 text-[#87646b]">Thanks for stopping by my little corner of the internet.</p>
++
++        <div v-if="portfolio.social" class="mt-7 flex flex-wrap justify-center gap-3">
++          <a v-if="portfolio.social.sl_github" :href="portfolio.social.sl_github" target="_blank" rel="noreferrer" class="rounded-full bg-[#fff0f2] px-4 py-2 text-xs font-black text-[#ef5360]">GitHub</a>
++          <a v-if="portfolio.social.sl_linkedin" :href="portfolio.social.sl_linkedin" target="_blank" rel="noreferrer" class="rounded-full bg-[#fff0f2] px-4 py-2 text-xs font-black text-[#ef5360]">LinkedIn</a>
++          <a v-if="portfolio.social.sl_personal_web" :href="portfolio.social.sl_personal_web" target="_blank" rel="noreferrer" class="rounded-full bg-[#fff0f2] px-4 py-2 text-xs font-black text-[#ef5360]">Website</a>
++        </div>
++      </div>
++
++      <p class="mt-8 text-xs font-bold text-[#bd9299]">arsam template · built with ♡</p>
++    </footer>
++  </main>
++</template>
++
++<script setup>
++defineProps({
++  portfolio: {
++    type: Object,
++    required: true,
++  },
++})
++</script>

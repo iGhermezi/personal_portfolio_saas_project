@@ -34,6 +34,12 @@ TEMPLATES = [
         'description': 'A premium showcase layout for a polished personal brand.',
         'access_level': PortfolioTemplate.ACCESS_PREMIUM,
     },
+    {
+    'template_key': 'arsam',
+    'name': 'Arsam Template',
+    'description': 'A cute strawberry-inspired kawaii portfolio with playful pastel details.',
+    'access_level': PortfolioTemplate.ACCESS_PREMIUM,
+    },
 ]
 
 

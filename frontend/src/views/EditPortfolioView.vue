@@ -1,13 +1,10 @@
 <template>
-
   <div class="min-h-screen bg-[#faf9ff] px-5 py-5">
-
     <main class="mx-auto max-w-5xl px-6 py-8">
 
       <!-- Header -->
 
       <div class="mb-8">
-
         <button
           type="button"
           class="
@@ -42,7 +39,6 @@
         <p class="mt-2 text-sm text-slate-400">
           Update your portfolio information and choose a template.
         </p>
-
       </div>
 
 
@@ -60,11 +56,9 @@
           shadow-sm
         "
       >
-
         <p class="text-sm text-slate-400">
           Loading your portfolio...
         </p>
-
       </div>
 
 
@@ -86,7 +80,6 @@
         <!-- Title -->
 
         <div>
-
           <label
             for="title"
             class="
@@ -120,14 +113,12 @@
               focus:ring-violet-50
             "
           />
-
         </div>
 
 
         <!-- Slug -->
 
         <div class="mt-6">
-
           <label
             for="slug"
             class="
@@ -165,14 +156,12 @@
           <p class="mt-2 text-xs text-slate-400">
             This is used as your public portfolio URL.
           </p>
-
         </div>
 
 
         <!-- Bio -->
 
         <div class="mt-6">
-
           <label
             for="bio"
             class="
@@ -207,7 +196,6 @@
               focus:ring-violet-50
             "
           />
-
         </div>
 
 
@@ -216,7 +204,6 @@
         <div class="mt-8">
 
           <div>
-
             <h2
               class="
                 text-sm
@@ -230,7 +217,6 @@
             <p class="mt-1 text-xs text-slate-400">
               Available templates depend on your account access.
             </p>
-
           </div>
 
 
@@ -248,11 +234,9 @@
               text-center
             "
           >
-
             <p class="text-sm text-slate-400">
               Loading templates...
             </p>
-
           </div>
 
 
@@ -274,28 +258,36 @@
               :key="template.id"
               type="button"
               class="
+                group
+                relative
                 overflow-hidden
                 rounded-2xl
                 border
                 text-left
                 transition
-                hover:-translate-y-0.5
-                hover:shadow-md
               "
               :class="
-                form.template === template.id
-                  ? 'border-violet-400 ring-4 ring-violet-50'
-                  : 'border-slate-200'
+                template.can_use
+                  ? (
+                      form.template === template.id
+                        ? 'border-violet-400 ring-4 ring-violet-50 hover:-translate-y-0.5 hover:shadow-md'
+                        : 'border-slate-200 hover:-translate-y-0.5 hover:shadow-md'
+                    )
+                  : 'cursor-not-allowed border-slate-200'
               "
-              @click="form.template = template.id"
+              @click="selectTemplate(template)"
             >
+
+              <!-- Template preview -->
 
               <div
                 class="
+                  relative
                   flex
                   h-36
                   items-center
                   justify-center
+                  overflow-hidden
                   bg-slate-50
                 "
               >
@@ -314,24 +306,130 @@
                   ✦
                 </span>
 
+
+                <!-- Locked overlay -->
+
+                <div
+                  v-if="!template.can_use"
+                  class="
+                    absolute
+                    inset-0
+                    flex
+                    items-center
+                    justify-center
+                    bg-slate-900/55
+                    backdrop-blur-[2px]
+                  "
+                >
+                  <div
+                    class="
+                      flex
+                      flex-col
+                      items-center
+                      justify-center
+                      text-center
+                      text-white
+                    "
+                  >
+
+                    <div
+                      class="
+                        flex
+                        h-12
+                        w-12
+                        items-center
+                        justify-center
+                        rounded-full
+                        bg-white/15
+                        text-xl
+                        backdrop-blur
+                      "
+                    >
+                      🔒
+                    </div>
+
+                    <p class="mt-2 text-xs font-semibold">
+                      Locked
+                    </p>
+
+                  </div>
+                </div>
+
+
+                <!-- Selected -->
+
+                <div
+                  v-if="
+                    template.can_use &&
+                    form.template === template.id
+                  "
+                  class="
+                    absolute
+                    right-3
+                    top-3
+                    flex
+                    h-8
+                    w-8
+                    items-center
+                    justify-center
+                    rounded-full
+                    bg-violet-500
+                    text-sm
+                    font-bold
+                    text-white
+                    shadow-lg
+                  "
+                >
+                  ✓
+                </div>
+
               </div>
 
 
+              <!-- Template information -->
+
               <div class="p-4">
 
-                <h3
+                <div
                   class="
-                    text-sm
-                    font-semibold
-                    text-slate-800
+                    flex
+                    items-start
+                    justify-between
+                    gap-2
                   "
                 >
-                  {{ template.name }}
-                </h3>
+
+                  <h3
+                    class="
+                      text-sm
+                      font-semibold
+                      text-slate-800
+                    "
+                  >
+                    {{ template.name }}
+                  </h3>
+
+
+                  <span
+                    class="
+                      shrink-0
+                      rounded-full
+                      px-2.5
+                      py-1
+                      text-[10px]
+                      font-semibold
+                    "
+                    :class="accessBadgeClass(template.access_level)"
+                  >
+                    {{ accessLabel(template.access_level) }}
+                  </span>
+
+                </div>
+
 
                 <p
                   class="
-                    mt-1
+                    mt-2
                     line-clamp-2
                     text-xs
                     leading-5
@@ -341,21 +439,72 @@
                   {{ template.description }}
                 </p>
 
-                <span
+
+                <!-- Locked reason -->
+
+                <div
+                  v-if="!template.can_use"
                   class="
                     mt-3
-                    inline-block
-                    rounded-full
-                    bg-violet-50
-                    px-3
-                    py-1
+                    flex
+                    items-center
+                    gap-1.5
+                    text-[11px]
+                    font-medium
+                  "
+                  :class="
+                    template.lock_reason === 'verification'
+                      ? 'text-emerald-600'
+                      : template.lock_reason === 'subscription'
+                        ? 'text-amber-600'
+                        : 'text-slate-400'
+                  "
+                >
+
+                  <span>
+                    🔒
+                  </span>
+
+                  <span
+                    v-if="
+                      template.lock_reason === 'verification'
+                    "
+                  >
+                    Verify email to unlock
+                  </span>
+
+                  <span
+                    v-else-if="
+                      template.lock_reason === 'subscription'
+                    "
+                  >
+                    Premium required
+                  </span>
+
+                  <span v-else>
+                    Currently unavailable
+                  </span>
+
+                </div>
+
+
+                <!-- Available status -->
+
+                <div
+                  v-else
+                  class="
+                    mt-3
                     text-[11px]
                     font-medium
                     text-violet-500
                   "
                 >
-                  {{ template.access_level }}
-                </span>
+                  {{
+                    form.template === template.id
+                      ? 'Currently selected'
+                      : 'Available'
+                  }}
+                </div>
 
               </div>
 
@@ -363,6 +512,8 @@
 
           </div>
 
+
+          <!-- No templates -->
 
           <div
             v-else
@@ -376,11 +527,9 @@
               text-center
             "
           >
-
             <p class="text-sm text-slate-400">
               No templates are currently available.
             </p>
-
           </div>
 
         </div>
@@ -465,9 +614,7 @@
       </form>
 
     </main>
-
   </div>
-
 </template>
 
 
@@ -525,12 +672,66 @@ const error = ref(null)
 
 
 /*
+ * Template helpers
+ */
+
+const accessLabel = (level) => {
+  if (level === 'premium') {
+    return 'Premium'
+  }
+
+  if (level === 'verified') {
+    return 'Verified'
+  }
+
+  return 'Free'
+}
+
+
+const accessBadgeClass = (level) => {
+  if (level === 'premium') {
+    return 'bg-amber-100 text-amber-700'
+  }
+
+  if (level === 'verified') {
+    return 'bg-emerald-100 text-emerald-700'
+  }
+
+  return 'bg-violet-50 text-violet-500'
+}
+
+
+/*
+ * Select template
+ */
+
+const selectTemplate = (template) => {
+
+  /*
+   * Important:
+   * Locked templates must NEVER modify
+   * form.template.
+   *
+   * Backend also validates this again.
+   */
+
+  if (!template.can_use) {
+    return
+  }
+
+  form.template = template.id
+
+}
+
+
+/*
  * Load portfolio
  */
 
 const loadPortfolio = async () => {
 
   loadingPortfolio.value = true
+
   error.value = null
 
   try {
@@ -541,13 +742,17 @@ const loadPortfolio = async () => {
 
     const portfolio = response.data
 
-    form.title = portfolio.title || ''
+    form.title =
+      portfolio.title || ''
 
-    form.slug = portfolio.slug || ''
+    form.slug =
+      portfolio.slug || ''
 
-    form.bio = portfolio.bio || ''
+    form.bio =
+      portfolio.bio || ''
 
-    form.template = portfolio.template || null
+    form.template =
+      portfolio.template || null
 
   } catch (err) {
 
@@ -586,6 +791,31 @@ const loadTemplates = async () => {
         ? response.data
         : response.data.results || []
 
+
+    /*
+     * If the currently selected template is
+     * no longer available to the user,
+     * force the user to choose an available
+     * template before saving.
+     */
+
+    if (form.template) {
+
+      const currentTemplate =
+        templates.value.find(
+          (template) =>
+            template.id === form.template
+        )
+
+      if (
+        currentTemplate &&
+        !currentTemplate.can_use
+      ) {
+        form.template = null
+      }
+
+    }
+
   } catch (err) {
 
     console.error(
@@ -615,6 +845,10 @@ const updatePortfolio = async () => {
   error.value = null
 
 
+  /*
+   * Basic validation
+   */
+
   if (!form.title.trim()) {
 
     error.value =
@@ -638,7 +872,33 @@ const updatePortfolio = async () => {
   if (!form.template) {
 
     error.value =
-      'Please choose a template.'
+      'Please choose an available template.'
+
+    return
+
+  }
+
+
+  /*
+   * Extra frontend safety check
+   *
+   * Never send a locked template.
+   */
+
+  const selectedTemplate =
+    templates.value.find(
+      (template) =>
+        template.id === form.template
+    )
+
+
+  if (
+    !selectedTemplate ||
+    !selectedTemplate.can_use
+  ) {
+
+    error.value =
+      'The selected template is not available for your account.'
 
     return
 
@@ -653,12 +913,20 @@ const updatePortfolio = async () => {
     await api.patch(
       `/portfolios/${route.params.id}/`,
       {
-        title: form.title.trim(),
-        slug: form.slug.trim(),
-        bio: form.bio.trim(),
-        template: form.template,
+        title:
+          form.title.trim(),
+
+        slug:
+          form.slug.trim(),
+
+        bio:
+          form.bio.trim(),
+
+        template:
+          form.template,
       }
     )
+
 
     await router.push('/dashboard')
 
@@ -669,7 +937,8 @@ const updatePortfolio = async () => {
       err
     )
 
-    const data = err.response?.data
+    const data =
+      err.response?.data
 
 
     if (
@@ -706,11 +975,17 @@ const updatePortfolio = async () => {
  * Initial load
  */
 
-onMounted(() => {
+onMounted(async () => {
 
-  loadPortfolio()
+  /*
+   * Portfolio must load first because
+   * we need its current template before
+   * checking template access.
+   */
 
-  loadTemplates()
+  await loadPortfolio()
+
+  await loadTemplates()
 
 })
 
