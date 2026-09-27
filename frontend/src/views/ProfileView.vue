@@ -146,13 +146,22 @@
 
           </div>
 
-          <button
-            type="submit"
+          <div class="mt-8 flex flex-wrap items-center gap-3">
+            <button
+              type="submit"
             :disabled="saving"
-            class="mt-8 rounded-full bg-violet-400 px-7 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-100 transition hover:bg-violet-500 disabled:cursor-not-allowed disabled:opacity-60"
+            class="rounded-full bg-violet-400 px-7 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-100 transition hover:bg-violet-500 disabled:cursor-not-allowed disabled:opacity-60"
           >
             {{ saving ? 'Saving...' : 'Save changes' }}
-          </button>
+            </button>
+
+            <router-link
+              to="/account/security"
+              class="rounded-full border border-violet-200 bg-violet-50 px-7 py-3 text-sm font-semibold text-violet-500 transition hover:bg-violet-100"
+            >
+              Security settings
+            </router-link>
+          </div>
 
         </form>
       </div>

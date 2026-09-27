@@ -1,64 +1,3 @@
-<template>
-  <div class="min-h-screen bg-[#faf9ff] px-5 py-10">
-    <div class="mx-auto flex min-h-[80vh] max-w-md items-center">
-      <div
-        class="w-full rounded-3xl border border-violet-100 bg-white p-8 text-center shadow-sm"
-      >
-        <div
-          v-if="loading"
-          class="text-sm font-medium text-slate-400"
-        >
-          Verifying your email...
-        </div>
-
-        <template v-else-if="success">
-          <div class="text-5xl">
-            ✓
-          </div>
-
-          <h1 class="mt-4 text-2xl font-bold text-slate-900">
-            Email verified
-          </h1>
-
-          <p class="mt-3 text-sm leading-6 text-slate-400">
-            Your email address has been verified successfully.
-          </p>
-
-          <button
-            type="button"
-            class="mt-6 w-full rounded-2xl bg-violet-400 px-5 py-3 text-sm font-semibold text-white transition hover:bg-violet-500"
-            @click="continueToApp"
-          >
-            Continue
-          </button>
-        </template>
-
-        <template v-else>
-          <div class="text-5xl">
-            !
-          </div>
-
-          <h1 class="mt-4 text-2xl font-bold text-slate-900">
-            Verification failed
-          </h1>
-
-          <p class="mt-3 text-sm leading-6 text-red-500">
-            {{ error }}
-          </p>
-
-          <button
-            type="button"
-            class="mt-6 w-full rounded-2xl border border-violet-200 px-5 py-3 text-sm font-semibold text-violet-600 transition hover:bg-violet-50"
-            @click="continueToApp"
-          >
-            Continue
-          </button>
-        </template>
-      </div>
-    </div>
-  </div>
-</template>
-
 <script setup>
 import { onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
@@ -66,44 +5,47 @@ import api from '../api/axios'
 
 const route = useRoute()
 const router = useRouter()
-
 const loading = ref(true)
-const success = ref(false)
+const success = ref('')
 const error = ref('')
 
-const continueToApp = () => {
-  const accessToken = localStorage.getItem('access_token')
-  const refreshToken = localStorage.getItem('refresh_token')
-
-  if (accessToken || refreshToken) {
-    router.push('/dashboard')
-  } else {
-    router.push('/login')
-  }
-}
-
-const verifyEmail = async () => {
-  loading.value = true
-  error.value = ''
-
+onMounted(async () => {
   try {
-    await api.get(
-      `/accounts/email/verify/${route.params.uid}/${route.params.token}/`
-    )
-
-    success.value = true
+    await api.get(`/accounts/email/verify/${route.params.uid}/${route.params.token}/`)
+    success.value = 'ایمیل شما با موفقیت تأیید شد.'
   } catch (err) {
-    console.error('Email verification failed:', err)
-
-    error.value =
-      err.response?.data?.detail ||
-      'Unable to verify your email address.'
+    error.value = err.response?.data?.detail || 'لینک تأیید ایمیل معتبر نیست یا منقضی شده است.'
   } finally {
     loading.value = false
   }
-}
-
-onMounted(() => {
-  verifyEmail()
 })
+
+const continueToApp = () => {
+  router.push(localStorage.getItem('access_token') || localStorage.getItem('refresh_token') ? '/dashboard' : '/login')
+}
 </script>
+
+<template>
+  <div class="flex min-h-screen items-center justify-center bg-[#faf9ff] px-6 dark:bg-[#100b1c]">
+    <div class="w-full max-w-md rounded-3xl border border-violet-100 bg-white p-8 text-center shadow-xl shadow-violet-100">
+      <div v-if="loading">
+        <div class="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-violet-100 border-t-violet-400" />
+        <h1 class="mt-6 text-2xl font-bold text-slate-900">Verifying email...</h1>
+      </div>
+
+      <div v-else-if="success">
+        <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-emerald-50 text-2xl text-emerald-500">✓</div>
+        <h1 class="mt-6 text-2xl font-bold text-slate-900">Email verified</h1>
+        <p class="mt-3 text-sm text-slate-500">{{ success }}</p>
+        <button class="mt-7 w-full rounded-xl bg-violet-400 py-3 text-sm font-semibold text-white hover:bg-violet-500" @click="continueToApp">Continue</button>
+      </div>
+
+      <div v-else>
+        <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-red-50 text-2xl text-red-500">!</div>
+        <h1 class="mt-6 text-2xl font-bold text-slate-900">Verification failed</h1>
+        <p class="mt-3 text-sm text-red-500">{{ error }}</p>
+        <button class="mt-7 w-full rounded-xl border border-slate-200 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50" @click="router.push('/login')">Back to login</button>
+      </div>
+    </div>
+  </div>
+</template>

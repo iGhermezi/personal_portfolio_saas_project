@@ -1,4 +1,3 @@
-
 <template>
   <div class="min-h-screen bg-[#faf9ff] px-5 py-5">
     <DashboardSidebar
@@ -21,10 +20,9 @@
 
         <p class="mt-2 text-sm text-slate-400">
           Choose a template for your portfolio.
-          Premium templates are available after Premium approval.
+          Premium templates require an active subscription.
         </p>
 
-        <!-- Loading -->
         <div
           v-if="loading"
           class="mt-8 rounded-3xl border border-slate-100 bg-white p-10 text-center shadow-sm"
@@ -34,7 +32,6 @@
           </p>
         </div>
 
-        <!-- Error -->
         <div
           v-else-if="error"
           class="mt-8 rounded-3xl border border-red-100 bg-red-50 p-6"
@@ -44,7 +41,6 @@
           </p>
         </div>
 
-        <!-- Templates -->
         <div
           v-else
           class="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3"
@@ -72,7 +68,7 @@
                 ◈
               </span>
 
-              <!-- Premium lock overlay -->
+              <!-- Lock overlay -->
               <div
                 v-if="!template.can_use"
                 class="absolute inset-0 flex items-center justify-center bg-slate-900/55 backdrop-blur-[2px]"
@@ -87,13 +83,12 @@
                   </div>
 
                   <p class="mt-2 text-sm font-semibold">
-                    Premium
+                    Locked
                   </p>
                 </div>
               </div>
             </div>
 
-            <!-- Content -->
             <div class="p-6">
               <div class="flex items-start justify-between gap-3">
                 <h2 class="text-lg font-bold text-slate-800">
@@ -127,17 +122,6 @@
                 }}
               </button>
 
-              <!-- Premium -->
-              <button
-                v-else-if="template.access_level === 'premium'"
-                type="button"
-                class="mt-5 w-full rounded-2xl bg-amber-500 px-5 py-3 text-sm font-semibold text-white transition hover:bg-amber-600"
-                @click="goToUpgrade"
-              >
-                Unlock with Premium
-              </button>
-
-              <!-- Other unavailable template -->
               <button
                 v-else
                 type="button"
@@ -218,8 +202,8 @@ const selectTemplate = async (template) => {
 
   try {
     /*
-     * Get the current user's portfolio.
-     * Each user can have only one portfolio.
+     * We get the portfolio list first because the current
+     * Templates page is responsible only for template selection.
      */
     const response = await api.get('portfolios/')
 
@@ -259,6 +243,7 @@ const selectTemplate = async (template) => {
 const goToUpgrade = () => {
   router.push('/upgrade')
 }
+
 
 onMounted(() => {
   loadTemplates()

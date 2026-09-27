@@ -1,1 +1,61 @@
 @import "tailwindcss";
+
+/* Keep the existing light design untouched. Tailwind's existing violet/slate
+   palette remains the source of truth; these rules only provide its dark
+   counterpart when <html class="dark"> is active. */
+
+html.dark {
+  background: #100b1c;
+}
+
+html.dark body {
+  background: #100b1c;
+  color: #e8e3f0;
+}
+
+html.dark .bg-white { background-color: #171124 !important; }
+html.dark .bg-\[\#faf9ff\] { background-color: #100b1c !important; }
+html.dark .bg-slate-50 { background-color: #1d1728 !important; }
+html.dark .bg-slate-100 { background-color: #272032 !important; }
+html.dark .bg-violet-50 { background-color: #211630 !important; }
+html.dark .bg-violet-100 { background-color: #2a1b3d !important; }
+html.dark .bg-violet-200 { background-color: #3a2852 !important; }
+
+html.dark .border-white { border-color: #332842 !important; }
+html.dark .border-slate-100 { border-color: #2a2236 !important; }
+html.dark .border-slate-200 { border-color: #3a3048 !important; }
+html.dark .border-violet-50 { border-color: #2d2140 !important; }
+html.dark .border-violet-100 { border-color: #3b2853 !important; }
+html.dark .border-violet-300 { border-color: #8b62cf !important; }
+
+html.dark .text-slate-900 { color: #f5f1f8 !important; }
+html.dark .text-slate-800 { color: #eee8f4 !important; }
+html.dark .text-slate-700 { color: #d8cfdf !important; }
+html.dark .text-slate-600 { color: #bcb0c8 !important; }
+html.dark .text-slate-500 { color: #a99caf !important; }
+html.dark .text-slate-400 { color: #95879f !important; }
+
+html.dark .hover\:bg-slate-50:hover { background-color: #241c30 !important; }
+html.dark .hover\:bg-violet-50:hover { background-color: #2a1b3d !important; }
+html.dark .hover\:bg-violet-100:hover { background-color: #352348 !important; }
+html.dark .focus\:bg-white:focus { background-color: #21182f !important; }
+
+html.dark input,
+html.dark textarea,
+html.dark select {
+  color: #f5f1f8;
+}
+
+html.dark input::placeholder,
+html.dark textarea::placeholder {
+  color: #81758b;
+}
+
+html.dark .shadow-violet-100 {
+  --tw-shadow-color: rgb(75 47 104 / 0.35) !important;
+}
+
+html.dark .bg-linear-130,
+html.dark .bg-linear-210 {
+  background-image: linear-gradient(130deg, #241337, #4b2b70) !important;
+}

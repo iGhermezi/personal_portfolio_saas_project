@@ -167,6 +167,15 @@
         </button>
       </form>
 
+      <div class="mt-4 text-center">
+        <router-link
+          to="/forgot-password"
+          class="text-sm font-semibold text-violet-400 transition hover:text-violet-500"
+        >
+          Forgot password?
+        </router-link>
+      </div>
+
       <div
         class="
           mt-6
