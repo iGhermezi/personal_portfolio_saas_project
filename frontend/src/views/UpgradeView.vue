@@ -51,23 +51,34 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 import api from '../api/axios'
+import { useAuthStore } from '../stores/auth'
 import DashboardSidebar from '../components/Dashboard/DashboardSidebar.vue'
 
+
+const authStore = useAuthStore()
 const sidebarCollapsed = ref(false)
 const loading = ref(true)
 const subscribed = ref(false)
 const requestStatus = ref(null)
 const requesting = ref(false)
 const statusText = ref('Request premium access for manual admin review.')
-
 onMounted(async () => {
   try {
+    await authStore.getProfile()
+
     const { data } = await api.get('/accounts/subscription/')
-    subscribed.value = !!data.has_subscription
+
+    subscribed.value = authStore.hasSubscription
     requestStatus.value = data.request_status || null
-    if (requestStatus.value === 'pending') statusText.value = 'Your request is waiting for manual admin review.'
+
+    if (requestStatus.value === 'pending') {
+      statusText.value =
+        'Your request is waiting for manual admin review.'
+    }
   } catch (error) {
-    statusText.value = error.response?.data?.detail || 'Unable to load subscription status.'
+    statusText.value =
+      error.response?.data?.detail ||
+      'Unable to load subscription status.'
   } finally {
     loading.value = false
   }
@@ -75,12 +86,25 @@ onMounted(async () => {
 
 const requestPremium = async () => {
   requesting.value = true
+
   try {
-    const { data } = await api.post('/accounts/premium/request/')
-    requestStatus.value = data.request_status || 'pending'
-    statusText.value = data.detail || 'Your request is waiting for manual admin review.'
+    const { data } = await api.post(
+      '/accounts/premium/request/'
+    )
+
+    await authStore.getProfile()
+
+    subscribed.value = authStore.hasSubscription
+    requestStatus.value =
+      data.request_status || 'pending'
+
+    statusText.value =
+      data.detail ||
+      'Your request is waiting for manual admin review.'
   } catch (error) {
-    statusText.value = error.response?.data?.detail || 'Unable to submit the premium request.'
+    statusText.value =
+      error.response?.data?.detail ||
+      'Unable to submit the premium request.'
   } finally {
     requesting.value = false
   }

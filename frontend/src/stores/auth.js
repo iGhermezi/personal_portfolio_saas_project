@@ -20,6 +20,14 @@ export const useAuthStore = defineStore('auth', {
     isAuthenticated: (state) => {
       return !!state.accessToken
     },
+
+    isEmailVerified: (state) => {
+      return !!state.user?.email_verified
+    },
+
+    hasSubscription: (state) => {
+      return !!state.user?.has_active_subscription
+    },
   },
 
   actions: {

@@ -9,12 +9,19 @@ class UserProfileSerializer(serializers.ModelSerializer):
         fields = (
             'id',
             'username',
-            'email', 
-            'first_name', 
-            'last_name', 
-            'profile_image_url', 
-            'job_title', 
-            'phone', 
-            'location'
-        )
-        read_only_fields = ('id', 'email')
+            'email',
+            'first_name',
+            'last_name',
+            'profile_image_url',
+            'job_title',
+            'phone',
+            'location',
+            'email_verified',
+            'has_active_subscription',
+            )
+        read_only_fields = (
+            'id',
+            'email',
+            'email_verified',
+            'has_active_subscription',
+            )

@@ -131,14 +131,14 @@
                     v-if="!template.can_use"
                     class="mt-3 text-[11px] font-medium"
                     :class="
-                      template.lock_reason === 'verification'
+                      template.lock_reason === 'email_verification'
                         ? 'text-emerald-600'
                         : 'text-amber-600'
                     "
                   >
                     🔒
                     {{
-                      template.lock_reason === 'verification'
+                      template.lock_reason === 'email_verification'
                         ? 'Verify email to unlock'
                         : 'Premium required'
                     }}

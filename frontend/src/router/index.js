@@ -100,12 +100,6 @@ const routes = [
   },
 
   {
-    path: "/verify-email/:uid/:token",
-    name: "verify-email",
-    component: () => import("../views/VerifyEmailView.vue"),
-  },
-
-  {
     path: "/portfolio/:slug",
     name: "public-portfolio",
     component: PublicPortfolioView,

@@ -82,6 +82,22 @@
 
       <button
         type="button"
+        @click="themeStore.toggleTheme()"
+        class="mt-2 flex w-full items-center rounded-xl px-3 py-3 text-sm font-medium text-slate-500 transition hover:bg-violet-50 hover:text-violet-500"
+      >
+        <span
+          class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-slate-50"
+        >
+          {{ themeStore.isDark ? "☀" : "☾" }}
+        </span>
+
+        <span v-if="!collapsed" class="ml-3">
+          {{ themeStore.isDark ? "Light mode" : "Dark mode" }}
+        </span>
+      </button>
+
+      <button
+        type="button"
         @click="logout"
         class="mt-2 flex w-full items-center rounded-xl px-3 py-3 text-sm font-medium text-slate-500 transition hover:bg-red-50 hover:text-red-500"
       >
@@ -110,7 +126,7 @@
 <script setup>
 import { computed, onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
-
+import { useThemeStore } from "../../stores/theme";
 import api from "../../api/axios";
 import { useAuthStore } from "../../stores/auth";
 
@@ -125,6 +141,7 @@ const emit = defineEmits(["toggle"]);
 
 const router = useRouter();
 const authStore = useAuthStore();
+const themeStore = useThemeStore();
 
 const portfolioId = ref(null);
 
