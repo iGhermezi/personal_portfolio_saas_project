@@ -53,6 +53,15 @@ TEMPLATES = [
         'preview_img': '',
         'access_level': PortfolioTemplate.ACCESS_PREMIUM,
     },
+
+    {
+    "name": "Emerald Signature",
+    "description": "A dark creative portfolio with an elegant emerald accent.",
+    "preview_img": "",
+    "template_key": "template_6",
+    "access_level": PortfolioTemplate.ACCESS_VERIFIED,
+    "is_active": True,
+    },
 ]
 
 

@@ -1,20 +1,24 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { useAuthStore } from '../stores/auth'
 import api from '../api/axios'
 
 const route = useRoute()
 const router = useRouter()
+const authStore = useAuthStore()
 const loading = ref(true)
 const success = ref('')
 const error = ref('')
 
+
 onMounted(async () => {
   try {
     await api.get(`/accounts/email/verify/${route.params.uid}/${route.params.token}/`)
-    success.value = 'ایمیل شما با موفقیت تأیید شد.'
+    await authStore.getProfile()
+    success.value = "email successfully added"
   } catch (err) {
-    error.value = err.response?.data?.detail || 'لینک تأیید ایمیل معتبر نیست یا منقضی شده است.'
+    error.value = err.response?.data?.detail || "this link is invalid or expired"
   } finally {
     loading.value = false
   }

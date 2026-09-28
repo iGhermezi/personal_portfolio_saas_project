@@ -207,6 +207,13 @@ class PortfolioSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError(
                     'An active subscription is required for this template.'
                 )
+            return value
+        
+        if value.access_level == 'verified':
+            if not user.email_verified:
+                raise serializers.ValidationError(
+                    'Email verification is required for this template.'
+                )
 
             return value
 

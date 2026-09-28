@@ -1,6 +1,7 @@
 import secrets
 import string
 from datetime import timedelta
+from django.http import HttpResponse
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -424,10 +425,11 @@ class EmailVerificationView(generics.GenericAPIView):
             ]
         )
 
-        return Response({
-            'detail': 'email verified successfully.'
-        })
-
+        return HttpResponse(
+            'Email verified successfully.',
+            status=200,
+            content_type='text/plain',
+        )
 
 class EmailVerificationResendView(generics.GenericAPIView):
     serializer_class = EmailVerificationResendSerializer

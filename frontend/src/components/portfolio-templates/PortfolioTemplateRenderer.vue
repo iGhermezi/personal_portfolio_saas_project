@@ -10,6 +10,7 @@ import TemplateTwo from './templates/TemplateTwo.vue'
 import TemplateThree from './templates/TemplateThree.vue'
 import TemplateFour from './templates/TemplateFour.vue'
 import TemplateFive from './templates/TemplateFive.vue'
+import TemplateSix from "./templates/TemplateSix.vue";
 
 const props = defineProps({
   portfolio: {
@@ -17,7 +18,6 @@ const props = defineProps({
     required: true,
   },
 })
-
 const templateMap = {
   arsam: TemplateOne,
   template_1: TemplateOne,
@@ -25,7 +25,8 @@ const templateMap = {
   template_3: TemplateThree,
   template_4: TemplateFour,
   template_5: TemplateFive,
-}
+  template_6: TemplateSix,
+};
 
 const templateComponent = computed(() => {
   return templateMap[props.portfolio.template_key] || TemplateOne

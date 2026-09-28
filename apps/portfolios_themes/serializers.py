@@ -38,14 +38,20 @@ class PortfolioTemplateSerializer(serializers.ModelSerializer):
         if obj.access_level == PortfolioTemplate.ACCESS_FREE:
             return True
 
+        if obj.access_level == PortfolioTemplate.ACCESS_VERIFIED:
+            return user.email_verified
+
         if obj.access_level == PortfolioTemplate.ACCESS_PREMIUM:
             return user.has_active_subscription
 
         return False
-
+    
     def get_lock_reason(self, obj):
         if self.get_can_use(obj):
             return None
+
+        if obj.access_level == PortfolioTemplate.ACCESS_VERIFIED:
+            return 'email_verification'
 
         if obj.access_level == PortfolioTemplate.ACCESS_PREMIUM:
             return 'subscription'
