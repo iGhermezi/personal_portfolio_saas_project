@@ -194,8 +194,6 @@ class ExperienceDetailView(generics.RetrieveUpdateDestroyAPIView):
             portfolio__user=self.request.user
         )
 
-from rest_framework.response import Response
-
 class SocialLinkCreateView(generics.CreateAPIView):
     serializer_class = SocialLinkSerializer
     permission_classes = (permissions.IsAuthenticated,)
@@ -209,25 +207,9 @@ class SocialLinkCreateView(generics.CreateAPIView):
         if social is None:
             raise NotFound('Social link not found.')
 
-        return Response(self.get_serializer(social).data)
-
-    def perform_create(self, serializer):
-        portfolio = Portfolio.objects.filter(
-            pk=self.kwargs['portfolio_pk'],
-            user=self.request.user
-        ).first()
-
-        if portfolio is None:
-            raise NotFound('Portfolio not found.')
-
-        if SocialLink.objects.filter(portfolio=portfolio).exists():
-            raise serializers.ValidationError({
-                'detail': 'Social link already exists.'
-            })
-
-        serializer.save(portfolio=portfolio)
-
- 
+        return Response(
+            self.get_serializer(social).data
+        )
 
     def perform_create(self, serializer):
         portfolio = Portfolio.objects.filter(
@@ -247,14 +229,4 @@ class SocialLinkCreateView(generics.CreateAPIView):
 
         serializer.save(
             portfolio=portfolio
-        )
-
-class SocialLinkDetailView(generics.RetrieveUpdateDestroyAPIView):
-    serializer_class = SocialLinkSerializer
-    permission_classes = (permissions.IsAuthenticated,)
-
-    def get_queryset(self):
-        return SocialLink.objects.filter(
-            portfolio_id=self.kwargs['portfolio_pk'],
-            portfolio__user=self.request.user
         )
