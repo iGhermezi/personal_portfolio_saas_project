@@ -66,7 +66,7 @@ onMounted(async () => {
   try {
     await authStore.getProfile()
 
-    const { data } = await api.get('/accounts/subscription/')
+    const { data } = await api.get('accounts/premium/request/')
 
     subscribed.value = authStore.hasSubscription
     requestStatus.value = data.request_status || null
@@ -94,7 +94,7 @@ const requestPremium = async () => {
 
     await authStore.getProfile()
 
-    subscribed.value = authStore.hasSubscription
+    subscribed.value = data.has_subscription ?? authStore.hasSubscription
     requestStatus.value =
       data.request_status || 'pending'
 

@@ -123,6 +123,24 @@
               </button>
 
               <button
+                v-else-if="template.lock_reason === 'subscription'"
+                type="button"
+                class="mt-5 w-full rounded-2xl bg-amber-100 px-5 py-3 text-sm font-semibold text-amber-700 transition hover:bg-amber-200"
+                @click="goToUpgrade"
+              >
+                Upgrade to unlock
+              </button>
+
+              <button
+                v-else-if="template.lock_reason === 'email_verification'"
+                type="button"
+                class="mt-5 w-full rounded-2xl bg-emerald-100 px-5 py-3 text-sm font-semibold text-emerald-700 transition hover:bg-emerald-200"
+                @click="goToVerify"
+              >
+                Verify your email to unlock
+              </button>
+
+              <button
                 v-else
                 type="button"
                 disabled
@@ -242,6 +260,10 @@ const selectTemplate = async (template) => {
 
 const goToUpgrade = () => {
   router.push('/upgrade')
+}
+
+const goToVerify = () => {
+  router.push('/account/security')
 }
 
 
