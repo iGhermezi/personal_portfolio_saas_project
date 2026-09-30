@@ -1,6 +1,6 @@
 <template>
   <div
-    class="overflow-hidden rounded-[28px] border border-violet-100 bg-white shadow-sm"
+    class="overflow-hidden rounded-[28px] border border-violet-100 bg-white text-slate-900 shadow-sm"
   >
     <!-- Preview -->
     <div class="relative h-[320px] overflow-hidden bg-violet-50">
@@ -22,31 +22,33 @@
     </div>
 
     <!-- Portfolio info -->
-    <div class="p-6">
+    <div class="p-6 text-slate-900">
       <div
         class="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between"
       >
-        <div>
-          <p class="text-xs font-medium text-violet-400">
+        <!-- Portfolio title -->
+        <div class="min-w-0">
+          <p class="text-xs font-medium text-violet-500">
             {{ i18nStore.t("dashboard.yourPortfolio") }}
           </p>
 
-          <h2 class="mt-1 text-xl font-bold text-slate-800">
+          <h2 class="mt-1 truncate text-xl font-bold text-slate-900">
             {{ portfolio.title }}
           </h2>
         </div>
 
+        <!-- Actions -->
         <div class="flex flex-wrap gap-3">
           <router-link
             :to="`/portfolio/${portfolio.id}/preview`"
-            class="rounded-full bg-violet-400 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-violet-500"
+            class="rounded-full bg-violet-500 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-violet-600"
           >
             {{ i18nStore.t("dashboard.preview") }}
           </router-link>
 
           <router-link
             :to="`/portfolio/${portfolio.id}/edit`"
-            class="rounded-full bg-violet-400 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-violet-500"
+            class="rounded-full bg-violet-500 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-violet-600"
           >
             {{ i18nStore.t("dashboard.editPortfolio") }}
           </router-link>
@@ -54,8 +56,10 @@
       </div>
 
       <!-- Public URL -->
-      <div class="mt-6 rounded-2xl bg-slate-50 p-4">
-        <p class="text-xs font-medium text-slate-400">
+      <div
+        class="mt-6 rounded-2xl bg-slate-50 p-4"
+      >
+        <p class="text-xs font-medium text-slate-500">
           {{ i18nStore.t("dashboard.publicPortfolio") }}
         </p>
 
@@ -63,7 +67,7 @@
           :href="publicUrl"
           target="_blank"
           rel="noopener noreferrer"
-          class="mt-1 block truncate text-sm font-medium text-violet-400 hover:text-violet-500"
+          class="mt-1 block truncate text-sm font-medium text-violet-600 hover:text-violet-700"
         >
           {{ publicUrl }}
         </a>

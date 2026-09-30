@@ -211,7 +211,7 @@
                 </label>
                 <select
                   v-model.number="skillForm.skill_level_in_skill"
-                  class="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-violet-300 focus:ring-4 focus:ring-violet-50"
+                  class="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 outline-none transition focus:border-violet-300 focus:bg-white focus:ring-4 focus:ring-violet-50"
                 >
                   <option :value="1">1 / 5</option>
                   <option :value="2">2 / 5</option>
@@ -855,7 +855,7 @@ const Field = defineComponent({
           type: props.type,
           placeholder: props.placeholder,
           class:
-            "mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-violet-300 focus:ring-4 focus:ring-violet-50",
+            "mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 outline-none transition focus:border-violet-300 focus:bg-white focus:ring-4 focus:ring-violet-50",
           onInput: (event) => emit("update:modelValue", event.target.value),
         }),
       ]);

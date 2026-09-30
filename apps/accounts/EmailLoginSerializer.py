@@ -48,5 +48,7 @@ class EmailLoginSerializer(TokenObtainPairSerializer):
                 'id': user.id,
                 'email': user.email,
                 'username': user.username,
-            }
+                'email_verified': user.email_verified,
+                'has_active_subscription': user.has_active_subscription,
+}
         }

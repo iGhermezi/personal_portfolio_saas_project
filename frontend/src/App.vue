@@ -8,7 +8,7 @@
     <button
       type="button"
       @click="i18nStore.toggleLanguage()"
-      class="fixed bottom-5 left-5 z-[100] rounded-full border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-lg transition hover:-translate-y-0.5 dark:border-slate-700 dark:bg-[#171124] dark:text-slate-100"
+      class="fixed bottom-5 right-5 z-[100] rounded-full border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-lg transition hover:-translate-y-0.5 hover:bg-slate-50 dark:border-slate-700 dark:bg-[#171124] dark:text-slate-100 dark:hover:bg-[#21182f]"
       :aria-label="
         i18nStore.language === 'en'
           ? i18nStore.t('common.switchToPersian')
@@ -22,7 +22,7 @@
     <Transition name="toast">
       <div
         v-if="uiStore.toast.visible"
-        class="fixed bottom-5 right-5 z-[100] max-w-sm rounded-2xl border px-5 py-3.5 text-sm font-medium shadow-xl backdrop-blur"
+        class="fixed bottom-5 left-5 z-[100] max-w-sm rounded-2xl border px-5 py-3.5 text-sm font-medium shadow-xl backdrop-blur"
         :class="
           uiStore.toast.type === 'error'
             ? 'border-red-200 bg-red-50 text-red-700 dark:border-red-900/50 dark:bg-red-950/40 dark:text-red-300'
@@ -66,6 +66,7 @@
 
 <script setup>
 import { onMounted } from "vue";
+
 import { useI18nStore } from "./stores/i18n";
 import { useUiStore } from "./stores/ui";
 

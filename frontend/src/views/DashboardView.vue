@@ -1,6 +1,6 @@
 <template>
   <div
-    class="min-h-screen bg-[#faf9ff] px-5 py-5"
+    class="min-h-screen bg-[#faf9ff] px-5 py-5 text-slate-900"
     :dir="i18nStore.isRTL ? 'rtl' : 'ltr'"
   >
     <DashboardSidebar
@@ -9,7 +9,7 @@
     />
 
     <main
-      class="min-h-[calc(100vh-40px)] transition-transform duration-300 ease-in-out"
+      class="min-h-[calc(100vh-40px)] text-slate-900 transition-all duration-300 ease-in-out"
       :class="sidebarCollapsed ? 'ml-[98px]' : 'ml-[284px]'"
     >
       <DashboardHeader />
@@ -17,7 +17,7 @@
       <div class="mx-auto max-w-7xl px-6 py-8">
         <!-- Page heading -->
         <div class="mb-8">
-          <p class="text-sm font-medium text-violet-400">
+          <p class="text-sm font-medium text-violet-500">
             {{ i18nStore.t("dashboard.overview") }}
           </p>
 
@@ -25,7 +25,7 @@
             {{ i18nStore.t("dashboard.workspace") }}
           </h1>
 
-          <p class="mt-2 text-sm text-slate-400">
+          <p class="mt-2 text-sm text-slate-500">
             {{ i18nStore.t("dashboard.workspaceDescription") }}
           </p>
         </div>
@@ -33,9 +33,9 @@
         <!-- Loading -->
         <div
           v-if="loading"
-          class="rounded-3xl border border-slate-100 bg-white p-10 text-center shadow-sm"
+          class="rounded-3xl border border-slate-200 bg-white p-10 text-center shadow-sm"
         >
-          <p class="text-sm text-slate-400">
+          <p class="text-sm text-slate-500">
             {{ i18nStore.t("dashboard.loadingPortfolio") }}
           </p>
         </div>
@@ -49,7 +49,7 @@
             {{ i18nStore.t("dashboard.failedToLoadPortfolio") }}
           </p>
 
-          <p class="mt-1 text-sm text-red-400">
+          <p class="mt-1 text-sm text-red-500">
             {{ error }}
           </p>
         </div>
@@ -60,11 +60,11 @@
           <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <!-- Portfolio -->
             <div
-              class="rounded-3xl border border-violet-100 bg-white p-5 shadow-sm"
+              class="rounded-3xl border border-violet-100 bg-white p-5 text-slate-900 shadow-sm"
             >
               <div class="flex items-start justify-between">
                 <div>
-                  <p class="text-xs font-medium text-slate-400">
+                  <p class="text-xs font-medium text-slate-500">
                     {{ i18nStore.t("dashboard.myPortfolios") }}
                   </p>
 
@@ -74,13 +74,13 @@
                 </div>
 
                 <div
-                  class="flex h-10 w-10 items-center justify-center rounded-2xl bg-violet-50 text-violet-400"
+                  class="flex h-10 w-10 items-center justify-center rounded-2xl bg-violet-50 text-violet-500"
                 >
                   ✦
                 </div>
               </div>
 
-              <p class="mt-3 text-xs text-slate-400">
+              <p class="mt-3 text-xs text-slate-500">
                 {{
                   portfolio
                     ? i18nStore.t("dashboard.yourPortfolio")
@@ -91,11 +91,11 @@
 
             <!-- Verification -->
             <div
-              class="rounded-3xl border border-violet-100 bg-white p-5 shadow-sm"
+              class="rounded-3xl border border-violet-100 bg-white p-5 text-slate-900 shadow-sm"
             >
               <div class="flex items-start justify-between">
                 <div>
-                  <p class="text-xs font-medium text-slate-400">
+                  <p class="text-xs font-medium text-slate-500">
                     {{ i18nStore.t("dashboard.verification") }}
                   </p>
 
@@ -103,8 +103,8 @@
                     class="mt-2 text-lg font-bold"
                     :class="
                       authStore.user?.email_verified
-                        ? 'text-emerald-500'
-                        : 'text-amber-500'
+                        ? 'text-emerald-600'
+                        : 'text-amber-600'
                     "
                   >
                     {{
@@ -116,24 +116,24 @@
                 </div>
 
                 <div
-                  class="flex h-10 w-10 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-500"
+                  class="flex h-10 w-10 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600"
                 >
                   ✓
                 </div>
               </div>
 
-              <p class="mt-3 text-xs text-slate-400">
+              <p class="mt-3 truncate text-xs text-slate-500">
                 {{ authStore.user?.email }}
               </p>
             </div>
 
             <!-- Subscription -->
             <div
-              class="rounded-3xl border border-violet-100 bg-white p-5 shadow-sm"
+              class="rounded-3xl border border-violet-100 bg-white p-5 text-slate-900 shadow-sm"
             >
               <div class="flex items-start justify-between">
                 <div>
-                  <p class="text-xs font-medium text-slate-400">
+                  <p class="text-xs font-medium text-slate-500">
                     {{ i18nStore.t("dashboard.subscription") }}
                   </p>
 
@@ -141,7 +141,7 @@
                     class="mt-2 text-lg font-bold"
                     :class="
                       authStore.user?.has_active_subscription
-                        ? 'text-violet-500'
+                        ? 'text-violet-600'
                         : 'text-slate-700'
                     "
                   >
@@ -154,7 +154,7 @@
                 </div>
 
                 <div
-                  class="flex h-10 w-10 items-center justify-center rounded-2xl bg-violet-50 text-violet-500"
+                  class="flex h-10 w-10 items-center justify-center rounded-2xl bg-violet-50 text-violet-600"
                 >
                   ◆
                 </div>
@@ -163,14 +163,14 @@
               <router-link
                 v-if="!authStore.user?.has_active_subscription"
                 to="/upgrade"
-                class="mt-3 inline-block text-xs font-semibold text-violet-400 hover:text-violet-500"
+                class="mt-3 inline-block text-xs font-semibold text-violet-600 hover:text-violet-700"
               >
                 {{ i18nStore.t("dashboard.upgrade") }} →
               </router-link>
 
               <p
                 v-else
-                class="mt-3 text-xs font-medium text-violet-400"
+                class="mt-3 text-xs font-medium text-violet-600"
               >
                 {{ i18nStore.t("dashboard.activeSubscription") }}
               </p>
@@ -178,11 +178,11 @@
 
             <!-- Status -->
             <div
-              class="rounded-3xl border border-violet-100 bg-white p-5 shadow-sm"
+              class="rounded-3xl border border-violet-100 bg-white p-5 text-slate-900 shadow-sm"
             >
               <div class="flex items-start justify-between">
                 <div>
-                  <p class="text-xs font-medium text-slate-400">
+                  <p class="text-xs font-medium text-slate-500">
                     {{ i18nStore.t("dashboard.status") }}
                   </p>
 
@@ -190,7 +190,7 @@
                     class="mt-2 text-lg font-bold"
                     :class="
                       portfolio
-                        ? 'text-emerald-500'
+                        ? 'text-emerald-600'
                         : 'text-slate-700'
                     "
                   >
@@ -203,13 +203,13 @@
                 </div>
 
                 <div
-                  class="flex h-10 w-10 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-500"
+                  class="flex h-10 w-10 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600"
                 >
                   ●
                 </div>
               </div>
 
-              <p class="mt-3 text-xs text-slate-400">
+              <p class="mt-3 text-xs text-slate-500">
                 {{
                   portfolio
                     ? i18nStore.t("dashboard.portfolioAvailable")
@@ -233,10 +233,10 @@
           <div class="mt-6 grid gap-6 lg:grid-cols-2">
             <!-- Quick actions -->
             <div
-              class="rounded-3xl border border-violet-100 bg-white p-6 shadow-sm"
+              class="rounded-3xl border border-violet-100 bg-white p-6 text-slate-900 shadow-sm"
             >
               <div>
-                <p class="text-xs font-medium text-violet-400">
+                <p class="text-xs font-medium text-violet-500">
                   {{ i18nStore.t("dashboard.quickActions") }}
                 </p>
 
@@ -255,7 +255,7 @@
                     {{ i18nStore.t("dashboard.editPortfolio") }}
                   </p>
 
-                  <p class="mt-1 text-xs text-slate-400">
+                  <p class="mt-1 text-xs text-slate-500">
                     {{ i18nStore.t("dashboard.editPortfolioDescription") }}
                   </p>
                 </router-link>
@@ -269,20 +269,20 @@
                     {{ i18nStore.t("common.createPortfolio") }}
                   </p>
 
-                  <p class="mt-1 text-xs text-slate-400">
+                  <p class="mt-1 text-xs text-slate-500">
                     {{ i18nStore.t("dashboard.createPortfolioFirst") }}
                   </p>
                 </router-link>
 
                 <router-link
                   to="/profile"
-                  class="rounded-2xl border border-slate-100 bg-slate-50 px-4 py-4 transition hover:border-violet-100 hover:bg-violet-50"
+                  class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 transition hover:border-violet-100 hover:bg-violet-50"
                 >
                   <p class="text-sm font-semibold text-slate-800">
                     {{ i18nStore.t("dashboard.profile") }}
                   </p>
 
-                  <p class="mt-1 text-xs text-slate-400">
+                  <p class="mt-1 text-xs text-slate-500">
                     {{ i18nStore.t("dashboard.viewProfile") }}
                   </p>
                 </router-link>
@@ -291,9 +291,9 @@
 
             <!-- Next step -->
             <div
-              class="rounded-3xl border border-violet-100 bg-white p-6 shadow-sm"
+              class="rounded-3xl border border-violet-100 bg-white p-6 text-slate-900 shadow-sm"
             >
-              <p class="text-xs font-medium text-violet-400">
+              <p class="text-xs font-medium text-violet-500">
                 {{ i18nStore.t("dashboard.nextStep") }}
               </p>
 
@@ -309,7 +309,7 @@
                 }}
               </h2>
 
-              <p class="mt-2 text-sm leading-6 text-slate-400">
+              <p class="mt-2 text-sm leading-6 text-slate-500">
                 {{
                   !portfolio
                     ? i18nStore.t("dashboard.createPortfolioFirst")
@@ -324,7 +324,7 @@
               <router-link
                 v-if="!portfolio"
                 to="/portfolio/create"
-                class="mt-5 inline-flex rounded-full bg-violet-400 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-violet-500"
+                class="mt-5 inline-flex rounded-full bg-violet-500 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-violet-600"
               >
                 {{ i18nStore.t("common.createPortfolio") }}
               </router-link>
@@ -332,7 +332,7 @@
               <router-link
                 v-else-if="!authStore.user?.has_active_subscription"
                 to="/upgrade"
-                class="mt-5 inline-flex rounded-full bg-violet-400 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-violet-500"
+                class="mt-5 inline-flex rounded-full bg-violet-500 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-violet-600"
               >
                 {{ i18nStore.t("dashboard.upgrade") }}
               </router-link>
@@ -340,7 +340,7 @@
               <router-link
                 v-else
                 to="/profile"
-                class="mt-5 inline-flex rounded-full bg-violet-400 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-violet-500"
+                class="mt-5 inline-flex rounded-full bg-violet-500 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-violet-600"
               >
                 {{ i18nStore.t("dashboard.viewProfile") }}
               </router-link>
@@ -354,6 +354,7 @@
 
 <script setup>
 import { onMounted, ref } from "vue";
+
 import api from "../api/axios";
 import { useAuthStore } from "../stores/auth";
 import { useI18nStore } from "../stores/i18n";

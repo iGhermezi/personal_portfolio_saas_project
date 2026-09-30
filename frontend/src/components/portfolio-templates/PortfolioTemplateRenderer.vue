@@ -1,15 +1,17 @@
 <template>
-  <component :is="templateComponent" :portfolio="portfolio" />
+  <div class="portfolio-template-root">
+    <component :is="templateComponent" :portfolio="portfolio" />
+  </div>
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed } from "vue";
 
-import TemplateOne from './templates/TemplateOne.vue'
-import TemplateTwo from './templates/TemplateTwo.vue'
-import TemplateThree from './templates/TemplateThree.vue'
-import TemplateFour from './templates/TemplateFour.vue'
-import TemplateFive from './templates/TemplateFive.vue'
+import TemplateOne from "./templates/TemplateOne.vue";
+import TemplateTwo from "./templates/TemplateTwo.vue";
+import TemplateThree from "./templates/TemplateThree.vue";
+import TemplateFour from "./templates/TemplateFour.vue";
+import TemplateFive from "./templates/TemplateFive.vue";
 import TemplateSix from "./templates/TemplateSix.vue";
 
 const props = defineProps({
@@ -17,7 +19,8 @@ const props = defineProps({
     type: Object,
     required: true,
   },
-})
+});
+
 const templateMap = {
   arsam: TemplateOne,
   template_1: TemplateOne,
@@ -29,6 +32,6 @@ const templateMap = {
 };
 
 const templateComponent = computed(() => {
-  return templateMap[props.portfolio.template_key] || TemplateOne
-})
+  return templateMap[props.portfolio.template_key] || TemplateOne;
+});
 </script>
