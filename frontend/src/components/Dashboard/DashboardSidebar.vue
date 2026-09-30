@@ -19,7 +19,7 @@
         v-if="!collapsed"
         class="ml-3 text-lg font-bold tracking-tight text-slate-800"
       >
-        Portify
+        {{ i18nStore.t("common.appName") }}
       </span>
     </div>
 
@@ -54,7 +54,9 @@
             ✦
           </span>
 
-          <span v-if="!collapsed" class="ml-3"> Upgrade </span>
+          <span v-if="!collapsed" class="ml-3">{{
+            i18nStore.t("dashboard.upgrade")
+          }}</span>
         </button>
       </RouterLink>
     </nav>
@@ -73,10 +75,12 @@
 
         <div v-if="!collapsed" class="ml-3 min-w-0">
           <p class="truncate text-sm font-semibold text-slate-800">
-            {{ authStore.user?.username || "User" }}
+            {{ authStore.user?.username || i18nStore.t("common.user") }}
           </p>
 
-          <p class="truncate text-xs text-slate-400">Profile</p>
+          <p class="truncate text-xs text-slate-400">
+            {{ i18nStore.t("dashboard.profile") }}
+          </p>
         </div>
       </router-link>
 
@@ -92,7 +96,11 @@
         </span>
 
         <span v-if="!collapsed" class="ml-3">
-          {{ themeStore.isDark ? "Light mode" : "Dark mode" }}
+          {{
+            i18nStore.t(
+              themeStore.isDark ? "common.lightMode" : "common.darkMode",
+            )
+          }}
         </span>
       </button>
 
@@ -107,7 +115,9 @@
           L
         </span>
 
-        <span v-if="!collapsed" class="ml-3"> Logout </span>
+        <span v-if="!collapsed" class="ml-3">{{
+          i18nStore.t("common.logout")
+        }}</span>
       </button>
 
       <button
@@ -129,6 +139,7 @@ import { useRouter } from "vue-router";
 import { useThemeStore } from "../../stores/theme";
 import api from "../../api/axios";
 import { useAuthStore } from "../../stores/auth";
+import { useI18nStore } from "../../stores/i18n";
 
 defineProps({
   collapsed: {
@@ -142,31 +153,35 @@ const emit = defineEmits(["toggle"]);
 const router = useRouter();
 const authStore = useAuthStore();
 const themeStore = useThemeStore();
+const i18nStore = useI18nStore();
 
 const portfolioId = ref(null);
 
 const navigation = computed(() => [
   {
-    name: "Dashboard",
+    name: i18nStore.t("dashboard.dashboard"),
     icon: "⌂",
     to: "/dashboard",
   },
   {
-    name: "My Portfolios",
+    name: i18nStore.t("dashboard.myPortfolios"),
     icon: "▣",
     to: portfolioId.value
       ? `/portfolio/${portfolioId.value}/edit`
       : "/portfolio/create",
   },
   {
-    name: "Templates",
+    name: i18nStore.t("common.templates"),
     icon: "◈",
     to: "/templates",
   },
 ]);
 
 const userInitial = computed(() => {
-  return authStore.user?.username?.charAt(0)?.toUpperCase() || "U";
+  return (
+    authStore.user?.username?.charAt(0)?.toUpperCase() ||
+    i18nStore.t("common.user").charAt(0)
+  );
 });
 
 const loadPortfolio = async () => {

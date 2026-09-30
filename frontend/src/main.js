@@ -1,24 +1,29 @@
-import { createApp } from 'vue'
-import { createPinia } from 'pinia'
+import { createApp } from "vue";
+import { createPinia } from "pinia";
 
-import App from './App.vue'
-import router from './router'
-import { useAuthStore } from './stores/auth'
-import { useThemeStore } from './stores/theme'
+import App from "./App.vue";
+import router from "./router";
 
-import './style.css'
+import { useAuthStore } from "./stores/auth";
+import { useThemeStore } from "./stores/theme";
+import { useI18nStore } from "./stores/i18n";
 
-const app = createApp(App)
+import "./style.css";
 
-const pinia = createPinia()
+const app = createApp(App);
 
-app.use(pinia)
-app.use(router)
+const pinia = createPinia();
 
-const authStore = useAuthStore(pinia)
-const themeStore = useThemeStore(pinia)
+app.use(pinia);
+app.use(router);
 
-themeStore.initializeTheme()
-await authStore.initializeAuth()
+const authStore = useAuthStore(pinia);
+const themeStore = useThemeStore(pinia);
+const i18nStore = useI18nStore(pinia);
 
-app.mount('#app')
+themeStore.initializeTheme();
+i18nStore.initializeLanguage();
+
+await authStore.initializeAuth();
+
+app.mount("#app");

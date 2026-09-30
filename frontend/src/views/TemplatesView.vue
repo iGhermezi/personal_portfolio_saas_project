@@ -10,17 +10,14 @@
       :class="sidebarCollapsed ? 'ml-[98px]' : 'ml-[284px]'"
     >
       <div class="mx-auto max-w-6xl px-6 py-8">
-        <p class="text-sm font-medium text-violet-400">
-          Templates
-        </p>
+        <p class="text-sm font-medium text-violet-400">Templates</p>
 
         <h1 class="mt-1 text-3xl font-bold tracking-tight text-slate-900">
-          Choose your design
+          {{ i18nStore.t("templates.title") }}
         </h1>
 
         <p class="mt-2 text-sm text-slate-400">
-          Choose a template for your portfolio.
-          Premium templates require an active subscription.
+          {{ i18nStore.t("templates.description") }}
         </p>
 
         <div
@@ -28,7 +25,7 @@
           class="mt-8 rounded-3xl border border-slate-100 bg-white p-10 text-center shadow-sm"
         >
           <p class="text-sm text-slate-400">
-            Loading templates...
+            {{ i18nStore.t("templates.loading") }}
           </p>
         </div>
 
@@ -57,25 +54,18 @@
               <img
                 v-if="template.preview_img"
                 :src="template.preview_img"
-                :alt="template.name"
+                :alt="i18nStore.templateName(template)"
                 class="h-full w-full object-cover"
               />
 
-              <span
-                v-else
-                class="text-5xl text-violet-200"
-              >
-                ◈
-              </span>
+              <span v-else class="text-5xl text-violet-200"> ◈ </span>
 
               <!-- Lock overlay -->
               <div
                 v-if="!template.can_use"
                 class="absolute inset-0 flex items-center justify-center bg-slate-900/55 backdrop-blur-[2px]"
               >
-                <div
-                  class="flex flex-col items-center text-center text-white"
-                >
+                <div class="flex flex-col items-center text-center text-white">
                   <div
                     class="flex h-14 w-14 items-center justify-center rounded-full bg-white/15 text-2xl backdrop-blur"
                   >
@@ -83,7 +73,7 @@
                   </div>
 
                   <p class="mt-2 text-sm font-semibold">
-                    Locked
+                    {{ i18nStore.t("templates.locked") }}
                   </p>
                 </div>
               </div>
@@ -92,7 +82,7 @@
             <div class="p-6">
               <div class="flex items-start justify-between gap-3">
                 <h2 class="text-lg font-bold text-slate-800">
-                  {{ template.name }}
+                  {{ i18nStore.templateName(template) }}
                 </h2>
 
                 <span
@@ -104,7 +94,7 @@
               </div>
 
               <p class="mt-2 text-sm leading-6 text-slate-500">
-                {{ template.description }}
+                {{ i18nStore.templateDescription(template) }}
               </p>
 
               <!-- Available -->
@@ -117,8 +107,8 @@
               >
                 {{
                   selectingId === template.id
-                    ? 'Selecting...'
-                    : 'Use this template'
+                    ? i18nStore.t("templates.selecting")
+                    : i18nStore.t("templates.useTemplate")
                 }}
               </button>
 
@@ -128,7 +118,7 @@
                 class="mt-5 w-full rounded-2xl bg-amber-100 px-5 py-3 text-sm font-semibold text-amber-700 transition hover:bg-amber-200"
                 @click="goToUpgrade"
               >
-                Upgrade to unlock
+                {{ i18nStore.t("templates.upgradeToUnlock") }}
               </button>
 
               <button
@@ -137,7 +127,7 @@
                 class="mt-5 w-full rounded-2xl bg-emerald-100 px-5 py-3 text-sm font-semibold text-emerald-700 transition hover:bg-emerald-200"
                 @click="goToVerify"
               >
-                Verify your email to unlock
+                {{ i18nStore.t("templates.verifyToUnlock") }}
               </button>
 
               <button
@@ -146,7 +136,7 @@
                 disabled
                 class="mt-5 w-full cursor-not-allowed rounded-2xl bg-slate-100 px-5 py-3 text-sm font-semibold text-slate-400"
               >
-                Unavailable
+                {{ i18nStore.t("templates.unavailable") }}
               </button>
             </div>
           </div>
@@ -157,117 +147,111 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { onMounted, ref } from "vue";
+import { useRouter } from "vue-router";
 
-import api from '../api/axios'
+import api from "../api/axios";
+import { useI18nStore } from "../stores/i18n";
 
-import DashboardSidebar
-  from '../components/Dashboard/DashboardSidebar.vue'
+import DashboardSidebar from "../components/Dashboard/DashboardSidebar.vue";
 
-const router = useRouter()
+const router = useRouter();
+const i18nStore = useI18nStore();
 
-const sidebarCollapsed = ref(false)
+const sidebarCollapsed = ref(false);
 
-const templates = ref([])
-const loading = ref(true)
-const error = ref(null)
-const selectingId = ref(null)
+const templates = ref([]);
+const loading = ref(true);
+const error = ref(null);
+const selectingId = ref(null);
 
 const badgeClass = (level) => {
-  if (level === 'premium') {
-    return 'bg-amber-100 text-amber-700'
+  if (level === "premium") {
+    return "bg-amber-100 text-amber-700";
   }
 
-  return 'bg-violet-100 text-violet-600'
-}
+  return "bg-violet-100 text-violet-600";
+};
 
 const accessLabel = (level) => {
-  if (level === 'premium') {
-    return 'Premium'
+  if (level === "premium") {
+    return i18nStore.t("templates.premium");
   }
 
-  return 'Free'
-}
+  return i18nStore.t("templates.free");
+};
 
 const loadTemplates = async () => {
-  loading.value = true
-  error.value = null
+  loading.value = true;
+  error.value = null;
 
   try {
-    const response = await api.get('themes/')
+    const response = await api.get("themes/");
 
     templates.value = Array.isArray(response.data)
       ? response.data
-      : response.data.results || []
+      : response.data.results || [];
   } catch (err) {
-    console.error('Failed to load templates:', err)
+    console.error("Failed to load templates:", err);
 
     error.value =
-      err.response?.data?.detail ||
-      'Unable to load templates.'
+      err.response?.data?.detail || i18nStore.t("templates.unableLoad");
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-}
+};
 
 const selectTemplate = async (template) => {
   if (!template.can_use) {
-    return
+    return;
   }
 
-  selectingId.value = template.id
+  selectingId.value = template.id;
 
   try {
     /*
      * We get the portfolio list first because the current
      * Templates page is responsible only for template selection.
      */
-    const response = await api.get('portfolios/')
+    const response = await api.get("portfolios/");
 
     const portfolios = Array.isArray(response.data)
       ? response.data
-      : response.data.results || []
+      : response.data.results || [];
 
     if (!portfolios.length) {
-      router.push('/portfolio/create')
-      return
+      router.push("/portfolio/create");
+      return;
     }
 
-    const portfolio = portfolios[0]
+    const portfolio = portfolios[0];
 
-    await api.patch(
-      `portfolios/${portfolio.id}/`,
-      {
-        template: template.id,
-      }
-    )
+    await api.patch(`portfolios/${portfolio.id}/`, {
+      template: template.id,
+    });
 
-    router.push(
-      `/portfolio/${portfolio.id}/preview`
-    )
+    router.push(`/portfolio/${portfolio.id}/preview`);
   } catch (err) {
-    console.error('Failed to select template:', err)
+    console.error("Failed to select template:", err);
 
     error.value =
       err.response?.data?.template?.[0] ||
       err.response?.data?.detail ||
-      'Unable to select this template.'
+      i18nStore.t("templates.unableSelect");
   } finally {
-    selectingId.value = null
+    selectingId.value = null;
   }
-}
+};
 
 const goToUpgrade = () => {
-  router.push('/upgrade')
-}
+  router.push("/upgrade");
+};
 
 const goToVerify = () => {
-  router.push('/account/security')
-}
-
+  router.push("/account/security");
+};
 
 onMounted(() => {
-  loadTemplates()
-})
+  loadTemplates();
+});
 </script>

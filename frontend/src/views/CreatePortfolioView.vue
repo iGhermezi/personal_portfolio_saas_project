@@ -1,35 +1,29 @@
 <template>
-
   <div class="min-h-screen bg-[#faf9ff] px-5 py-5">
-
     <main class="mx-auto max-w-5xl px-6 py-8">
-
       <!-- Header -->
 
       <div class="mb-8">
-
         <button
           type="button"
           class="mb-5 text-sm font-medium text-slate-400 transition hover:text-violet-500"
           @click="router.back()"
         >
-          ← Back
+          ← {{ i18nStore.t("portfolio.back") }}
         </button>
 
         <p class="text-sm font-medium text-violet-400">
-          Step 1 of 6
+          {{ i18nStore.t("portfolio.createStep") }}
         </p>
 
         <h1 class="mt-1 text-3xl font-bold tracking-tight text-slate-900">
-          Create your portfolio
+          {{ i18nStore.t("portfolio.createTitle") }}
         </h1>
 
         <p class="mt-2 text-sm text-slate-400">
-          Start with the basic information of your portfolio.
+          {{ i18nStore.t("portfolio.createDescription") }}
         </p>
-
       </div>
-
 
       <!-- Form -->
 
@@ -37,93 +31,70 @@
         class="rounded-[28px] border border-violet-100 bg-white p-7 shadow-sm"
         @submit.prevent="createPortfolio"
       >
-
         <!-- Title -->
 
         <div>
-
-          <label
-            for="title"
-            class="block text-sm font-semibold text-slate-700"
-          >
-            Portfolio title
+          <label for="title" class="block text-sm font-semibold text-slate-700">
+            {{ i18nStore.t("portfolio.title") }}
           </label>
 
           <input
             id="title"
             v-model="form.title"
             type="text"
-            placeholder="e.g. John Doe — Full Stack Developer"
+            :placeholder="i18nStore.t('portfolio.titlePlaceholder')"
             class="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm text-slate-800 outline-none transition focus:border-violet-300 focus:ring-4 focus:ring-violet-50"
           />
-
         </div>
-
 
         <!-- Slug -->
 
         <div class="mt-6">
-
-          <label
-            for="slug"
-            class="block text-sm font-semibold text-slate-700"
-          >
-            Portfolio URL
+          <label for="slug" class="block text-sm font-semibold text-slate-700">
+            {{ i18nStore.t("portfolio.url") }}
           </label>
 
           <input
             id="slug"
             v-model="form.slug"
             type="text"
-            placeholder="john-doe"
+            :placeholder="i18nStore.t('portfolio.slugPlaceholder')"
             class="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm text-slate-800 outline-none transition focus:border-violet-300 focus:ring-4 focus:ring-violet-50"
           />
 
           <p class="mt-2 text-xs text-slate-400">
-            This will be used as your public portfolio URL.
+            {{ i18nStore.t("portfolio.urlDescription") }}
           </p>
-
         </div>
-
 
         <!-- Bio -->
 
         <div class="mt-6">
-
-          <label
-            for="bio"
-            class="block text-sm font-semibold text-slate-700"
-          >
-            Short bio
+          <label for="bio" class="block text-sm font-semibold text-slate-700">
+            {{ i18nStore.t("portfolio.shortBio") }}
           </label>
 
           <textarea
             id="bio"
             v-model="form.bio"
             rows="5"
-            placeholder="Tell visitors a little about yourself..."
+            :placeholder="i18nStore.t('portfolio.bioPlaceholder')"
             class="mt-2 w-full resize-none rounded-2xl border border-slate-200 px-4 py-3 text-sm text-slate-800 outline-none transition focus:border-violet-300 focus:ring-4 focus:ring-violet-50"
           />
-
         </div>
-
 
         <!-- Templates -->
 
         <div class="mt-8">
-
           <div>
-
             <h2 class="text-sm font-semibold text-slate-700">
-              Choose a template
+              {{ i18nStore.t("portfolio.chooseTemplate") }}
             </h2>
 
             <p class="mt-1 text-xs text-slate-400">
-              Available templates depend on your account access.
+              {{ i18nStore.t("portfolio.templateAccessDescription") }}
             </p>
-
           </div>
-
 
           <!-- Loading -->
 
@@ -131,13 +102,10 @@
             v-if="templatesLoading"
             class="mt-4 rounded-2xl border border-slate-100 bg-slate-50 p-6 text-center"
           >
-
             <p class="text-sm text-slate-400">
-              Loading templates...
+              {{ i18nStore.t("portfolio.loadingTemplates") }}
             </p>
-
           </div>
-
 
           <!-- Templates -->
 
@@ -145,7 +113,6 @@
             v-else-if="templates.length"
             class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
           >
-
             <button
               v-for="template in templates"
               :key="template.id"
@@ -158,50 +125,42 @@
               "
               @click="form.template = template.id"
             >
-
-              <div
-                class="flex h-36 items-center justify-center bg-slate-50"
-              >
-
+              <div class="flex h-36 items-center justify-center bg-slate-50">
                 <img
                   v-if="template.preview_img"
                   :src="template.preview_img"
-                  :alt="template.name"
+                  :alt="i18nStore.templateName(template)"
                   class="h-full w-full object-cover"
                 />
 
-                <span
-                  v-else
-                  class="text-3xl text-violet-300"
-                >
-                  ✦
-                </span>
-
+                <span v-else class="text-3xl text-violet-300"> ✦ </span>
               </div>
 
-
               <div class="p-4">
-
                 <h3 class="text-sm font-semibold text-slate-800">
-                  {{ template.name }}
+                  {{ i18nStore.templateName(template) }}
                 </h3>
 
                 <p class="mt-1 line-clamp-2 text-xs leading-5 text-slate-400">
-                  {{ template.description }}
+                  {{ i18nStore.templateDescription(template) }}
                 </p>
 
                 <span
                   class="mt-3 inline-block rounded-full bg-violet-50 px-3 py-1 text-[11px] font-medium text-violet-500"
                 >
-                  {{ template.access_level }}
+                  {{
+                    i18nStore.t(
+                      template.access_level === "premium"
+                        ? "templates.premium"
+                        : template.access_level === "verified"
+                          ? "templates.verified"
+                          : "templates.free",
+                    )
+                  }}
                 </span>
-
               </div>
-
             </button>
-
           </div>
-
 
           <!-- No templates -->
 
@@ -209,15 +168,11 @@
             v-else
             class="mt-4 rounded-2xl border border-slate-100 bg-slate-50 p-6 text-center"
           >
-
             <p class="text-sm text-slate-400">
-              No templates are available for your account.
+              {{ i18nStore.t("portfolio.noTemplatesForAccount") }}
             </p>
-
           </div>
-
         </div>
-
 
         <!-- Error -->
 
@@ -228,17 +183,17 @@
           {{ error }}
         </div>
 
-
         <!-- Actions -->
 
-        <div class="mt-8 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
-
+        <div
+          class="mt-8 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end"
+        >
           <button
             type="button"
             class="rounded-full px-6 py-3 text-sm font-semibold text-slate-500 transition hover:bg-slate-50"
             @click="router.back()"
           >
-            Cancel
+            {{ i18nStore.t("common.cancel") }}
           </button>
 
           <button
@@ -246,176 +201,121 @@
             :disabled="loading || templatesLoading"
             class="rounded-full bg-violet-400 px-7 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-100 transition hover:-translate-y-0.5 hover:bg-violet-500 disabled:cursor-not-allowed disabled:opacity-60"
           >
-            {{ loading ? 'Creating...' : 'Continue →' }}
+            {{
+              loading
+                ? i18nStore.t("portfolio.creatingPortfolio")
+                : `${i18nStore.t("portfolio.continue")} →`
+            }}
           </button>
-
         </div>
-
       </form>
-
     </main>
-
   </div>
-
 </template>
 
-
 <script setup>
+import { onMounted, reactive, ref } from "vue";
+import { useRouter } from "vue-router";
 
-import { onMounted, reactive, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import api from "../api/axios";
+import { useI18nStore } from "../stores/i18n";
 
-import api from '../api/axios'
-
-
-const router = useRouter()
-
+const router = useRouter();
+const i18nStore = useI18nStore();
 
 const form = reactive({
-  title: '',
-  slug: '',
-  bio: '',
+  title: "",
+  slug: "",
+  bio: "",
   template: null,
-})
+});
 
+const templates = ref([]);
+const templatesLoading = ref(true);
 
-const templates = ref([])
-const templatesLoading = ref(true)
-
-const loading = ref(false)
-const error = ref(null)
-
+const loading = ref(false);
+const error = ref(null);
 
 const loadTemplates = async () => {
-
-  templatesLoading.value = true
-  error.value = null
+  templatesLoading.value = true;
+  error.value = null;
 
   try {
-
     // Backend فعلی:
     // /api/themes/
 
-    const response = await api.get('/themes/')
+    const response = await api.get("/themes/");
 
     templates.value = Array.isArray(response.data)
       ? response.data
-      : response.data.results || []
-
+      : response.data.results || [];
   } catch (err) {
-
-    console.error('Failed to load templates:', err)
+    console.error("Failed to load templates:", err);
 
     error.value =
       err.response?.data?.detail ||
-      'Unable to load templates.'
-
+      i18nStore.t("portfolio.unableToLoadTemplates");
   } finally {
-
-    templatesLoading.value = false
-
+    templatesLoading.value = false;
   }
-
-}
-
+};
 
 const createPortfolio = async () => {
-
-  error.value = null
-
+  error.value = null;
 
   if (!form.title.trim()) {
-    error.value = 'Please enter a portfolio title.'
-    return
+    error.value = i18nStore.t("portfolio.enterTitle");
+    return;
   }
-
 
   if (!form.slug.trim()) {
-    error.value = 'Please enter a portfolio URL.'
-    return
+    error.value = i18nStore.t("portfolio.enterUrl");
+    return;
   }
-
 
   if (!form.template) {
-    error.value = 'Please choose a template.'
-    return
+    error.value = i18nStore.t("portfolio.chooseTemplate");
+    return;
   }
 
-
-  loading.value = true
-
+  loading.value = true;
 
   try {
+    const response = await api.post("/portfolios/", {
+      title: form.title.trim(),
+      slug: form.slug.trim(),
+      bio: form.bio.trim(),
+      template: form.template,
+    });
 
-    const response = await api.post(
-      '/portfolios/',
-      {
-        title: form.title.trim(),
-        slug: form.slug.trim(),
-        bio: form.bio.trim(),
-        template: form.template,
-      }
-    )
-
-
-    const portfolioId = response.data?.id
-
+    const portfolioId = response.data?.id;
 
     if (!portfolioId) {
-      throw new Error(
-        'Portfolio ID was not returned by the server.'
-      )
+      throw new Error(i18nStore.t("portfolio.idMissing"));
     }
-
 
     // بعد از ساخت Portfolio
     // وارد مرحله تکمیل اطلاعات می‌شویم.
 
-    await router.push(
-      `/portfolio/${portfolioId}/setup`
-    )
-
+    await router.push(`/portfolio/${portfolioId}/setup`);
   } catch (err) {
+    console.error("Failed to create portfolio:", err);
 
-    console.error(
-      'Failed to create portfolio:',
-      err
-    )
+    const data = err.response?.data;
 
+    if (data && typeof data === "object") {
+      const firstError = Object.values(data).flat().find(Boolean);
 
-    const data = err.response?.data
-
-
-    if (data && typeof data === 'object') {
-
-      const firstError = Object.values(data)
-        .flat()
-        .find(Boolean)
-
-      error.value =
-        firstError ||
-        'Unable to create your portfolio.'
-
+      error.value = firstError || i18nStore.t("portfolio.unableToCreate");
     } else {
-
-      error.value =
-        'Unable to create your portfolio.'
-
+      error.value = i18nStore.t("portfolio.unableToCreate");
     }
-
   } finally {
-
-    loading.value = false
-
+    loading.value = false;
   }
-
-}
-
+};
 
 onMounted(() => {
-
-  loadTemplates()
-
-})
-
+  loadTemplates();
+});
 </script>

@@ -4,6 +4,10 @@
    palette remains the source of truth; these rules only provide its dark
    counterpart when <html class="dark"> is active. */
 
+*{
+  font-family: 'Vazirmatn';
+}
+
 html.dark {
   background: #100b1c;
 }
@@ -58,4 +62,52 @@ html.dark .shadow-violet-100 {
 html.dark .bg-linear-130,
 html.dark .bg-linear-210 {
   background-image: linear-gradient(130deg, #241337, #4b2b70) !important;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  min-width: 320px;
+}
+
+html[dir="rtl"] {
+  font-family:
+    Tahoma,
+    Arial,
+    sans-serif;
+}
+
+html[dir="rtl"] body {
+  text-align: right;
+}
+
+@keyframes loading {
+  0% {
+    transform: translateX(-120%);
+  }
+
+  50% {
+    transform: translateX(180%);
+  }
+
+  100% {
+    transform: translateX(400%);
+  }
+}
+
+::selection {
+  background: #8b5cf6;
+  color: white;
+}
+
+html.dark {
+  color-scheme: dark;
+}
+
+html.dark body {
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
 }

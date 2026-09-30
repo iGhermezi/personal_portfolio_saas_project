@@ -15,15 +15,17 @@
           class="mb-5 text-sm font-medium text-slate-400 transition hover:text-violet-500"
           @click="router.push('/profile')"
         >
-          ← Back to profile
+          ← {{ i18nStore.t("security.backToProfile") }}
         </button>
 
-        <p class="text-sm font-medium text-violet-400">Account</p>
+        <p class="text-sm font-medium text-violet-400">
+          {{ i18nStore.t("profile.account") }}
+        </p>
         <h1 class="mt-1 text-3xl font-bold tracking-tight text-slate-900">
-          Security settings
+          {{ i18nStore.t("security.title") }}
         </h1>
         <p class="mt-2 text-sm text-slate-400">
-          Manage your password, email address and verification status.
+          {{ i18nStore.t("security.description") }}
         </p>
 
         <div class="mt-8 space-y-6">
@@ -34,10 +36,10 @@
               <p
                 class="text-xs font-semibold uppercase tracking-widest text-violet-400"
               >
-                01 · Password
+                01 · {{ i18nStore.t("security.password") }}
               </p>
               <h2 class="mt-1 text-xl font-bold text-slate-800">
-                Change password
+                {{ i18nStore.t("security.changePassword") }}
               </h2>
             </div>
 
@@ -49,21 +51,21 @@
                 v-model="passwordForm.current_password"
                 type="password"
                 autocomplete="current-password"
-                placeholder="Current password"
+                :placeholder="i18nStore.t('security.currentPassword')"
                 class="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-violet-300 focus:bg-white focus:ring-4 focus:ring-violet-100"
               />
               <input
                 v-model="passwordForm.new_password"
                 type="password"
                 autocomplete="new-password"
-                placeholder="New password"
+                :placeholder="i18nStore.t('security.newPassword')"
                 class="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-violet-300 focus:bg-white focus:ring-4 focus:ring-violet-100"
               />
               <input
                 v-model="passwordForm.confirm_password"
                 type="password"
                 autocomplete="new-password"
-                placeholder="Confirm password"
+                :placeholder="i18nStore.t('security.confirmPassword')"
                 class="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-violet-300 focus:bg-white focus:ring-4 focus:ring-violet-100"
               />
 
@@ -82,7 +84,13 @@
                   :disabled="passwordLoading"
                   class="ml-auto rounded-full bg-violet-400 px-7 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-100 hover:bg-violet-500 disabled:opacity-60"
                 >
-                  {{ passwordLoading ? "Changing..." : "Change password" }}
+                  {{
+                    i18nStore.t(
+                      passwordLoading
+                        ? "security.changing"
+                        : "security.changePassword",
+                    )
+                  }}
                 </button>
               </div>
             </form>
@@ -95,13 +103,14 @@
               <p
                 class="text-xs font-semibold uppercase tracking-widest text-violet-400"
               >
-                02 · Email
+                02 · {{ i18nStore.t("security.email") }}
               </p>
               <h2 class="mt-1 text-xl font-bold text-slate-800">
-                Change email address
+                {{ i18nStore.t("security.changeEmail") }}
               </h2>
               <p class="mt-2 text-sm text-slate-400">
-                Current email: {{ currentEmail || "Loading..." }}
+                {{ i18nStore.t("security.currentEmail") }}
+                {{ currentEmail || i18nStore.t("security.loading") }}
               </p>
             </div>
 
@@ -110,7 +119,7 @@
                 v-model="newEmail"
                 type="email"
                 autocomplete="email"
-                placeholder="New email address"
+                :placeholder="i18nStore.t('security.newEmail')"
                 class="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-violet-300 focus:bg-white focus:ring-4 focus:ring-violet-100"
               />
               <button
@@ -119,7 +128,13 @@
                 class="rounded-full bg-violet-400 px-7 py-3 text-sm font-semibold text-white hover:bg-violet-500 disabled:opacity-60"
                 @click="requestEmailChange"
               >
-                {{ emailRequestLoading ? "Sending..." : "Send code" }}
+                {{
+                  i18nStore.t(
+                    emailRequestLoading
+                      ? "security.sending"
+                      : "security.sendCode",
+                  )
+                }}
               </button>
             </div>
 
@@ -132,7 +147,7 @@
                 type="text"
                 inputmode="numeric"
                 maxlength="6"
-                placeholder="6-digit verification code"
+                :placeholder="i18nStore.t('security.verificationCode')"
                 class="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm tracking-[0.35em] outline-none focus:border-violet-300 focus:bg-white focus:ring-4 focus:ring-violet-100"
               />
               <button
@@ -141,7 +156,13 @@
                 class="rounded-full border border-violet-200 bg-violet-50 px-7 py-3 text-sm font-semibold text-violet-500 hover:bg-violet-100 disabled:opacity-60"
                 @click="confirmEmailChange"
               >
-                {{ emailConfirmLoading ? "Confirming..." : "Confirm email" }}
+                {{
+                  i18nStore.t(
+                    emailConfirmLoading
+                      ? "security.confirming"
+                      : "security.confirmEmail",
+                  )
+                }}
               </button>
             </div>
 
@@ -164,16 +185,16 @@
                 <p
                   class="text-xs font-semibold uppercase tracking-widest text-violet-400"
                 >
-                  03 · Verification
+                  03 · {{ i18nStore.t("security.verification") }}
                 </p>
                 <h2 class="mt-1 text-xl font-bold text-slate-800">
-                  Email verification
+                  {{ i18nStore.t("security.emailVerification") }}
                 </h2>
                 <p class="mt-2 text-sm text-slate-400">
                   {{
                     emailVerified
-                      ? "Your email address is verified."
-                      : "Your email address is not verified yet."
+                      ? i18nStore.t("security.emailVerified")
+                      : i18nStore.t("security.emailNotVerified")
                   }}
                 </p>
               </div>
@@ -182,7 +203,7 @@
                 v-if="emailVerified"
                 class="rounded-full bg-emerald-50 px-4 py-2 text-sm font-semibold text-emerald-600"
               >
-                Verified ✓
+                {{ i18nStore.t("security.verified") }} ✓
               </div>
               <button
                 v-else
@@ -191,7 +212,13 @@
                 class="rounded-full bg-violet-400 px-6 py-3 text-sm font-semibold text-white hover:bg-violet-500 disabled:opacity-60"
                 @click="resendVerification"
               >
-                {{ resendLoading ? "Sending..." : "Resend verification" }}
+                {{
+                  i18nStore.t(
+                    resendLoading
+                      ? "security.sending"
+                      : "security.resendVerification",
+                  )
+                }}
               </button>
             </div>
             <p
@@ -213,11 +240,13 @@ import { computed, onMounted, reactive, ref } from "vue";
 import { useRouter } from "vue-router";
 import api from "../api/axios";
 import { useAuthStore } from "../stores/auth";
+import { useI18nStore } from "../stores/i18n";
 import DashboardSidebar from "../components/Dashboard/DashboardSidebar.vue";
 
 const router = useRouter();
 const sidebarCollapsed = ref(false);
 const authStore = useAuthStore();
+const i18nStore = useI18nStore();
 
 const currentEmail = computed(() => {
   return authStore.user?.email || "";
@@ -260,7 +289,7 @@ const loadProfile = async () => {
   } catch (err) {
     verificationMessage.value = firstError(
       err,
-      "Unable to load account information.",
+      i18nStore.t("security.unableLoadAccount"),
     );
   }
 };
@@ -270,7 +299,7 @@ const changePassword = async () => {
   passwordSuccess.value = false;
 
   if (passwordForm.new_password !== passwordForm.confirm_password) {
-    passwordMessage.value = "New password and confirmation do not match.";
+    passwordMessage.value = i18nStore.t("security.passwordMismatch");
     return;
   }
 
@@ -278,14 +307,16 @@ const changePassword = async () => {
   try {
     await api.post("/accounts/change-password/", passwordForm);
     passwordSuccess.value = true;
-    passwordMessage.value =
-      "Password changed successfully. Please sign in again.";
+    passwordMessage.value = i18nStore.t("security.passwordChanged");
     localStorage.removeItem("access_token");
     localStorage.removeItem("refresh_token");
     localStorage.removeItem("user");
     setTimeout(() => router.push("/login"), 900);
   } catch (err) {
-    passwordMessage.value = firstError(err, "Unable to change password.");
+    passwordMessage.value = firstError(
+      err,
+      i18nStore.t("security.unableChangePassword"),
+    );
   } finally {
     passwordLoading.value = false;
   }
@@ -302,9 +333,12 @@ const requestEmailChange = async () => {
     });
     emailCodeRequested.value = true;
     emailSuccess.value = true;
-    emailMessage.value = "Verification code sent to the new email address.";
+    emailMessage.value = i18nStore.t("security.codeSent");
   } catch (err) {
-    emailMessage.value = firstError(err, "Unable to request an email change.");
+    emailMessage.value = firstError(
+      err,
+      i18nStore.t("security.unableRequestEmail"),
+    );
   } finally {
     emailRequestLoading.value = false;
   }
@@ -320,15 +354,17 @@ const confirmEmailChange = async () => {
       code: emailCode.value.trim(),
     });
     emailSuccess.value = true;
-    emailMessage.value =
-      "Email changed successfully. A verification email was sent.";
+    emailMessage.value = i18nStore.t("security.emailChanged");
     emailCodeRequested.value = false;
     await authStore.getProfile();
 
     newEmail.value = "";
     emailCode.value = "";
   } catch (err) {
-    emailMessage.value = firstError(err, "Unable to confirm the email change.");
+    emailMessage.value = firstError(
+      err,
+      i18nStore.t("security.unableConfirmEmail"),
+    );
   } finally {
     emailConfirmLoading.value = false;
   }
@@ -344,11 +380,11 @@ const resendVerification = async () => {
       email: currentEmail.value,
     });
     verificationSuccess.value = true;
-    verificationMessage.value = "Verification email sent.";
+    verificationMessage.value = i18nStore.t("security.verificationSent");
   } catch (err) {
     verificationMessage.value = firstError(
       err,
-      "Unable to resend verification email.",
+      i18nStore.t("security.unableResendVerification"),
     );
   } finally {
     resendLoading.value = false;

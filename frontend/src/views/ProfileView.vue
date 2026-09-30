@@ -1,6 +1,5 @@
 <template>
   <div class="min-h-screen bg-[#faf9ff] px-5 py-5">
-
     <DashboardSidebar
       :collapsed="sidebarCollapsed"
       @toggle="sidebarCollapsed = !sidebarCollapsed"
@@ -10,30 +9,32 @@
       class="min-h-[calc(100vh-40px)] transition-transform duration-300 ease-in-out"
       :class="sidebarCollapsed ? 'ml-[98px]' : 'ml-[284px]'"
     >
-
       <header
         class="flex items-center justify-between rounded-3xl border border-violet-100 bg-white px-6 py-4 shadow-[0_10px_40px_rgba(139,92,246,0.12)]"
       >
         <div>
-          <p class="text-xs font-medium text-violet-400">Account</p>
-          <h1 class="mt-1 text-xl font-bold text-slate-800">Profile settings</h1>
+          <p class="text-xs font-medium text-violet-400">
+            {{ i18nStore.t("profile.account") }}
+          </p>
+          <h1 class="mt-1 text-xl font-bold text-slate-800">
+            {{ i18nStore.t("profile.settings") }}
+          </h1>
         </div>
 
         <router-link
           to="/dashboard"
           class="text-sm font-medium text-violet-400 hover:text-violet-500"
         >
-          ← Back to dashboard
+          ← {{ i18nStore.t("profile.backToDashboard") }}
         </router-link>
       </header>
 
       <div class="mx-auto max-w-3xl px-6 py-8">
-
         <div
           v-if="loading"
           class="flex min-h-[300px] items-center justify-center text-sm text-slate-400"
         >
-          Loading your profile...
+          {{ i18nStore.t("profile.loading") }}
         </div>
 
         <form
@@ -41,7 +42,6 @@
           @submit.prevent="saveProfile"
           class="rounded-[28px] border border-violet-100 bg-white p-8 shadow-sm"
         >
-
           <div class="mb-8 flex items-center gap-4">
             <div
               class="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-full bg-violet-100 text-xl font-bold text-violet-500"
@@ -49,7 +49,7 @@
               <img
                 v-if="form.profile_image_url"
                 :src="form.profile_image_url"
-                alt="Profile"
+                :alt="i18nStore.t('profile.imageAlt')"
                 class="h-full w-full object-cover"
                 @error="form.profile_image_url = ''"
               />
@@ -57,7 +57,9 @@
             </div>
             <div>
               <p class="text-sm font-semibold text-slate-800">{{ email }}</p>
-              <p class="text-xs text-slate-400">Email cannot be changed here</p>
+              <p class="text-xs text-slate-400">
+                {{ i18nStore.t("profile.emailLocked") }}
+              </p>
             </div>
           </div>
 
@@ -75,9 +77,10 @@
           </div>
 
           <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
-
             <div>
-              <label class="mb-2 block text-sm font-medium text-slate-700">Username</label>
+              <label class="mb-2 block text-sm font-medium text-slate-700">{{
+                i18nStore.t("profile.username")
+              }}</label>
               <input
                 v-model="form.username"
                 type="text"
@@ -86,17 +89,21 @@
             </div>
 
             <div>
-              <label class="mb-2 block text-sm font-medium text-slate-700">Job title</label>
+              <label class="mb-2 block text-sm font-medium text-slate-700">{{
+                i18nStore.t("profile.jobTitle")
+              }}</label>
               <input
                 v-model="form.job_title"
                 type="text"
-                placeholder="e.g. Backend Developer"
+                :placeholder="i18nStore.t('profile.jobPlaceholder')"
                 class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none transition focus:border-violet-300 focus:bg-white focus:ring-4 focus:ring-violet-100"
               />
             </div>
 
             <div>
-              <label class="mb-2 block text-sm font-medium text-slate-700">First name</label>
+              <label class="mb-2 block text-sm font-medium text-slate-700">{{
+                i18nStore.t("profile.firstName")
+              }}</label>
               <input
                 v-model="form.first_name"
                 type="text"
@@ -105,7 +112,9 @@
             </div>
 
             <div>
-              <label class="mb-2 block text-sm font-medium text-slate-700">Last name</label>
+              <label class="mb-2 block text-sm font-medium text-slate-700">{{
+                i18nStore.t("profile.lastName")
+              }}</label>
               <input
                 v-model="form.last_name"
                 type="text"
@@ -114,55 +123,61 @@
             </div>
 
             <div>
-              <label class="mb-2 block text-sm font-medium text-slate-700">Phone</label>
+              <label class="mb-2 block text-sm font-medium text-slate-700">{{
+                i18nStore.t("profile.phone")
+              }}</label>
               <input
                 v-model="form.phone"
                 type="text"
                 maxlength="11"
-                placeholder="09xxxxxxxxx"
+                :placeholder="i18nStore.t('profile.phonePlaceholder')"
                 class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none transition focus:border-violet-300 focus:bg-white focus:ring-4 focus:ring-violet-100"
               />
             </div>
 
             <div>
-              <label class="mb-2 block text-sm font-medium text-slate-700">Location</label>
+              <label class="mb-2 block text-sm font-medium text-slate-700">{{
+                i18nStore.t("profile.location")
+              }}</label>
               <input
                 v-model="form.location"
                 type="text"
-                placeholder="e.g. Amsterdam, Netherlands"
+                :placeholder="i18nStore.t('profile.locationPlaceholder')"
                 class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none transition focus:border-violet-300 focus:bg-white focus:ring-4 focus:ring-violet-100"
               />
             </div>
 
             <div class="sm:col-span-2">
-              <label class="mb-2 block text-sm font-medium text-slate-700">Profile image URL</label>
+              <label class="mb-2 block text-sm font-medium text-slate-700">{{
+                i18nStore.t("profile.imageUrl")
+              }}</label>
               <input
                 v-model="form.profile_image_url"
                 type="text"
-                placeholder="https://..."
+                :placeholder="i18nStore.t('profile.imagePlaceholder')"
                 class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none transition focus:border-violet-300 focus:bg-white focus:ring-4 focus:ring-violet-100"
               />
             </div>
-
           </div>
 
           <div class="mt-8 flex flex-wrap items-center gap-3">
             <button
               type="submit"
-            :disabled="saving"
-            class="rounded-full bg-violet-400 px-7 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-100 transition hover:bg-violet-500 disabled:cursor-not-allowed disabled:opacity-60"
-          >
-            {{ saving ? 'Saving...' : 'Save changes' }}
+              :disabled="saving"
+              class="rounded-full bg-violet-400 px-7 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-100 transition hover:bg-violet-500 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {{
+                i18nStore.t(saving ? "profile.saving" : "profile.saveChanges")
+              }}
             </button>
 
             <router-link
               to="/account/security"
               class="rounded-full border border-violet-200 bg-violet-50 px-7 py-3 text-sm font-semibold text-violet-500 transition hover:bg-violet-100"
             >
-              Security settings
+              {{ i18nStore.t("profile.securitySettings") }}
             </router-link>
           </div>
-
         </form>
       </div>
     </main>
@@ -170,77 +185,79 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed, onMounted } from 'vue'
-import { useAuthStore } from '../stores/auth'
-import api from '../api/axios'
-import DashboardSidebar from '../components/Dashboard/DashboardSidebar.vue'
+import { ref, reactive, computed, onMounted } from "vue";
+import { useAuthStore } from "../stores/auth";
+import api from "../api/axios";
+import { useI18nStore } from "../stores/i18n";
+import DashboardSidebar from "../components/Dashboard/DashboardSidebar.vue";
 
-const authStore = useAuthStore()
-const sidebarCollapsed = ref(false)
+const authStore = useAuthStore();
+const i18nStore = useI18nStore();
+const sidebarCollapsed = ref(false);
 
-const loading = ref(true)
-const saving = ref(false)
-const errorMessage = ref('')
-const successMessage = ref('')
+const loading = ref(true);
+const saving = ref(false);
+const errorMessage = ref("");
+const successMessage = ref("");
 
-const email = ref('')
+const email = ref("");
 
 const form = reactive({
-  username: '',
-  first_name: '',
-  last_name: '',
-  job_title: '',
-  phone: '',
-  location: '',
-  profile_image_url: ''
-})
+  username: "",
+  first_name: "",
+  last_name: "",
+  job_title: "",
+  phone: "",
+  location: "",
+  profile_image_url: "",
+});
 
 const initial = computed(() => {
-  return (form.username || 'U').charAt(0).toUpperCase()
-})
+  return (form.username || i18nStore.t("common.user")).charAt(0).toUpperCase();
+});
 
 onMounted(async () => {
   try {
-    const response = await api.get('accounts/me/')
-    const data = response.data
+    const response = await api.get("accounts/me/");
+    const data = response.data;
 
-    email.value = data.email
-    form.username = data.username || ''
-    form.first_name = data.first_name || ''
-    form.last_name = data.last_name || ''
-    form.job_title = data.job_title || ''
-    form.phone = data.phone || ''
-    form.location = data.location || ''
-    form.profile_image_url = data.profile_image_url || ''
+    email.value = data.email;
+    form.username = data.username || "";
+    form.first_name = data.first_name || "";
+    form.last_name = data.last_name || "";
+    form.job_title = data.job_title || "";
+    form.phone = data.phone || "";
+    form.location = data.location || "";
+    form.profile_image_url = data.profile_image_url || "";
   } catch (error) {
-    console.error('Failed to load profile:', error)
-    errorMessage.value = "Error loading profile. Please try again later."
+    console.error("Failed to load profile:", error);
+    errorMessage.value = i18nStore.t("profile.loadError");
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-})
+});
 
 const saveProfile = async () => {
-  errorMessage.value = ''
-  successMessage.value = ''
-  saving.value = true
+  errorMessage.value = "";
+  successMessage.value = "";
+  saving.value = true;
 
   try {
-    const response = await api.patch('accounts/me/', form)
+    const response = await api.patch("accounts/me/", form);
 
-    authStore.updateUser(response.data)
+    authStore.updateUser(response.data);
 
-    successMessage.value = 'Profile updated successfully.'
+    successMessage.value = i18nStore.t("profile.updateSuccess");
   } catch (error) {
-    console.error('Failed to update profile:', error)
+    console.error("Failed to update profile:", error);
     if (error.response?.data) {
-      const errors = error.response.data
-      errorMessage.value = Object.values(errors).flat().join(' ')
+      const errors = error.response.data;
+      errorMessage.value = Object.values(errors).flat().join(" ");
     } else {
-      errorMessage.value = "Error updating profile. Please try again later."
+      errorMessage.value = i18nStore.t("profile.updateError");
     }
   } finally {
-    saving.value = false
+    saving.value = false;
   }
-}
+};
 </script>

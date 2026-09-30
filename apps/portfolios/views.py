@@ -230,3 +230,13 @@ class SocialLinkCreateView(generics.CreateAPIView):
         serializer.save(
             portfolio=portfolio
         )
+
+class SocialLinkDetailView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = SocialLinkSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get_queryset(self):
+        return SocialLink.objects.filter(
+            portfolio_id=self.kwargs['portfolio_pk'],
+            portfolio__user=self.request.user
+        )

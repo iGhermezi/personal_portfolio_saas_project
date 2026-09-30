@@ -31,7 +31,9 @@
         class="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between"
       >
         <div>
-          <p class="text-xs font-medium text-violet-400">YOUR PORTFOLIO</p>
+          <p class="text-xs font-medium text-violet-400">
+            {{ i18nStore.t("dashboard.yourPortfolio") }}
+          </p>
 
           <h2 class="mt-1 text-xl font-bold text-slate-800">
             {{ portfolio.title }}
@@ -42,14 +44,14 @@
             :to="`/portfolio/${portfolio.id}/preview`"
             class="rounded-full bg-violet-400 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-violet-500"
           >
-            Preview
+            {{ i18nStore.t("dashboard.preview") }}
           </router-link>
 
           <router-link
             :to="`/portfolio/${portfolio.id}/edit`"
             class="rounded-full bg-violet-400 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-violet-500"
           >
-            Edit Portfolio
+            {{ i18nStore.t("dashboard.editPortfolio") }}
           </router-link>
         </div>
       </div>
@@ -57,7 +59,9 @@
       <!-- Public URL -->
 
       <div class="mt-6 rounded-2xl bg-slate-50 p-4">
-        <p class="text-xs font-medium text-slate-400">Public portfolio</p>
+        <p class="text-xs font-medium text-slate-400">
+          {{ i18nStore.t("dashboard.publicPortfolio") }}
+        </p>
 
         <a
           :href="publicUrl"
@@ -73,6 +77,9 @@
 
 <script setup>
 import { computed } from "vue";
+import { useI18nStore } from "../../stores/i18n";
+
+const i18nStore = useI18nStore();
 
 const props = defineProps({
   portfolio: {
