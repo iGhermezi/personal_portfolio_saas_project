@@ -825,3 +825,50 @@ class ChildMassAssignmentSecurityTests(APITestCase):
             project.portfolio_id,
             self.portfolio.id
         )
+
+def test_public_portfolio_exposes_safe_contact_information_only(self):
+    self.user.job_title = 'Backend Developer'
+    self.user.phone = '09123456789'
+    self.user.location = 'Baku, Azerbaijan'
+    self.user.save(
+        update_fields=[
+            'job_title',
+            'phone',
+            'location',
+        ]
+    )
+
+    response = self.client.get(
+        f'/api/portfolios/public/{self.portfolio.slug}/'
+    )
+
+    self.assertEqual(
+        response.status_code,
+        200
+    )
+
+    self.assertEqual(
+        response.data['email'],
+        'public@example.com'
+    )
+
+    self.assertEqual(
+        response.data['job_title'],
+        'Backend Developer'
+    )
+
+    self.assertEqual(
+        response.data['location'],
+        'Baku, Azerbaijan'
+    )
+
+    self.assertNotIn(
+        'phone',
+        response.data
+    )
+
+    self.assertNotIn(
+        'user',
+        response.data
+    )
+

@@ -220,9 +220,20 @@ class PortfolioSerializer(serializers.ModelSerializer):
         raise serializers.ValidationError(
             'Invalid template access level.'
         )
-
 class PublicPortfolioSerializer(serializers.ModelSerializer):
     template_key = serializers.SerializerMethodField()
+    email = serializers.EmailField(
+        source='user.email',
+        read_only=True
+    )
+    job_title = serializers.CharField(
+        source='user.job_title',
+        read_only=True
+    )
+    location = serializers.CharField(
+        source='user.location',
+        read_only=True
+    )
 
     projects = ProjectSerializer(
         many=True,
@@ -243,6 +254,7 @@ class PublicPortfolioSerializer(serializers.ModelSerializer):
     social = SocialLinkSerializer(
         read_only=True
     )
+
     def get_template_key(self, obj):
         if not obj.template:
             return None
@@ -252,19 +264,23 @@ class PublicPortfolioSerializer(serializers.ModelSerializer):
     class Meta:
         model = Portfolio
         fields = (
-        'id',
-        'template',
-        'template_key',
-        'title',
-        'slug',
-        'bio',
-        'is_published',
-        'created_at',
-        'updated_at',
-        'projects',
-        'skills',
-        'educations',
-        'experiences',
-        'social',
-         )
+            'id',
+            'template',
+            'template_key',
+            'title',
+            'slug',
+            'bio',
+            'email',
+            'job_title',
+            'location',
+            'is_published',
+            'created_at',
+            'updated_at',
+            'projects',
+            'skills',
+            'educations',
+            'experiences',
+            'social',
+        )
+
         read_only_fields = fields

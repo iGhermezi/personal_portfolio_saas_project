@@ -143,8 +143,14 @@
             :href="`mailto:${portfolio.email}`"
             class="break-all text-[#d1d5d3] transition hover:text-[#34d399]"
           >
-            <span class="mr-2 text-[#10b981]">●</span>{{ portfolio.email }}
+            <span class="mr-2 text-[#10b981]">●</span>
+            {{ portfolio.email }}
           </a>
+
+          <p v-if="portfolio.location" class="break-all text-[#d1d5d3]">
+            <span class="mr-2 text-[#10b981]">●</span>
+            {{ portfolio.location }}
+          </p>
 
           <a
             v-if="portfolio.social?.sl_github"
@@ -153,7 +159,8 @@
             rel="noopener noreferrer"
             class="break-all text-[#d1d5d3] transition hover:text-[#34d399]"
           >
-            <span class="mr-2 text-[#10b981]">●</span>GitHub
+            <span class="mr-2 text-[#10b981]">●</span>
+            GitHub
           </a>
 
           <a
@@ -163,7 +170,8 @@
             rel="noopener noreferrer"
             class="break-all text-[#d1d5d3] transition hover:text-[#34d399]"
           >
-            <span class="mr-2 text-[#10b981]">●</span>LinkedIn
+            <span class="mr-2 text-[#10b981]">●</span>
+            LinkedIn
           </a>
 
           <a
@@ -173,16 +181,12 @@
             rel="noopener noreferrer"
             class="break-all text-[#d1d5d3] transition hover:text-[#34d399]"
           >
-            <span class="mr-2 text-[#10b981]">●</span
-            >{{ i18nStore.t("portfolioTemplate.personalWebsite") }}
+            <span class="mr-2 text-[#10b981]">●</span>
+            {{ i18nStore.t("portfolioTemplate.personalWebsite") }}
           </a>
 
-          <p v-if="portfolio.phone" class="text-[#d1d5d3]">
-            <span class="mr-2 text-[#10b981]">●</span>{{ portfolio.phone }}
-          </p>
-
           <p
-            v-if="!portfolio.email && !portfolio.phone && !portfolio.social"
+            v-if="!portfolio.email && !portfolio.location && !portfolio.social"
             class="text-sm text-[#7f9189]"
           >
             {{ i18nStore.t("portfolioTemplate.contactPlaceholder") }}

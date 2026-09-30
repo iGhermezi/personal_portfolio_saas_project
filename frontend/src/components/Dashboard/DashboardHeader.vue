@@ -3,11 +3,13 @@
     class="flex items-center justify-between rounded-3xl border border-violet-100 bg-white px-6 py-4 shadow-[0_10px_40px_rgba(139,92,246,0.12)]"
   >
     <div>
-      <p class="text-xs font-medium text-violet-400">
+      <p class="text-xs font-medium text-violet-500">
         {{ i18nStore.t("dashboard.dashboard") }}
       </p>
+
       <h1 class="mt-1 text-xl font-bold text-slate-800">
-        {{ i18nStore.t("dashboard.welcomeBack") }} 👋
+        {{ i18nStore.t("dashboard.welcome") }},
+        {{ authStore.user?.username || i18nStore.t("common.user") }} 👋
       </h1>
     </div>
 
@@ -20,10 +22,12 @@
       >
         {{ initial }}
       </div>
+
       <div class="hidden text-left sm:block">
         <p class="text-sm font-semibold text-slate-800">
           {{ authStore.user?.username || i18nStore.t("common.user") }}
         </p>
+
         <p class="text-xs text-slate-400">
           {{ i18nStore.t("dashboard.viewProfile") }}
         </p>
@@ -34,6 +38,7 @@
 
 <script setup>
 import { computed } from "vue";
+
 import { useAuthStore } from "../../stores/auth";
 import { useI18nStore } from "../../stores/i18n";
 

@@ -10,8 +10,9 @@
       :class="sidebarCollapsed ? 'ml-[98px]' : 'ml-[284px]'"
     >
       <div class="mx-auto max-w-6xl px-6 py-8">
-        <p class="text-sm font-medium text-violet-400">Templates</p>
-
+        <p class="text-sm font-medium text-violet-400">
+          {{ i18nStore.t("common.templates") }}
+        </p>
         <h1 class="mt-1 text-3xl font-bold tracking-tight text-slate-900">
           {{ i18nStore.t("templates.title") }}
         </h1>

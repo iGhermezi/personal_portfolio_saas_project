@@ -43,7 +43,7 @@
       </div>
 
       <!-- Upgrade -->
-      <RouterLink to="/upgrade" className="...">
+      <RouterLink to="/upgrade" class="...">
         <button
           type="button"
           class="mt-4 flex w-full items-center rounded-xl bg-violet-50 px-3 py-3 text-sm font-semibold text-violet-500 transition hover:bg-violet-100"

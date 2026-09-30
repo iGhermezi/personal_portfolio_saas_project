@@ -2,8 +2,6 @@
   <div
     class="flex min-h-[420px] flex-col items-center justify-center rounded-[28px] border border-violet-100 bg-white px-6 text-center shadow-sm"
   >
-    <!-- Icon -->
-
     <div
       class="flex h-20 w-20 items-center justify-center rounded-3xl bg-violet-50 text-3xl"
     >

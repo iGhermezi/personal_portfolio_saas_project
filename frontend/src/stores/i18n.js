@@ -55,70 +55,65 @@ const translations = {
       myPortfolios: "My Portfolios",
       upgrade: "Upgrade",
       profile: "Profile",
-      welcomeBack: "Welcome back",
+
+      welcome: "Welcome",
       viewProfile: "View profile",
+
+      overview: "Overview",
+      workspace: "Your workspace",
+      workspaceDescription: "Manage your portfolio and keep it up to date.",
+
+      portfolioStatus: "Portfolio",
+      complete: "Complete",
+      notCreated: "Not created",
+      portfolioReady: "Your portfolio is ready.",
+      createPortfolioPrompt: "Create your portfolio to get started.",
+
+      verification: "Verification",
+      verified: "Verified ✓",
+      notVerified: "Not verified",
+      emailVerified: "Your email is verified.",
+      emailNotVerified: "Your email is not verified.",
+
+      subscription: "Subscription",
+      pro: "Pro",
+      free: "Free",
+      premiumActive: "Premium access is active.",
+      freePlan: "You are currently on the free plan.",
+
+      status: "Status",
+      live: "Live",
+      accountActive: "Your account is active.",
+
       yourPortfolio: "YOUR PORTFOLIO",
       preview: "Preview",
       editPortfolio: "Edit Portfolio",
       publicPortfolio: "Public portfolio",
+
       emptyTitle: "You don't have a portfolio yet",
       emptyDescription:
         "Create your first portfolio and start showcasing your work, skills and experience.",
       browseTemplates: "Browse templates first",
-      overview: "Overview",
-      workspace: "Your workspace",
-      workspaceDescription:
-        "Manage your portfolio and customize your online presence.",
+
       loadingPortfolio: "Loading your portfolio...",
       failedToLoadPortfolio: "Failed to load your portfolio.",
       unableToLoadPortfolio: "Unable to load your portfolio.",
-    },
 
-    auth: {
-      loginTitle: "Log in to your account",
-      signInDescription: "Sign in to your account",
-      email: "Email",
-      password: "Password",
-      signingIn: "Signing in...",
-      signIn: "Sign In",
-      forgotPassword: "Forgot password?",
-      noAccount: "Don't have an account?",
-      register: "Register",
-      registerTitle: "Create your account",
-      registerDescription:
-        "Make your personal portfolio and showcase your work, skills and experience.",
-      username: "Username",
-      confirmPassword: "Confirm Password",
-      creatingAccount: "Creating account...",
-      createAccount: "Create Account",
-      hasAccount: "Already have an account?",
-      logIn: "Log in",
-      accountRecovery: "Account recovery",
-      forgotPasswordTitle: "Forgot password?",
-      enterAccountEmail: "Enter your account email address.",
-      emailPlaceholder: "example@gmail.com",
-      sending: "Sending...",
-      sendResetLink: "Send reset link",
-      backToLogin: "Back to login",
-      newPassword: "New password",
-      confirmNewPassword: "Confirm password",
-      changing: "Changing...",
-      changePassword: "Change password",
-      verifyingEmail: "Verifying email...",
-      emailVerified: "Email verified",
+      quickActions: "Quick actions",
+      editProfile: "Edit profile",
+      changeTemplate: "Change template",
+      accountSecurity: "Account security",
+
+      nextStep: "Next step",
+      completePortfolio: "Complete your portfolio",
+      completePortfolioDescription:
+        "Create your portfolio and start showcasing your work, skills and experience.",
+
+      keepPortfolioUpdated: "Keep your portfolio up to date",
+      keepPortfolioUpdatedDescription:
+        "Review your portfolio information and make sure your latest work is displayed.",
+
       continue: "Continue",
-      verificationFailed: "Verification failed",
-      emailAdded: "Email successfully verified.",
-      invalidExpiredLink: "This link is invalid or expired.",
-      connectionError: "Could not connect to the server.",
-      invalidInformation: "The information provided is invalid.",
-      emailRequired: "Please enter your email address.",
-      resetEmailSent:
-        "If an account exists for this email, a password reset link will be sent.",
-      passwordRequired: "Please enter a new password.",
-      enterNewPassword: "Enter your new password.",
-      passwordsDoNotMatch: "The passwords do not match.",
-      passwordChanged: "Password changed successfully.",
     },
 
     portfolio: {
@@ -507,23 +502,66 @@ const translations = {
       myPortfolios: "پورتفولیوهای من",
       upgrade: "ارتقا",
       profile: "پروفایل",
-      welcomeBack: "خوش آمدید",
+
+      welcome: "خوش آمدی",
       viewProfile: "مشاهده پروفایل",
+
+      overview: "نمای کلی",
+      workspace: "فضای کاری شما",
+      workspaceDescription:
+        "پورتفولیوی خود را مدیریت کنید و آن را به‌روز نگه دارید.",
+
+      portfolioStatus: "پورتفولیو",
+      complete: "تکمیل شده",
+      notCreated: "ساخته نشده",
+      portfolioReady: "پورتفولیوی شما آماده است.",
+      createPortfolioPrompt: "برای شروع پورتفولیوی خود را بسازید.",
+
+      verification: "تأیید ایمیل",
+      verified: "تأیید شده ✓",
+      notVerified: "تأیید نشده",
+      emailVerified: "ایمیل شما تأیید شده است.",
+      emailNotVerified: "ایمیل شما هنوز تأیید نشده است.",
+
+      subscription: "اشتراک",
+      pro: "پرو",
+      free: "رایگان",
+      premiumActive: "دسترسی ویژه فعال است.",
+      freePlan: "در حال حاضر از پلن رایگان استفاده می‌کنید.",
+
+      status: "وضعیت",
+      live: "فعال",
+      accountActive: "حساب شما فعال است.",
+
       yourPortfolio: "پورتفولیوی شما",
       preview: "پیش‌نمایش",
       editPortfolio: "ویرایش پورتفولیو",
       publicPortfolio: "پورتفولیوی عمومی",
+
       emptyTitle: "هنوز پورتفولیویی ندارید",
       emptyDescription:
-        "اولین پورتفولیوی خود را بسازید و کارها، مهارت‌ها و تجربه‌تان را نمایش دهید.",
+        "اولین پورتفولیوی خود را بسازید و پروژه‌ها، مهارت‌ها و تجربه‌هایتان را نمایش دهید.",
       browseTemplates: "ابتدا قالب‌ها را ببینید",
-      overview: "نمای کلی",
-      workspace: "فضای کاری شما",
-      workspaceDescription:
-        "پورتفولیوی خود را مدیریت و حضور آنلاین‌تان را شخصی‌سازی کنید.",
+
       loadingPortfolio: "در حال بارگذاری پورتفولیو...",
       failedToLoadPortfolio: "بارگذاری پورتفولیو ناموفق بود.",
       unableToLoadPortfolio: "امکان بارگذاری پورتفولیو وجود ندارد.",
+
+      quickActions: "دسترسی سریع",
+      editProfile: "ویرایش پروفایل",
+      changeTemplate: "تغییر قالب",
+      accountSecurity: "امنیت حساب",
+
+      nextStep: "مرحله بعد",
+      completePortfolio: "پورتفولیوی خود را تکمیل کنید",
+      completePortfolioDescription:
+        "پورتفولیوی خود را بسازید و پروژه‌ها، مهارت‌ها و تجربه‌هایتان را نمایش دهید.",
+
+      keepPortfolioUpdated: "پورتفولیوی خود را به‌روز نگه دارید",
+      keepPortfolioUpdatedDescription:
+        "اطلاعات پورتفولیوی خود را بررسی کنید و مطمئن شوید آخرین فعالیت‌ها و پروژه‌هایتان نمایش داده می‌شوند.",
+
+      continue: "ادامه",
     },
 
     auth: {
