@@ -107,14 +107,14 @@
               <div class="flex items-center gap-2 sm:gap-3">
                 <router-link
                   to="/login"
-                  class="hidden rounded-full px-3 py-2 text-sm font-medium text-white/80 transition hover:bg-white/10 hover:text-white sm:block"
+                  class="hidden rounded-lg px-3 py-2 text-sm font-medium text-white/80 transition hover:bg-white/10 hover:text-white sm:block"
                 >
                   {{ i18nStore.t("common.login") }}
                 </router-link>
 
                 <router-link
                   to="/register"
-                  class="rounded-full bg-white px-4 py-2.5 text-sm font-bold text-violet-600 shadow-lg shadow-violet-950/10 transition duration-200 hover:-translate-y-0.5 hover:shadow-xl sm:px-5"
+                  class="rounded-lg bg-white px-4 py-2.5 text-sm font-bold text-violet-600 shadow-lg shadow-violet-950/10 transition duration-200 hover:-translate-y-0.5 hover:shadow-xl sm:px-5"
                 >
                   {{ i18nStore.t("common.getStarted") }}
                 </router-link>
@@ -166,14 +166,14 @@
               >
                 <router-link
                   to="/register"
-                  class="inline-flex h-13 items-center justify-center rounded-full bg-white px-7 text-sm font-bold text-violet-600 shadow-xl shadow-violet-950/20 transition duration-200 hover:-translate-y-1 hover:shadow-2xl"
+                  class="inline-flex h-13 items-center justify-center rounded-xl bg-white px-7 text-sm font-bold text-violet-600 shadow-xl shadow-violet-950/20 transition duration-200 hover:-translate-y-1 hover:shadow-2xl"
                 >
                   {{ i18nStore.t("common.createPortfolio") }}
                 </router-link>
 
                 <a
                   href="#templates"
-                  class="inline-flex h-13 items-center justify-center rounded-full border border-white/20 bg-white/10 px-7 text-sm font-semibold text-white backdrop-blur-md transition duration-200 hover:bg-white/15"
+                  class="inline-flex h-13 items-center justify-center rounded-xl border border-white/20 bg-white/10 px-7 text-sm font-semibold text-white backdrop-blur-md transition duration-200 hover:bg-white/15"
                 >
                   {{ i18nStore.t("common.exploreTemplates") }}
                 </a>
@@ -528,7 +528,7 @@
 
           <router-link
             to="/templates"
-            class="inline-flex w-fit items-center rounded-full border border-violet-200 bg-white px-5 py-3 text-sm font-bold text-violet-600 transition hover:-translate-y-0.5 hover:border-violet-300 dark:border-white/10 dark:bg-white/[0.04] dark:text-violet-300"
+            class="inline-flex w-fit items-center rounded-lg border border-violet-200 bg-white px-5 py-3 text-sm font-bold text-violet-600 transition hover:-translate-y-0.5 hover:border-violet-300 dark:border-white/10 dark:bg-white/[0.04] dark:text-violet-300"
           >
             {{ i18nStore.t("common.exploreTemplates") }}
             <span class="ml-2">→</span>
@@ -1236,7 +1236,7 @@
 
             <router-link
               to="/register"
-              class="mt-8 inline-flex rounded-full bg-white px-6 py-3 text-sm font-bold text-violet-600 transition hover:-translate-y-0.5"
+              class="mt-8 inline-flex rounded-xl bg-white px-6 py-3 text-sm font-bold text-violet-600 transition hover:-translate-y-0.5"
             >
               {{ i18nStore.t("common.createPortfolio") }}
             </router-link>
@@ -1405,7 +1405,7 @@
 
           <router-link
             to="/register"
-            class="mt-8 inline-flex rounded-full bg-white px-7 py-3.5 text-sm font-bold text-violet-600 shadow-xl transition duration-200 hover:-translate-y-1 hover:shadow-2xl"
+            class="mt-8 inline-flex rounded-xl bg-white px-7 py-3.5 text-sm font-bold text-violet-600 shadow-xl transition duration-200 hover:-translate-y-1 hover:shadow-2xl"
           >
             {{ i18nStore.t("common.getStarted") }}
           </router-link>

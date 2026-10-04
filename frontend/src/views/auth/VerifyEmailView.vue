@@ -1,9 +1,9 @@
 <script setup>
 import { onMounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { useAuthStore } from "../stores/auth";
-import api from "../api/axios";
-import { useI18nStore } from "../stores/i18n";
+import { useAuthStore } from "../../stores/auth";
+import api from "../../api/axios";
+import { useI18nStore } from "../../stores/i18n";
 
 const route = useRoute();
 const router = useRouter();

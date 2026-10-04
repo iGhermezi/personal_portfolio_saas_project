@@ -1,6 +1,6 @@
 <template>
   <header
-    class="flex min-h-[76px] items-center justify-between rounded-3xl border border-violet-100 bg-white px-5 py-4 text-slate-800 shadow-[0_10px_40px_rgba(139,92,246,0.10)] sm:px-6"
+    class="flex min-h-[76px] items-center justify-between rounded-2xl border border-violet-100 bg-white px-5 py-4 text-slate-800 shadow-sm sm:px-6"
     :dir="i18nStore.isRTL ? 'rtl' : 'ltr'"
   >
     <!-- Welcome -->
@@ -15,26 +15,30 @@
       </h1>
     </div>
 
-    <!-- Profile -->
+    <!-- Profile Button -->
     <router-link
       to="/profile"
-      class="group flex shrink-0 items-center rounded-full p-1.5 transition hover:bg-violet-50"
+      class="group flex shrink-0 items-center gap-3 rounded-xl border border-slate-200 bg-white px-3 py-2 transition-all duration-200 hover:border-violet-200 hover:bg-violet-50/50"
     >
+      <!-- Avatar -->
       <div
-        class="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-violet-100 text-sm font-bold text-violet-600 ring-2 ring-white transition group-hover:bg-violet-200"
+        class="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-violet-100 text-sm font-bold text-violet-600 transition-colors group-hover:bg-violet-200"
       >
         {{ initial }}
       </div>
 
+      <!-- User Info -->
       <div
         class="hidden min-w-0 sm:block"
-        :class="i18nStore.isRTL ? 'mr-3 text-right' : 'ml-3 text-left'"
+        :class="i18nStore.isRTL ? 'text-right' : 'text-left'"
       >
-        <p class="max-w-[140px] truncate text-sm font-semibold text-slate-800">
+        <p
+          class="max-w-[130px] truncate text-sm font-semibold text-slate-800"
+        >
           {{ authStore.user?.username || i18nStore.t("common.user") }}
         </p>
 
-        <p class="text-xs text-slate-500">
+        <p class="text-[11px] text-slate-500">
           {{ i18nStore.t("dashboard.viewProfile") }}
         </p>
       </div>

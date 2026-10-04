@@ -8,7 +8,7 @@
     <button
       type="button"
       @click="i18nStore.toggleLanguage()"
-      class="fixed bottom-5 right-5 z-[100] rounded-full border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-lg transition hover:-translate-y-0.5 hover:bg-slate-50 dark:border-slate-700 dark:bg-[#171124] dark:text-slate-100 dark:hover:bg-[#21182f]"
+      class="fixed bottom-5 right-5 z-[100] rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-lg transition hover:-translate-y-0.5 hover:bg-slate-50 dark:border-slate-700 dark:bg-[#171124] dark:text-slate-100 dark:hover:bg-[#21182f]"
       :aria-label="
         i18nStore.language === 'en'
           ? i18nStore.t('common.switchToPersian')

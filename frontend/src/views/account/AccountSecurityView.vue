@@ -82,7 +82,7 @@
                 <button
                   type="submit"
                   :disabled="passwordLoading"
-                  class="ml-auto rounded-full bg-violet-400 px-7 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-100 hover:bg-violet-500 disabled:opacity-60"
+                  class="ml-auto rounded-lg bg-violet-400 px-7 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-100 hover:bg-violet-500 disabled:opacity-60"
                 >
                   {{
                     i18nStore.t(
@@ -125,7 +125,7 @@
               <button
                 type="button"
                 :disabled="emailRequestLoading"
-                class="rounded-full bg-violet-400 px-7 py-3 text-sm font-semibold text-white hover:bg-violet-500 disabled:opacity-60"
+                class="rounded-lg bg-violet-400 px-7 py-3 text-sm font-semibold text-white hover:bg-violet-500 disabled:opacity-60"
                 @click="requestEmailChange"
               >
                 {{
@@ -153,7 +153,7 @@
               <button
                 type="button"
                 :disabled="emailConfirmLoading"
-                class="rounded-full border border-violet-200 bg-violet-50 px-7 py-3 text-sm font-semibold text-violet-500 hover:bg-violet-100 disabled:opacity-60"
+                class="rounded-lg border border-violet-200 bg-violet-50 px-7 py-3 text-sm font-semibold text-violet-500 hover:bg-violet-100 disabled:opacity-60"
                 @click="confirmEmailChange"
               >
                 {{
@@ -209,7 +209,7 @@
                 v-else
                 type="button"
                 :disabled="resendLoading"
-                class="rounded-full bg-violet-400 px-6 py-3 text-sm font-semibold text-white hover:bg-violet-500 disabled:opacity-60"
+                class="rounded-lg bg-violet-400 px-6 py-3 text-sm font-semibold text-white hover:bg-violet-500 disabled:opacity-60"
                 @click="resendVerification"
               >
                 {{
@@ -238,10 +238,10 @@
 <script setup>
 import { computed, onMounted, reactive, ref } from "vue";
 import { useRouter } from "vue-router";
-import api from "../api/axios";
-import { useAuthStore } from "../stores/auth";
-import { useI18nStore } from "../stores/i18n";
-import DashboardSidebar from "../components/Dashboard/DashboardSidebar.vue";
+import api from "../../api/axios";
+import { useAuthStore } from "../../stores/auth";
+import { useI18nStore } from "../../stores/i18n";
+import DashboardSidebar from "../../components/Dashboard/DashboardSidebar.vue";
 
 const router = useRouter();
 const sidebarCollapsed = ref(false);

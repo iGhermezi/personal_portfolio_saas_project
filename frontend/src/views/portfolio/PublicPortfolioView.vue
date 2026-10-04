@@ -33,9 +33,9 @@
 import { onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
 
-import api from "../api/axios";
-import PortfolioTemplateRenderer from "../components/portfolio-templates/PortfolioTemplateRenderer.vue";
-import { useI18nStore } from "../stores/i18n";
+import api from "../../api/axios";
+import PortfolioTemplateRenderer from "../../components/portfolio-templates/PortfolioTemplateRenderer.vue";
+import { useI18nStore } from "../../stores/i18n";
 
 const route = useRoute();
 const i18nStore = useI18nStore();

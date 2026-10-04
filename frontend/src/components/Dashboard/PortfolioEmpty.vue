@@ -18,7 +18,7 @@
 
     <router-link
       to="/portfolio/create"
-      class="mt-7 rounded-full bg-violet-400 px-7 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-100 transition hover:-translate-y-0.5 hover:bg-violet-500"
+      class="mt-7 rounded-lg bg-violet-400 px-7 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-100 transition hover:-translate-y-0.5 hover:bg-violet-500"
     >
       + {{ i18nStore.t("common.createPortfolio") }}
     </router-link>

@@ -78,7 +78,7 @@
                 v-if="!subscribed && requestStatus !== 'pending'"
                 type="button"
                 :disabled="requesting"
-                class="rounded-full bg-violet-400 px-7 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-100 transition hover:bg-violet-500 disabled:opacity-60"
+                class="rounded-lg bg-violet-400 px-7 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-100 transition hover:bg-violet-500 disabled:opacity-60"
                 @click="requestPremium"
               >
                 {{
@@ -94,7 +94,7 @@
               >
               <router-link
                 to="/templates"
-                class="rounded-full border border-violet-200 bg-violet-50 px-7 py-3 text-sm font-semibold text-violet-500 transition hover:bg-violet-100"
+                class="rounded-lg border border-violet-200 bg-violet-50 px-7 py-3 text-sm font-semibold text-violet-500 transition hover:bg-violet-100"
               >
                 {{ i18nStore.t("premium.backToTemplates") }}
               </router-link>
@@ -108,10 +108,10 @@
 
 <script setup>
 import { onMounted, ref } from "vue";
-import api from "../api/axios";
-import { useAuthStore } from "../stores/auth";
-import DashboardSidebar from "../components/Dashboard/DashboardSidebar.vue";
-import { useI18nStore } from "../stores/i18n";
+import api from "../../api/axios";
+import { useAuthStore } from "../../stores/auth";
+import DashboardSidebar from "../../components/Dashboard/DashboardSidebar.vue";
+import { useI18nStore } from "../../stores/i18n";
 
 const authStore = useAuthStore();
 const i18nStore = useI18nStore();

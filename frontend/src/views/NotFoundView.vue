@@ -28,14 +28,14 @@ const i18nStore = useI18nStore();
       <div class="mt-7 flex flex-col gap-3 sm:flex-row sm:justify-center">
         <button
           type="button"
-          class="rounded-full bg-violet-400 px-7 py-3 text-sm font-semibold text-white transition hover:bg-violet-500"
+          class="rounded-lg bg-violet-400 px-7 py-3 text-sm font-semibold text-white transition hover:bg-violet-500"
           @click="router.push('/')"
         >
           {{ i18nStore.t("publicPortfolio.backHome") }}
         </button>
         <button
           type="button"
-          class="rounded-full border border-slate-200 px-7 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+          class="rounded-lg border border-slate-200 px-7 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
           @click="router.push('/dashboard')"
         >
           {{ i18nStore.t("dashboard.dashboard") }}

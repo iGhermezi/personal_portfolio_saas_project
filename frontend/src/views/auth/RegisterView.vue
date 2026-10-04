@@ -113,8 +113,8 @@
 <script setup>
 import { reactive, ref } from "vue";
 import { useRouter } from "vue-router";
-import { useAuthStore } from "../stores/auth";
-import { useI18nStore } from "../stores/i18n";
+import { useAuthStore } from "../../stores/auth";
+import { useI18nStore } from "../../stores/i18n";
 
 const router = useRouter();
 const authStore = useAuthStore();

@@ -193,7 +193,7 @@
             <button
               type="submit"
               :disabled="saving"
-              class="rounded-full bg-violet-500 px-7 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-100 transition hover:bg-violet-600 disabled:cursor-not-allowed disabled:opacity-60"
+              class="rounded-lg bg-violet-500 px-7 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-100 transition hover:bg-violet-600 disabled:cursor-not-allowed disabled:opacity-60"
             >
               {{
                 i18nStore.t(
@@ -204,7 +204,7 @@
 
             <router-link
               to="/account/security"
-              class="rounded-full border border-violet-200 bg-violet-50 px-7 py-3 text-sm font-semibold text-violet-600 transition hover:bg-violet-100"
+              class="rounded-lg border border-violet-200 bg-violet-50 px-7 py-3 text-sm font-semibold text-violet-600 transition hover:bg-violet-100"
             >
               {{ i18nStore.t("profile.securitySettings") }}
             </router-link>
@@ -217,10 +217,10 @@
 
 <script setup>
 import { ref, reactive, computed, onMounted } from "vue";
-import { useAuthStore } from "../stores/auth";
-import api from "../api/axios";
-import { useI18nStore } from "../stores/i18n";
-import DashboardSidebar from "../components/Dashboard/DashboardSidebar.vue";
+import { useAuthStore } from "../../stores/auth";
+import api from "../../api/axios";
+import { useI18nStore } from "../../stores/i18n";
+import DashboardSidebar from "../../components/Dashboard/DashboardSidebar.vue";
 
 const authStore = useAuthStore();
 const i18nStore = useI18nStore();

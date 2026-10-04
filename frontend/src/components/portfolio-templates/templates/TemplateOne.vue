@@ -11,7 +11,7 @@
 
     <section class="relative mx-auto max-w-6xl px-5 pt-6 sm:px-8">
       <nav
-        class="flex items-center justify-between rounded-full border border-[#f6d7d8] bg-white/85 px-5 py-3 shadow-sm backdrop-blur"
+        class="flex items-center justify-between rounded-xl border border-[#f6d7d8] bg-white/85 px-5 py-3 shadow-sm backdrop-blur"
       >
         <div class="flex items-center gap-2">
           <span class="text-2xl">🍓</span
@@ -48,21 +48,21 @@
               v-if="portfolio.social.sl_github"
               :href="portfolio.social.sl_github"
               target="_blank"
-              class="rounded-full bg-[#e64b61] px-5 py-3 text-sm font-bold text-white"
+              class="rounded-lg bg-[#e64b61] px-5 py-3 text-sm font-bold text-white"
               >GitHub ↗</a
             >
             <a
               v-if="portfolio.social.sl_linkedin"
               :href="portfolio.social.sl_linkedin"
               target="_blank"
-              class="rounded-full border border-[#f0c8cb] bg-white px-5 py-3 text-sm font-bold text-[#a94c5b]"
+              class="rounded-lg border border-[#f0c8cb] bg-white px-5 py-3 text-sm font-bold text-[#a94c5b]"
               >LinkedIn ♡</a
             >
             <a
               v-if="portfolio.social.sl_personal_web"
               :href="portfolio.social.sl_personal_web"
               target="_blank"
-              class="rounded-full border border-[#f0c8cb] bg-white px-5 py-3 text-sm font-bold text-[#a94c5b]"
+              class="rounded-lg border border-[#f0c8cb] bg-white px-5 py-3 text-sm font-bold text-[#a94c5b]"
               >{{ i18nStore.t("portfolioTemplate.website") }} ✦</a
             >
           </div>

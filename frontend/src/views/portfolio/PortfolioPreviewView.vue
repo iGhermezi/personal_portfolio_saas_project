@@ -23,7 +23,7 @@
         <div class="flex items-center gap-3">
           <button
             type="button"
-            class="rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600 transition hover:bg-slate-50"
+            class="rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600 transition hover:bg-slate-50"
             @click="router.push('/dashboard')"
           >
             {{ i18nStore.t("dashboard.dashboard") }}
@@ -32,7 +32,7 @@
           <button
             v-if="portfolio"
             type="button"
-            class="rounded-full bg-violet-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-violet-600 disabled:cursor-not-allowed disabled:opacity-60"
+            class="rounded-lg bg-violet-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-violet-600 disabled:cursor-not-allowed disabled:opacity-60"
             :disabled="publishing"
             @click="togglePublish"
           >
@@ -81,10 +81,10 @@ import { onMounted, ref } from "vue";
 
 import { useRoute, useRouter } from "vue-router";
 
-import api from "../api/axios";
-import { useI18nStore } from "../stores/i18n";
+import api from "../../api/axios";
+import { useI18nStore } from "../../stores/i18n";
 
-import PortfolioTemplateRenderer from "../components/portfolio-templates/PortfolioTemplateRenderer.vue";
+import PortfolioTemplateRenderer from "../../components/portfolio-templates/PortfolioTemplateRenderer.vue";
 
 const route = useRoute();
 

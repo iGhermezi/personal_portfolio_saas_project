@@ -58,33 +58,44 @@
         <template v-else>
           <!-- Status cards -->
           <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            <!-- Portfolio -->
+            <!-- Publication Status -->
             <div
               class="rounded-3xl border border-violet-100 bg-white p-5 text-slate-900 shadow-sm"
             >
               <div class="flex items-start justify-between">
                 <div>
                   <p class="text-xs font-medium text-slate-500">
-                    {{ i18nStore.t("dashboard.myPortfolios") }}
+                    {{ i18nStore.t("dashboard.publicationStatus") }}
                   </p>
 
-                  <p class="mt-2 text-2xl font-bold text-slate-900">
-                    {{ portfolio ? "1" : "0" }}
+                  <p
+                    class="mt-2 text-lg font-bold"
+                    :class="
+                      portfolio?.is_published
+                        ? 'text-emerald-600'
+                        : 'text-amber-600'
+                    "
+                  >
+                    {{
+                      portfolio?.is_published
+                        ? i18nStore.t("dashboard.published")
+                        : i18nStore.t("dashboard.unpublished")
+                    }}
                   </p>
                 </div>
 
                 <div
                   class="flex h-10 w-10 items-center justify-center rounded-2xl bg-violet-50 text-violet-500"
                 >
-                  ✦
+                  ●
                 </div>
               </div>
 
               <p class="mt-3 text-xs text-slate-500">
                 {{
-                  portfolio
-                    ? i18nStore.t("dashboard.yourPortfolio")
-                    : i18nStore.t("dashboard.emptyTitle")
+                  portfolio?.is_published
+                    ? i18nStore.t("dashboard.portfolioPublic")
+                    : i18nStore.t("dashboard.portfolioNotPublic")
                 }}
               </p>
             </div>
@@ -168,51 +179,43 @@
                 {{ i18nStore.t("dashboard.upgrade") }} →
               </router-link>
 
-              <p
-                v-else
-                class="mt-3 text-xs font-medium text-violet-600"
-              >
+              <p v-else class="mt-3 text-xs font-medium text-violet-600">
                 {{ i18nStore.t("dashboard.activeSubscription") }}
               </p>
             </div>
 
-            <!-- Status -->
+            <!-- Current Template -->
             <div
               class="rounded-3xl border border-violet-100 bg-white p-5 text-slate-900 shadow-sm"
             >
               <div class="flex items-start justify-between">
                 <div>
                   <p class="text-xs font-medium text-slate-500">
-                    {{ i18nStore.t("dashboard.status") }}
+                    {{ i18nStore.t("dashboard.currentTemplate") }}
                   </p>
 
-                  <p
-                    class="mt-2 text-lg font-bold"
-                    :class="
-                      portfolio
-                        ? 'text-emerald-600'
-                        : 'text-slate-700'
-                    "
-                  >
+                  <p class="mt-2 truncate text-lg font-bold text-violet-600">
                     {{
-                      portfolio
-                        ? i18nStore.t("dashboard.live")
-                        : i18nStore.t("dashboard.notCreated")
+                      portfolio?.template_key
+                        ? i18nStore.templateName({
+                            template_key: portfolio.template_key,
+                          })
+                        : i18nStore.t("dashboard.noTemplate")
                     }}
                   </p>
                 </div>
 
                 <div
-                  class="flex h-10 w-10 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600"
+                  class="flex h-10 w-10 items-center justify-center rounded-2xl bg-violet-50 text-violet-600"
                 >
-                  ●
+                  ◆
                 </div>
               </div>
 
               <p class="mt-3 text-xs text-slate-500">
                 {{
                   portfolio
-                    ? i18nStore.t("dashboard.portfolioAvailable")
+                    ? i18nStore.t("dashboard.currentTemplateDescription")
                     : i18nStore.t("dashboard.createPortfolioFirst")
                 }}
               </p>
@@ -221,130 +224,9 @@
 
           <!-- Main portfolio area -->
           <div class="mt-6">
-            <PortfolioCard
-              v-if="portfolio"
-              :portfolio="portfolio"
-            />
+            <PortfolioCard v-if="portfolio" :portfolio="portfolio" />
 
             <PortfolioEmpty v-else />
-          </div>
-
-          <!-- Quick actions -->
-          <div class="mt-6 grid gap-6 lg:grid-cols-2">
-            <!-- Quick actions -->
-            <div
-              class="rounded-3xl border border-violet-100 bg-white p-6 text-slate-900 shadow-sm"
-            >
-              <div>
-                <p class="text-xs font-medium text-violet-500">
-                  {{ i18nStore.t("dashboard.quickActions") }}
-                </p>
-
-                <h2 class="mt-1 text-lg font-bold text-slate-900">
-                  {{ i18nStore.t("dashboard.managePortfolio") }}
-                </h2>
-              </div>
-
-              <div class="mt-5 grid gap-3 sm:grid-cols-2">
-                <router-link
-                  v-if="portfolio"
-                  :to="`/portfolio/${portfolio.id}/edit`"
-                  class="rounded-2xl border border-violet-100 bg-violet-50 px-4 py-4 transition hover:border-violet-200 hover:bg-violet-100"
-                >
-                  <p class="text-sm font-semibold text-slate-800">
-                    {{ i18nStore.t("dashboard.editPortfolio") }}
-                  </p>
-
-                  <p class="mt-1 text-xs text-slate-500">
-                    {{ i18nStore.t("dashboard.editPortfolioDescription") }}
-                  </p>
-                </router-link>
-
-                <router-link
-                  v-else
-                  to="/portfolio/create"
-                  class="rounded-2xl border border-violet-100 bg-violet-50 px-4 py-4 transition hover:border-violet-200 hover:bg-violet-100"
-                >
-                  <p class="text-sm font-semibold text-slate-800">
-                    {{ i18nStore.t("common.createPortfolio") }}
-                  </p>
-
-                  <p class="mt-1 text-xs text-slate-500">
-                    {{ i18nStore.t("dashboard.createPortfolioFirst") }}
-                  </p>
-                </router-link>
-
-                <router-link
-                  to="/profile"
-                  class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 transition hover:border-violet-100 hover:bg-violet-50"
-                >
-                  <p class="text-sm font-semibold text-slate-800">
-                    {{ i18nStore.t("dashboard.profile") }}
-                  </p>
-
-                  <p class="mt-1 text-xs text-slate-500">
-                    {{ i18nStore.t("dashboard.viewProfile") }}
-                  </p>
-                </router-link>
-              </div>
-            </div>
-
-            <!-- Next step -->
-            <div
-              class="rounded-3xl border border-violet-100 bg-white p-6 text-slate-900 shadow-sm"
-            >
-              <p class="text-xs font-medium text-violet-500">
-                {{ i18nStore.t("dashboard.nextStep") }}
-              </p>
-
-              <h2 class="mt-1 text-lg font-bold text-slate-900">
-                {{
-                  !portfolio
-                    ? i18nStore.t("dashboard.createPortfolio")
-                    : !authStore.user?.email_verified
-                      ? i18nStore.t("dashboard.verifyEmail")
-                      : !authStore.user?.has_active_subscription
-                        ? i18nStore.t("dashboard.upgrade")
-                        : i18nStore.t("dashboard.keepPortfolioUpdated")
-                }}
-              </h2>
-
-              <p class="mt-2 text-sm leading-6 text-slate-500">
-                {{
-                  !portfolio
-                    ? i18nStore.t("dashboard.createPortfolioFirst")
-                    : !authStore.user?.email_verified
-                      ? i18nStore.t("dashboard.verifyEmailDescription")
-                      : !authStore.user?.has_active_subscription
-                        ? i18nStore.t("dashboard.upgradeDescription")
-                        : i18nStore.t("dashboard.keepPortfolioUpdatedDescription")
-                }}
-              </p>
-
-              <router-link
-                v-if="!portfolio"
-                to="/portfolio/create"
-                class="mt-5 inline-flex rounded-full bg-violet-500 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-violet-600"
-              >
-                {{ i18nStore.t("common.createPortfolio") }}
-              </router-link>
-
-              <router-link
-                v-else-if="!authStore.user?.has_active_subscription"
-                to="/upgrade"
-                class="mt-5 inline-flex rounded-full bg-violet-500 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-violet-600"
-              >
-                {{ i18nStore.t("dashboard.upgrade") }}
-              </router-link>
-
-              <router-link
-                v-else
-                to="/profile"
-                class="mt-5 inline-flex rounded-full bg-violet-500 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-violet-600"
-              >
-                {{ i18nStore.t("dashboard.viewProfile") }}
-              </router-link>
-            </div>
           </div>
         </template>
       </div>
@@ -355,19 +237,19 @@
 <script setup>
 import { onMounted, ref } from "vue";
 
-import api from "../api/axios";
-import { useAuthStore } from "../stores/auth";
-import { useI18nStore } from "../stores/i18n";
+import api from "../../api/axios";
+import { useAuthStore } from "../../stores/auth";
+import { useI18nStore } from "../../stores/i18n";
 
-import DashboardSidebar from "../components/Dashboard/DashboardSidebar.vue";
-import DashboardHeader from "../components/Dashboard/DashboardHeader.vue";
-import PortfolioEmpty from "../components/Dashboard/PortfolioEmpty.vue";
-import PortfolioCard from "../components/Dashboard/PortfolioCard.vue";
+import DashboardSidebar from "../../components/Dashboard/DashboardSidebar.vue";
+import DashboardHeader from "../../components/Dashboard/DashboardHeader.vue";
+import PortfolioEmpty from "../../components/Dashboard/PortfolioEmpty.vue";
+import PortfolioCard from "../../components/Dashboard/PortfolioCard.vue";
 
 const authStore = useAuthStore();
 const i18nStore = useI18nStore();
 
-const sidebarCollapsed = ref(false);
+const sidebarCollapsed = ref(true);
 const portfolio = ref(null);
 const loading = ref(true);
 const error = ref(null);
@@ -382,9 +264,7 @@ const loadPortfolio = async () => {
     const portfolios = response.data;
 
     portfolio.value =
-      Array.isArray(portfolios) && portfolios.length > 0
-        ? portfolios[0]
-        : null;
+      Array.isArray(portfolios) && portfolios.length > 0 ? portfolios[0] : null;
   } catch (err) {
     console.error("Failed to load portfolio:", err);
 

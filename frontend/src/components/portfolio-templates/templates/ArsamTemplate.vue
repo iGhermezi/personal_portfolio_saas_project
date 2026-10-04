@@ -16,7 +16,7 @@
     <!-- Header -->
     <header class="relative mx-auto max-w-6xl px-5 pt-6 sm:px-8 lg:px-10">
       <nav
-        class="flex items-center justify-between rounded-full border border-[#f6d7d8] bg-white/80 px-5 py-3 shadow-[0_10px_30px_rgba(214,80,100,0.08)] backdrop-blur"
+        class="flex items-center justify-between rounded-xl border border-[#f6d7d8] bg-white/80 px-5 py-3 shadow-[0_10px_30px_rgba(214,80,100,0.08)] backdrop-blur"
       >
         <div class="flex items-center gap-2">
           <span class="text-2xl">🍓</span>
@@ -66,7 +66,7 @@
               :href="portfolio.social.sl_github"
               target="_blank"
               rel="noreferrer"
-              class="rounded-full bg-[#e64b61] px-5 py-3 text-sm font-bold text-white shadow-[0_8px_20px_rgba(230,75,97,0.2)] transition hover:-translate-y-1 hover:bg-[#d83f55]"
+              class="rounded-lg bg-[#e64b61] px-5 py-3 text-sm font-bold text-white shadow-[0_8px_20px_rgba(230,75,97,0.2)] transition hover:-translate-y-1 hover:bg-[#d83f55]"
             >
               GitHub ↗
             </a>
@@ -76,7 +76,7 @@
               :href="portfolio.social.sl_linkedin"
               target="_blank"
               rel="noreferrer"
-              class="rounded-full border border-[#f0c8cb] bg-white px-5 py-3 text-sm font-bold text-[#a94c5b] transition hover:-translate-y-1 hover:bg-[#fff4f4]"
+              class="rounded-lg border border-[#f0c8cb] bg-white px-5 py-3 text-sm font-bold text-[#a94c5b] transition hover:-translate-y-1 hover:bg-[#fff4f4]"
             >
               LinkedIn ♡
             </a>
@@ -86,7 +86,7 @@
               :href="portfolio.social.sl_personal_web"
               target="_blank"
               rel="noreferrer"
-              class="rounded-full border border-[#f0c8cb] bg-white px-5 py-3 text-sm font-bold text-[#a94c5b] transition hover:-translate-y-1 hover:bg-[#fff4f4]"
+              class="rounded-lg border border-[#f0c8cb] bg-white px-5 py-3 text-sm font-bold text-[#a94c5b] transition hover:-translate-y-1 hover:bg-[#fff4f4]"
             >
               {{ i18nStore.t("portfolioTemplate.website") }} ✦
             </a>
@@ -309,7 +309,7 @@
                   :href="project.pro_github_url"
                   target="_blank"
                   rel="noreferrer"
-                  class="rounded-full bg-[#542631] px-4 py-2 text-xs font-bold text-white transition hover:bg-[#6d3441]"
+                  class="rounded-lg bg-[#542631] px-4 py-2 text-xs font-bold text-white transition hover:bg-[#6d3441]"
                 >
                   GitHub ↗
                 </a>
@@ -319,7 +319,7 @@
                   :href="project.pro_live_demo_url"
                   target="_blank"
                   rel="noreferrer"
-                  class="rounded-full border border-[#f0c8cb] px-4 py-2 text-xs font-bold text-[#d83f55] transition hover:bg-[#fff1f2]"
+                  class="rounded-lg border border-[#f0c8cb] px-4 py-2 text-xs font-bold text-[#d83f55] transition hover:bg-[#fff1f2]"
                 >
                   {{ i18nStore.t("portfolioTemplate.liveDemo") }} ✦
                 </a>
@@ -387,7 +387,7 @@
             :href="portfolio.social.sl_github"
             target="_blank"
             rel="noreferrer"
-            class="rounded-full bg-white px-5 py-3 text-sm font-bold text-[#d83f55] shadow-sm transition hover:-translate-y-1"
+            class="rounded-lg bg-white px-5 py-3 text-sm font-bold text-[#d83f55] shadow-sm transition hover:-translate-y-1"
           >
             GitHub ♡
           </a>
@@ -397,7 +397,7 @@
             :href="portfolio.social.sl_linkedin"
             target="_blank"
             rel="noreferrer"
-            class="rounded-full bg-white px-5 py-3 text-sm font-bold text-[#d83f55] shadow-sm transition hover:-translate-y-1"
+            class="rounded-lg bg-white px-5 py-3 text-sm font-bold text-[#d83f55] shadow-sm transition hover:-translate-y-1"
           >
             LinkedIn ✦
           </a>
@@ -407,7 +407,7 @@
             :href="portfolio.social.sl_personal_web"
             target="_blank"
             rel="noreferrer"
-            class="rounded-full bg-white px-5 py-3 text-sm font-bold text-[#d83f55] shadow-sm transition hover:-translate-y-1"
+            class="rounded-lg bg-white px-5 py-3 text-sm font-bold text-[#d83f55] shadow-sm transition hover:-translate-y-1"
           >
             {{ i18nStore.t("portfolioTemplate.website") }} 🍓
           </a>

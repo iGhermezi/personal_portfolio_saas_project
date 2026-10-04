@@ -41,14 +41,14 @@
         <div class="flex flex-wrap gap-3">
           <router-link
             :to="`/portfolio/${portfolio.id}/preview`"
-            class="rounded-full bg-violet-500 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-violet-600"
+            class="rounded-lg bg-violet-500 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-violet-600"
           >
             {{ i18nStore.t("dashboard.preview") }}
           </router-link>
 
           <router-link
             :to="`/portfolio/${portfolio.id}/edit`"
-            class="rounded-full bg-violet-500 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-violet-600"
+            class="rounded-lg bg-violet-500 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-violet-600"
           >
             {{ i18nStore.t("dashboard.editPortfolio") }}
           </router-link>

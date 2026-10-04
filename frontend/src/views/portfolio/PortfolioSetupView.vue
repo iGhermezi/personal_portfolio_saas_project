@@ -33,7 +33,7 @@
             v-for="item in steps"
             :key="item.number"
             type="button"
-            class="rounded-full px-4 py-2 text-xs font-semibold transition"
+            class="rounded-lg px-4 py-2 text-xs font-semibold transition"
             :class="
               currentStep === item.number
                 ? 'bg-violet-400 text-white'
@@ -111,7 +111,7 @@
               <button
                 type="submit"
                 :disabled="actionLoading"
-                class="mt-5 w-full rounded-full bg-violet-400 px-5 py-3 text-sm font-semibold text-white transition hover:bg-violet-500 disabled:opacity-60"
+                class="mt-5 w-full rounded-lg bg-violet-400 px-5 py-3 text-sm font-semibold text-white transition hover:bg-violet-500 disabled:opacity-60"
               >
                 + {{ i18nStore.t("portfolio.addSkill") }}
               </button>
@@ -187,7 +187,7 @@
             <button
               type="submit"
               :disabled="actionLoading"
-              class="mt-5 rounded-full bg-violet-400 px-6 py-3 text-sm font-semibold text-white hover:bg-violet-500 disabled:opacity-60"
+              class="mt-5 rounded-lg bg-violet-400 px-6 py-3 text-sm font-semibold text-white hover:bg-violet-500 disabled:opacity-60"
             >
               + {{ i18nStore.t("portfolio.addEducation") }}
             </button>
@@ -279,7 +279,7 @@
             <button
               type="submit"
               :disabled="actionLoading"
-              class="mt-5 rounded-full bg-violet-400 px-6 py-3 text-sm font-semibold text-white hover:bg-violet-500 disabled:opacity-60"
+              class="mt-5 rounded-lg bg-violet-400 px-6 py-3 text-sm font-semibold text-white hover:bg-violet-500 disabled:opacity-60"
             >
               + {{ i18nStore.t("portfolio.addExperience") }}
             </button>
@@ -397,7 +397,7 @@
             <button
               type="submit"
               :disabled="actionLoading"
-              class="mt-5 rounded-full bg-violet-400 px-6 py-3 text-sm font-semibold text-white hover:bg-violet-500 disabled:opacity-60"
+              class="mt-5 rounded-lg bg-violet-400 px-6 py-3 text-sm font-semibold text-white hover:bg-violet-500 disabled:opacity-60"
             >
               + {{ i18nStore.t("portfolio.addProject") }}
             </button>
@@ -476,7 +476,7 @@
             <button
               type="submit"
               :disabled="actionLoading"
-              class="mt-5 rounded-full bg-violet-400 px-6 py-3 text-sm font-semibold text-white hover:bg-violet-500 disabled:opacity-60"
+              class="mt-5 rounded-lg bg-violet-400 px-6 py-3 text-sm font-semibold text-white hover:bg-violet-500 disabled:opacity-60"
             >
               {{
                 i18nStore.t(
@@ -505,7 +505,7 @@
         >
           <button
             type="button"
-            class="rounded-full px-6 py-3 text-sm font-semibold text-slate-500 hover:bg-slate-50"
+            class="rounded-lg px-6 py-3 text-sm font-semibold text-slate-500 hover:bg-slate-50"
             @click="previousStep"
           >
             ← {{ i18nStore.t("portfolio.previous") }}
@@ -514,7 +514,7 @@
           <button
             v-if="currentStep < 6"
             type="button"
-            class="rounded-full bg-violet-400 px-7 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-100 hover:bg-violet-500"
+            class="rounded-lg bg-violet-400 px-7 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-100 hover:bg-violet-500"
             @click="nextStep"
           >
             {{ i18nStore.t("portfolio.continue") }} →
@@ -523,7 +523,7 @@
           <button
             v-else
             type="button"
-            class="rounded-full bg-violet-400 px-7 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-100 hover:bg-violet-500"
+            class="rounded-lg bg-violet-400 px-7 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-100 hover:bg-violet-500"
             @click="finishSetup"
           >
             {{ i18nStore.t("portfolio.finish") }} ✓
@@ -539,8 +539,8 @@ import { computed, defineComponent, h, onMounted, reactive, ref } from "vue";
 
 import { useRoute, useRouter } from "vue-router";
 
-import api from "../api/axios";
-import { useI18nStore } from "../stores/i18n";
+import api from "../../api/axios";
+import { useI18nStore } from "../../stores/i18n";
 
 const route = useRoute();
 const router = useRouter();

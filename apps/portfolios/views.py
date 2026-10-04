@@ -11,7 +11,7 @@ from .models import (
     SocialLink,
 )
 
-from .PortfolioSerializer import (
+from .portfolio_serializer import (
     PortfolioSerializer,
     PublicPortfolioSerializer,
     ProjectSerializer,

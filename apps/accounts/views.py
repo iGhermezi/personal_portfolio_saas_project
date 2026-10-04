@@ -24,26 +24,26 @@ from rest_framework_simplejwt.token_blacklist.models import (
     BlacklistedToken,
 )
 
-from .UserRegisterSerializer import UserRegisterSerializer
-from .EmailLoginSerializer import EmailLoginSerializer
-from .UserProfileSerializer import UserProfileSerializer
+from .user_register_serializer import UserRegisterSerializer
+from .email_login_serializer import EmailLoginSerializer
+from .user_profile_serializer import UserProfileSerializer
 
-from .EmailChangeSerializer import (
+from .email_change_serializer import (
     EmailChangeRequestSerializer,
     EmailChangeConfirmSerializer,
 )
 
-from .PasswordForgotSerializer import PasswordForgotSerializer
-from .PasswordResetSerializer import PasswordResetSerializer
+from .password_forgot_serializer import PasswordForgotSerializer
+from .password_reset_serializer import PasswordResetSerializer
 
-from .EmailVerificationSerializer import (
+from .email_verification_serializer import (
     EmailVerificationSerializer,
 )
 
-from .EmailVerificationResendSerializer import (
+from .email_verification_resend_serializer import (
     EmailVerificationResendSerializer,
 )
-from .ChangePasswordSerializer import ChangePasswordSerializer
+from .change_password_serializer import ChangePasswordSerializer
 
 from .throttles import (
     AuthRateThrottle,

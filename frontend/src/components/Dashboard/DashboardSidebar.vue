@@ -1,12 +1,14 @@
 <template>
   <aside
-    class="fixed left-0 top-0 z-50 flex h-screen flex-col border-r border-violet-100 bg-white text-slate-700 transition-all duration-300"
+    class="fixed left-3 top-3 z-50 flex h-[calc(100vh-24px)] flex-col rounded-2xl border border-violet-100 bg-white text-slate-700 shadow-[0_10px_40px_rgba(139,92,246,0.10)] transition-[width] duration-300 ease-in-out"
     :class="collapsed ? 'w-[78px]' : 'w-64'"
+    @mouseenter="handleMouseEnter"
+    @mouseleave="handleMouseLeave"
   >
     <!-- Logo -->
     <div
       class="flex h-20 shrink-0 items-center border-b border-violet-50 px-5"
-      :class="collapsed ? 'justify-center' : ''"
+      :class="collapsed ? 'justify-center' : 'gap-4'"
     >
       <div
         class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-violet-400"
@@ -15,8 +17,12 @@
       </div>
 
       <span
-        v-if="!collapsed"
-        class="ml-4 text-lg font-bold tracking-tight text-slate-800"
+        class="overflow-hidden whitespace-nowrap text-lg font-bold tracking-tight text-slate-800 transition-all duration-200"
+        :class="
+          collapsed
+            ? 'max-w-0 translate-x-2 opacity-0'
+            : 'max-w-[160px] translate-x-0 opacity-100 delay-100'
+        "
       >
         {{ i18nStore.t("common.appName") }}
       </span>
@@ -30,19 +36,36 @@
         class="mb-2"
       >
         <router-link
+          v-slot="{ isActive }"
           :to="item.to"
-          class="group flex w-full items-center rounded-xl px-3 py-3 text-sm font-medium text-slate-600 transition hover:bg-violet-50 hover:text-violet-500"
-          :class="collapsed ? 'justify-center' : ''"
+          class="group flex w-full items-center rounded-xl px-3 py-3 text-sm font-medium transition-colors duration-200"
+          :class="[
+            collapsed ? 'justify-center' : 'gap-4',
+            isActive
+              ? 'bg-violet-50 text-violet-600'
+              : 'text-slate-600 hover:bg-violet-50 hover:text-violet-600',
+          ]"
         >
+          <!-- Icon -->
           <span
-            class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-slate-50 text-sm text-slate-600 transition group-hover:bg-violet-100 group-hover:text-violet-500"
+            class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-sm transition-colors duration-200"
+            :class="
+              isActive
+                ? 'bg-violet-100 text-violet-600'
+                : 'bg-slate-50 text-slate-600 group-hover:bg-violet-100 group-hover:text-violet-600'
+            "
           >
             {{ item.icon }}
           </span>
 
+          <!-- Label -->
           <span
-            v-if="!collapsed"
-            class="ml-4 whitespace-nowrap text-slate-700"
+            class="overflow-hidden whitespace-nowrap transition-all duration-200"
+            :class="
+              collapsed
+                ? 'max-w-0 translate-x-2 opacity-0'
+                : 'max-w-[160px] translate-x-0 opacity-100 delay-100'
+            "
           >
             {{ item.name }}
           </span>
@@ -51,76 +74,97 @@
 
       <!-- Upgrade -->
       <router-link
+        v-slot="{ isActive }"
         to="/upgrade"
-        class="mt-4 flex w-full items-center rounded-xl bg-violet-50 px-3 py-3 text-sm font-semibold text-violet-600 transition hover:bg-violet-100"
-        :class="collapsed ? 'justify-center' : ''"
+        class="group mt-4 flex w-full items-center rounded-xl px-3 py-3 text-sm font-semibold transition-colors duration-200"
+        :class="[
+          collapsed ? 'justify-center' : 'gap-4',
+          isActive
+            ? 'bg-violet-50 text-violet-600'
+            : 'text-violet-600 hover:bg-violet-50',
+        ]"
       >
+        <!-- Upgrade Icon -->
         <span
-          class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-violet-100 text-violet-600"
+          class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-lg transition-colors duration-200"
+          :class="
+            isActive
+              ? 'bg-violet-100 text-violet-600'
+              : 'bg-transparent text-violet-500 group-hover:bg-violet-50 group-hover:text-violet-600'
+          "
         >
           ✦
         </span>
 
+        <!-- Upgrade Label -->
         <span
-          v-if="!collapsed"
-          class="ml-4 whitespace-nowrap"
+          class="overflow-hidden whitespace-nowrap transition-all duration-200"
+          :class="
+            collapsed
+              ? 'max-w-0 translate-x-2 opacity-0'
+              : 'max-w-[160px] translate-x-0 opacity-100 delay-100'
+          "
         >
           {{ i18nStore.t("dashboard.upgrade") }}
         </span>
       </router-link>
     </nav>
 
-    <!-- Bottom -->
+    <!-- Bottom Actions -->
     <div class="shrink-0 border-t border-violet-50 p-3">
       <!-- Profile -->
       <router-link
         to="/profile"
-        class="flex items-center rounded-xl px-3 py-3 transition hover:bg-violet-50"
-        :class="collapsed ? 'justify-center' : ''"
+        class="group flex items-center rounded-xl px-3 py-3 transition-colors duration-200 hover:bg-violet-50"
+        :class="collapsed ? 'justify-center' : 'gap-4'"
       >
-        <div
-          class="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-violet-100 text-sm font-bold text-violet-500"
+        <!-- Profile Icon -->
+        <span
+          class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-violet-100 text-sm font-bold text-violet-600 transition-colors duration-200"
         >
           {{ userInitial }}
-        </div>
+        </span>
 
-        <div
-          v-if="!collapsed"
-          class="ml-4 min-w-0"
+        <!-- Profile Label -->
+        <span
+          class="overflow-hidden whitespace-nowrap text-sm font-medium text-slate-700 transition-all duration-200 group-hover:text-violet-600"
+          :class="
+            collapsed
+              ? 'max-w-0 translate-x-2 opacity-0'
+              : 'max-w-[160px] translate-x-0 opacity-100 delay-100'
+          "
         >
-          <p class="truncate text-sm font-semibold text-slate-800">
-            {{ authStore.user?.username || i18nStore.t("common.user") }}
-          </p>
-
-          <p class="truncate text-xs text-slate-500">
-            {{ i18nStore.t("dashboard.profile") }}
-          </p>
-        </div>
+          {{ i18nStore.t("common.profile") }}
+        </span>
       </router-link>
 
       <!-- Theme -->
       <button
         type="button"
+        class="group mt-2 flex w-full items-center rounded-xl px-3 py-3 text-sm font-medium text-slate-600 transition-colors duration-200 hover:bg-violet-50 hover:text-violet-500"
+        :class="collapsed ? 'justify-center' : 'gap-4'"
         @click="themeStore.toggleTheme()"
-        class="mt-2 flex w-full items-center rounded-xl px-3 py-3 text-sm font-medium text-slate-600 transition hover:bg-violet-50 hover:text-violet-500"
-        :class="collapsed ? 'justify-center' : ''"
       >
+        <!-- Theme Icon -->
         <span
-          class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-slate-50 text-slate-600"
+          class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-slate-50 text-slate-600 transition-colors duration-200 group-hover:bg-violet-100 group-hover:text-violet-500"
         >
           {{ themeStore.isDark ? "☀" : "☾" }}
         </span>
 
+        <!-- Theme Label -->
         <span
-          v-if="!collapsed"
-          class="ml-4 whitespace-nowrap"
+          class="overflow-hidden whitespace-nowrap transition-all duration-200"
+          :class="
+            collapsed
+              ? 'max-w-0 translate-x-2 opacity-0'
+              : 'max-w-[160px] translate-x-0 opacity-100 delay-100'
+          "
         >
           {{
-            i18nStore.t(
-              themeStore.isDark
-                ? "common.lightMode"
-                : "common.darkMode",
-            )
+            themeStore.isDark
+              ? i18nStore.t("common.lightMode")
+              : i18nStore.t("common.darkMode")
           }}
         </span>
       </button>
@@ -128,32 +172,27 @@
       <!-- Logout -->
       <button
         type="button"
+        class="group mt-2 flex w-full items-center rounded-xl px-3 py-3 text-sm font-medium text-slate-600 transition-colors duration-200 hover:bg-red-50 hover:text-red-500"
+        :class="collapsed ? 'justify-center' : 'gap-4'"
         @click="logout"
-        class="mt-2 flex w-full items-center rounded-xl px-3 py-3 text-sm font-medium text-slate-600 transition hover:bg-red-50 hover:text-red-500"
-        :class="collapsed ? 'justify-center' : ''"
       >
+        <!-- Logout Icon -->
         <span
-          class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-slate-50 text-slate-600"
+          class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-slate-50 text-slate-600 transition-colors duration-200 group-hover:bg-red-100 group-hover:text-red-500"
         >
           L
         </span>
 
+        <!-- Logout Label -->
         <span
-          v-if="!collapsed"
-          class="ml-4 whitespace-nowrap"
+          class="overflow-hidden whitespace-nowrap transition-all duration-200"
+          :class="
+            collapsed
+              ? 'max-w-0 translate-x-2 opacity-0'
+              : 'max-w-[160px] translate-x-0 opacity-100 delay-100'
+          "
         >
           {{ i18nStore.t("common.logout") }}
-        </span>
-      </button>
-
-      <!-- Collapse -->
-      <button
-        type="button"
-        @click="emit('toggle')"
-        class="mt-2 flex w-full items-center justify-center rounded-xl py-2.5 text-slate-500 transition hover:bg-slate-50 hover:text-slate-700"
-      >
-        <span class="text-lg">
-          {{ collapsed ? "→" : "←" }}
         </span>
       </button>
     </div>
@@ -169,10 +208,10 @@ import { useThemeStore } from "../../stores/theme";
 import { useAuthStore } from "../../stores/auth";
 import { useI18nStore } from "../../stores/i18n";
 
-defineProps({
+const props = defineProps({
   collapsed: {
     type: Boolean,
-    default: false,
+    default: true,
   },
 });
 
@@ -205,12 +244,11 @@ const navigation = computed(() => [
   },
 ]);
 
-const userInitial = computed(() => {
-  return (
+const userInitial = computed(
+  () =>
     authStore.user?.username?.charAt(0)?.toUpperCase() ||
     i18nStore.t("common.user").charAt(0)
-  );
-});
+);
 
 const loadPortfolio = async () => {
   try {
@@ -225,6 +263,18 @@ const loadPortfolio = async () => {
     }
   } catch (error) {
     console.error("Failed to load portfolio for sidebar:", error);
+  }
+};
+
+const handleMouseEnter = () => {
+  if (props.collapsed) {
+    emit("toggle");
+  }
+};
+
+const handleMouseLeave = () => {
+  if (!props.collapsed) {
+    emit("toggle");
   }
 };
 

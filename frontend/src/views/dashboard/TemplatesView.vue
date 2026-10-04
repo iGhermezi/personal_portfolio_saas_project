@@ -68,7 +68,7 @@
               >
                 <div class="flex flex-col items-center text-center text-white">
                   <div
-                    class="flex h-14 w-14 items-center justify-center rounded-full bg-white/15 text-2xl backdrop-blur"
+                    class="flex h-14 w-14 items-center justify-center rounded-xl bg-white/15 text-2xl backdrop-blur"
                   >
                     🔒
                   </div>
@@ -151,10 +151,10 @@
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 
-import api from "../api/axios";
-import { useI18nStore } from "../stores/i18n";
+import api from "../../api/axios";
+import { useI18nStore } from "../../stores/i18n";
 
-import DashboardSidebar from "../components/Dashboard/DashboardSidebar.vue";
+import DashboardSidebar from "../../components/Dashboard/DashboardSidebar.vue";
 
 const router = useRouter();
 const i18nStore = useI18nStore();
