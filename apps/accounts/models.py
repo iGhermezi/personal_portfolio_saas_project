@@ -9,6 +9,11 @@ class User(AbstractUser):
     has_active_subscription = models.BooleanField(default=False)
 
     profile_image_url = models.TextField(null=True, blank=True)
+    profile_image = models.ImageField(
+    upload_to='profiles/',
+    null=True,
+    blank=True,
+                )
     job_title = models.CharField(max_length=100, null=True, blank=True)
     phone = models.CharField(max_length=11, null=True, blank=True)
     location = models.TextField(null=True, blank=True)

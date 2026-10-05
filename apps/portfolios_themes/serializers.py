@@ -13,7 +13,7 @@ class PortfolioTemplateSerializer(serializers.ModelSerializer):
             'id',
             'name',
             'description',
-            'preview_img',
+            'preview_image',
             'template_key',
             'access_level',
             'is_active',

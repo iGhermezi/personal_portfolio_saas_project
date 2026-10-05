@@ -13,6 +13,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
             'first_name',
             'last_name',
             'profile_image_url',
+            'profile_image',
             'job_title',
             'phone',
             'location',

@@ -25,7 +25,7 @@
 
         <router-link
           to="/dashboard"
-          class="text-sm font-medium text-violet-500 transition hover:text-violet-600"
+          class=" inline-flex items-center rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-sm font-medium text-slate-600 shadow-sm transition hover:border-violet-200 hover:bg-violet-50 hover:text-violet-600"
         >
           ← {{ i18nStore.t("profile.backToDashboard") }}
         </router-link>
@@ -224,7 +224,7 @@ import DashboardSidebar from "../../components/Dashboard/DashboardSidebar.vue";
 
 const authStore = useAuthStore();
 const i18nStore = useI18nStore();
-const sidebarCollapsed = ref(false);
+const sidebarCollapsed = ref(true);
 
 const loading = ref(true);
 const saving = ref(false);

@@ -2,6 +2,7 @@ import secrets
 import string
 from datetime import timedelta
 from django.http import HttpResponse
+from rest_framework.parsers import MultiPartParser, FormParser
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -192,6 +193,7 @@ class LoginView(TokenObtainPairView):
 class UserProfileView(generics.RetrieveUpdateAPIView):
     permission_classes = (permissions.IsAuthenticated,)
     serializer_class = UserProfileSerializer
+    parser_classes = (MultiPartParser, FormParser)
 
     def get_object(self):
         return self.request.user

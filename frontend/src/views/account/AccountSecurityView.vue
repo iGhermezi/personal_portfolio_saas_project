@@ -1,5 +1,6 @@
+
 <template>
-  <div class="min-h-screen bg-[#faf9ff] px-5 py-5">
+  <div class="min-h-screen bg-[#faf9ff] px-5 py-5 text-slate-900">
     <DashboardSidebar
       :collapsed="sidebarCollapsed"
       @toggle="sidebarCollapsed = !sidebarCollapsed"
@@ -10,41 +11,59 @@
       :class="sidebarCollapsed ? 'ml-[98px]' : 'ml-[284px]'"
     >
       <div class="mx-auto max-w-4xl px-6 py-8">
+        <!-- Back -->
         <button
           type="button"
-          class="mb-5 text-sm font-medium text-slate-400 transition hover:text-violet-500"
+          class="mb-6 inline-flex items-center rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-sm font-medium text-slate-600 shadow-sm transition hover:border-violet-200 hover:bg-violet-50 hover:text-violet-600"
           @click="router.push('/profile')"
         >
           ← {{ i18nStore.t("security.backToProfile") }}
         </button>
 
-        <p class="text-sm font-medium text-violet-400">
-          {{ i18nStore.t("profile.account") }}
-        </p>
-        <h1 class="mt-1 text-3xl font-bold tracking-tight text-slate-900">
-          {{ i18nStore.t("security.title") }}
-        </h1>
-        <p class="mt-2 text-sm text-slate-400">
-          {{ i18nStore.t("security.description") }}
-        </p>
-
-        <div class="mt-8 space-y-6">
-          <section
-            class="rounded-[28px] border border-violet-100 bg-white p-7 shadow-sm"
+        <!-- Header -->
+        <div class="mb-8">
+          <p
+            class="text-xs font-semibold uppercase tracking-[0.18em] text-violet-500"
           >
-            <div>
+            {{ i18nStore.t("profile.account") }}
+          </p>
+
+          <h1
+            class="mt-2 text-3xl font-bold tracking-tight text-slate-900"
+          >
+            {{ i18nStore.t("security.title") }}
+          </h1>
+
+          <p
+            class="mt-2 max-w-2xl text-sm leading-6 text-slate-500"
+          >
+            {{ i18nStore.t("security.description") }}
+          </p>
+        </div>
+
+        <div class="space-y-5">
+          <!-- Password -->
+          <section
+            class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm"
+          >
+            <div
+              class="border-b border-slate-100 px-6 py-5"
+            >
               <p
-                class="text-xs font-semibold uppercase tracking-widest text-violet-400"
+                class="text-xs font-semibold uppercase tracking-[0.16em] text-violet-500"
               >
                 01 · {{ i18nStore.t("security.password") }}
               </p>
-              <h2 class="mt-1 text-xl font-bold text-slate-800">
+
+              <h2
+                class="mt-1 text-xl font-bold text-slate-900"
+              >
                 {{ i18nStore.t("security.changePassword") }}
               </h2>
             </div>
 
             <form
-              class="mt-6 grid gap-5 md:grid-cols-3"
+              class="grid gap-4 p-6 md:grid-cols-3"
               @submit.prevent="changePassword"
             >
               <input
@@ -52,37 +71,44 @@
                 type="password"
                 autocomplete="current-password"
                 :placeholder="i18nStore.t('security.currentPassword')"
-                class="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-violet-300 focus:bg-white focus:ring-4 focus:ring-violet-100"
+                class="w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 outline-none transition focus:border-violet-300 focus:bg-white focus:ring-4 focus:ring-violet-100"
               />
+
               <input
                 v-model="passwordForm.new_password"
                 type="password"
                 autocomplete="new-password"
                 :placeholder="i18nStore.t('security.newPassword')"
-                class="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-violet-300 focus:bg-white focus:ring-4 focus:ring-violet-100"
+                class="w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 outline-none transition focus:border-violet-300 focus:bg-white focus:ring-4 focus:ring-violet-100"
               />
+
               <input
                 v-model="passwordForm.confirm_password"
                 type="password"
                 autocomplete="new-password"
                 :placeholder="i18nStore.t('security.confirmPassword')"
-                class="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-violet-300 focus:bg-white focus:ring-4 focus:ring-violet-100"
+                class="w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 outline-none transition focus:border-violet-300 focus:bg-white focus:ring-4 focus:ring-violet-100"
               />
 
               <div
-                class="md:col-span-3 flex items-center justify-between gap-4"
+                class="flex flex-col gap-3 pt-1 md:col-span-3 sm:flex-row sm:items-center sm:justify-between"
               >
                 <p
                   v-if="passwordMessage"
-                  class="text-sm"
-                  :class="passwordSuccess ? 'text-emerald-600' : 'text-red-500'"
+                  class="text-sm font-medium"
+                  :class="
+                    passwordSuccess
+                      ? 'text-emerald-600'
+                      : 'text-red-500'
+                  "
                 >
                   {{ passwordMessage }}
                 </p>
+
                 <button
                   type="submit"
                   :disabled="passwordLoading"
-                  class="ml-auto rounded-lg bg-violet-400 px-7 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-100 hover:bg-violet-500 disabled:opacity-60"
+                  class="ml-auto rounded-lg bg-violet-500 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-violet-600 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {{
                     i18nStore.t(
@@ -96,101 +122,130 @@
             </form>
           </section>
 
+          <!-- Email -->
           <section
-            class="rounded-[28px] border border-violet-100 bg-white p-7 shadow-sm"
+            class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm"
           >
-            <div>
+            <div
+              class="border-b border-slate-100 px-6 py-5"
+            >
               <p
-                class="text-xs font-semibold uppercase tracking-widest text-violet-400"
+                class="text-xs font-semibold uppercase tracking-[0.16em] text-violet-500"
               >
                 02 · {{ i18nStore.t("security.email") }}
               </p>
-              <h2 class="mt-1 text-xl font-bold text-slate-800">
+
+              <h2
+                class="mt-1 text-xl font-bold text-slate-900"
+              >
                 {{ i18nStore.t("security.changeEmail") }}
               </h2>
-              <p class="mt-2 text-sm text-slate-400">
+
+              <p
+                class="mt-2 text-sm text-slate-500"
+              >
                 {{ i18nStore.t("security.currentEmail") }}
-                {{ currentEmail || i18nStore.t("security.loading") }}
+
+                <span class="font-medium text-slate-700">
+                  {{ currentEmail || i18nStore.t("security.loading") }}
+                </span>
               </p>
             </div>
 
-            <div class="mt-6 grid gap-5 md:grid-cols-[1fr_auto]">
-              <input
-                v-model="newEmail"
-                type="email"
-                autocomplete="email"
-                :placeholder="i18nStore.t('security.newEmail')"
-                class="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-violet-300 focus:bg-white focus:ring-4 focus:ring-violet-100"
-              />
-              <button
-                type="button"
-                :disabled="emailRequestLoading"
-                class="rounded-lg bg-violet-400 px-7 py-3 text-sm font-semibold text-white hover:bg-violet-500 disabled:opacity-60"
-                @click="requestEmailChange"
+            <div class="p-6">
+              <div
+                class="grid gap-4 md:grid-cols-[1fr_auto]"
               >
-                {{
-                  i18nStore.t(
-                    emailRequestLoading
-                      ? "security.sending"
-                      : "security.sendCode",
-                  )
-                }}
-              </button>
-            </div>
+                <input
+                  v-model="newEmail"
+                  type="email"
+                  autocomplete="email"
+                  :placeholder="i18nStore.t('security.newEmail')"
+                  class="w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 outline-none transition focus:border-violet-300 focus:bg-white focus:ring-4 focus:ring-violet-100"
+                />
 
-            <div
-              v-if="emailCodeRequested"
-              class="mt-5 grid gap-5 md:grid-cols-[1fr_auto]"
-            >
-              <input
-                v-model="emailCode"
-                type="text"
-                inputmode="numeric"
-                maxlength="6"
-                :placeholder="i18nStore.t('security.verificationCode')"
-                class="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm tracking-[0.35em] outline-none focus:border-violet-300 focus:bg-white focus:ring-4 focus:ring-violet-100"
-              />
-              <button
-                type="button"
-                :disabled="emailConfirmLoading"
-                class="rounded-lg border border-violet-200 bg-violet-50 px-7 py-3 text-sm font-semibold text-violet-500 hover:bg-violet-100 disabled:opacity-60"
-                @click="confirmEmailChange"
+                <button
+                  type="button"
+                  :disabled="emailRequestLoading"
+                  class="rounded-lg bg-violet-500 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-violet-600 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-60"
+                  @click="requestEmailChange"
+                >
+                  {{
+                    i18nStore.t(
+                      emailRequestLoading
+                        ? "security.sending"
+                        : "security.sendCode",
+                    )
+                  }}
+                </button>
+              </div>
+
+              <div
+                v-if="emailCodeRequested"
+                class="mt-4 grid gap-4 rounded-xl border border-violet-100 bg-violet-50/60 p-4 md:grid-cols-[1fr_auto]"
               >
-                {{
-                  i18nStore.t(
-                    emailConfirmLoading
-                      ? "security.confirming"
-                      : "security.confirmEmail",
-                  )
-                }}
-              </button>
-            </div>
+                <input
+                  v-model="emailCode"
+                  type="text"
+                  inputmode="numeric"
+                  maxlength="6"
+                  :placeholder="i18nStore.t('security.verificationCode')"
+                  class="w-full rounded-lg border border-violet-200 bg-white px-4 py-3 text-sm tracking-[0.35em] text-slate-900 placeholder:text-slate-400 outline-none transition focus:border-violet-400 focus:ring-4 focus:ring-violet-100"
+                />
 
-            <p
-              v-if="emailMessage"
-              class="mt-4 text-sm"
-              :class="emailSuccess ? 'text-emerald-600' : 'text-red-500'"
-            >
-              {{ emailMessage }}
-            </p>
+                <button
+                  type="button"
+                  :disabled="emailConfirmLoading"
+                  class="rounded-lg border border-violet-200 bg-violet-50 px-6 py-3 text-sm font-semibold text-violet-600 transition hover:bg-violet-100 disabled:cursor-not-allowed disabled:opacity-60"
+                  @click="confirmEmailChange"
+                >
+                  {{
+                    i18nStore.t(
+                      emailConfirmLoading
+                        ? "security.confirming"
+                        : "security.confirmEmail",
+                    )
+                  }}
+                </button>
+              </div>
+
+              <p
+                v-if="emailMessage"
+                class="mt-4 text-sm font-medium"
+                :class="
+                  emailSuccess
+                    ? 'text-emerald-600'
+                    : 'text-red-500'
+                "
+              >
+                {{ emailMessage }}
+              </p>
+            </div>
           </section>
 
+          <!-- Verification -->
           <section
-            class="rounded-[28px] border border-violet-100 bg-white p-7 shadow-sm"
+            class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm"
           >
             <div
-              class="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between"
+              class="flex flex-col gap-5 px-6 py-5 sm:flex-row sm:items-center sm:justify-between"
             >
               <div>
                 <p
-                  class="text-xs font-semibold uppercase tracking-widest text-violet-400"
+                  class="text-xs font-semibold uppercase tracking-[0.16em] text-violet-500"
                 >
                   03 · {{ i18nStore.t("security.verification") }}
                 </p>
-                <h2 class="mt-1 text-xl font-bold text-slate-800">
+
+                <h2
+                  class="mt-1 text-xl font-bold text-slate-900"
+                >
                   {{ i18nStore.t("security.emailVerification") }}
                 </h2>
-                <p class="mt-2 text-sm text-slate-400">
+
+                <p
+                  class="mt-2 text-sm text-slate-500"
+                >
                   {{
                     emailVerified
                       ? i18nStore.t("security.emailVerified")
@@ -201,15 +256,16 @@
 
               <div
                 v-if="emailVerified"
-                class="rounded-full bg-emerald-50 px-4 py-2 text-sm font-semibold text-emerald-600"
+                class="inline-flex w-fit items-center rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm font-semibold text-emerald-600"
               >
                 {{ i18nStore.t("security.verified") }} ✓
               </div>
+
               <button
                 v-else
                 type="button"
                 :disabled="resendLoading"
-                class="rounded-lg bg-violet-400 px-6 py-3 text-sm font-semibold text-white hover:bg-violet-500 disabled:opacity-60"
+                class="rounded-lg bg-violet-500 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-violet-600 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-60"
                 @click="resendVerification"
               >
                 {{
@@ -221,13 +277,22 @@
                 }}
               </button>
             </div>
-            <p
+
+            <div
               v-if="verificationMessage"
-              class="mt-4 text-sm"
-              :class="verificationSuccess ? 'text-emerald-600' : 'text-red-500'"
+              class="border-t border-slate-100 px-6 py-4"
             >
-              {{ verificationMessage }}
-            </p>
+              <p
+                class="text-sm font-medium"
+                :class="
+                  verificationSuccess
+                    ? 'text-emerald-600'
+                    : 'text-red-500'
+                "
+              >
+                {{ verificationMessage }}
+              </p>
+            </div>
           </section>
         </div>
       </div>
@@ -244,7 +309,7 @@ import { useI18nStore } from "../../stores/i18n";
 import DashboardSidebar from "../../components/Dashboard/DashboardSidebar.vue";
 
 const router = useRouter();
-const sidebarCollapsed = ref(false);
+const sidebarCollapsed = ref(true);
 const authStore = useAuthStore();
 const i18nStore = useI18nStore();
 
@@ -283,6 +348,7 @@ const firstError = (err, fallback) => {
   if (typeof data.detail === "string") return data.detail;
   return Object.values(data).flat().find(Boolean) || fallback;
 };
+
 const loadProfile = async () => {
   try {
     await authStore.getProfile();

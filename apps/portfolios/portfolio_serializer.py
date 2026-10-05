@@ -154,6 +154,7 @@ class PortfolioSerializer(serializers.ModelSerializer):
             'title',
             'slug',
             'bio',
+            'preview_image',
             'is_published',
             'created_at',
             'updated_at',

@@ -159,7 +159,7 @@ import DashboardSidebar from "../../components/Dashboard/DashboardSidebar.vue";
 const router = useRouter();
 const i18nStore = useI18nStore();
 
-const sidebarCollapsed = ref(false);
+const sidebarCollapsed = ref(true);
 
 const templates = ref([]);
 const loading = ref(true);

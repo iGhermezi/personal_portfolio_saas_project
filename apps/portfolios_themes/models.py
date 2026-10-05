@@ -16,6 +16,11 @@ class PortfolioTemplate(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField()
     preview_img = models.TextField()
+    preview_image = models.ImageField(
+    upload_to='template_previews/',
+    null=True,
+    blank=True,
+)
 
     template_key = models.CharField(
         max_length=50,

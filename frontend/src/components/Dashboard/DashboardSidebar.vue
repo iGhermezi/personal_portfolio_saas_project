@@ -111,31 +111,31 @@
     </nav>
 
     <!-- Bottom Actions -->
-    <div class="shrink-0 border-t border-violet-50 p-3">
+  <div class="shrink-0 border-t border-violet-50 p-3">
       <!-- Profile -->
       <router-link
         to="/profile"
-        class="group flex items-center rounded-xl px-3 py-3 transition-colors duration-200 hover:bg-violet-50"
+        class="group flex items-center rounded-xl px-3 py-3 transition hover:bg-violet-50"
         :class="collapsed ? 'justify-center' : 'gap-4'"
       >
-        <!-- Profile Icon -->
-        <span
-          class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-violet-100 text-sm font-bold text-violet-600 transition-colors duration-200"
+        <div
+          class="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-violet-100 text-sm font-bold text-violet-500"
         >
           {{ userInitial }}
-        </span>
+        </div>
 
-        <!-- Profile Label -->
-        <span
-          class="overflow-hidden whitespace-nowrap text-sm font-medium text-slate-700 transition-all duration-200 group-hover:text-violet-600"
-          :class="
-            collapsed
-              ? 'max-w-0 translate-x-2 opacity-0'
-              : 'max-w-[160px] translate-x-0 opacity-100 delay-100'
-          "
+        <div
+          v-if="!collapsed"
+          class="min-w-0"
         >
-          {{ i18nStore.t("common.profile") }}
-        </span>
+          <p class="truncate text-sm font-semibold text-slate-800">
+            {{ authStore.user?.username || i18nStore.t("common.user") }}
+          </p>
+
+          <p class="truncate text-xs text-slate-500">
+            {{ i18nStore.t("dashboard.profile") }}
+          </p>
+        </div>
       </router-link>
 
       <!-- Theme -->

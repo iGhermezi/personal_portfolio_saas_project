@@ -1,6 +1,8 @@
 from rest_framework import generics, permissions, serializers
 from rest_framework.exceptions import NotFound
 from rest_framework.response import Response
+from rest_framework.parsers import MultiPartParser, FormParser
+
 
 from .models import (
     Portfolio,
@@ -23,6 +25,7 @@ from .portfolio_serializer import (
 class PortfolioListCreateView(generics.ListCreateAPIView):
     serializer_class = PortfolioSerializer
     permission_classes = (permissions.IsAuthenticated,)
+    parser_classes = (MultiPartParser, FormParser)
 
     def get_queryset(self):
         return Portfolio.objects.filter(
@@ -40,6 +43,7 @@ class PortfolioListCreateView(generics.ListCreateAPIView):
 class PortfolioDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = PortfolioSerializer
     permission_classes = (permissions.IsAuthenticated,)
+    parser_classes = (MultiPartParser, FormParser)
 
     def get_queryset(self):
         return Portfolio.objects.filter(
@@ -58,6 +62,7 @@ class PublicPortfolioDetailView(generics.RetrieveAPIView):
 class ProjectListCreateView(generics.ListCreateAPIView):
     serializer_class = ProjectSerializer
     permission_classes = (permissions.IsAuthenticated,)
+    parser_classes = (MultiPartParser, FormParser)
 
     def get_queryset(self):
         return Project.objects.filter(
@@ -82,6 +87,7 @@ class ProjectListCreateView(generics.ListCreateAPIView):
 class ProjectDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ProjectSerializer
     permission_classes = (permissions.IsAuthenticated,)
+    parser_classes = (MultiPartParser, FormParser)
 
     def get_queryset(self):
         return Project.objects.filter(

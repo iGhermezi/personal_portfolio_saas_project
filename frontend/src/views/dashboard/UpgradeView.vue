@@ -115,7 +115,7 @@ import { useI18nStore } from "../../stores/i18n";
 
 const authStore = useAuthStore();
 const i18nStore = useI18nStore();
-const sidebarCollapsed = ref(false);
+const sidebarCollapsed = ref(true);
 const loading = ref(true);
 const subscribed = ref(false);
 const requestStatus = ref(null);
