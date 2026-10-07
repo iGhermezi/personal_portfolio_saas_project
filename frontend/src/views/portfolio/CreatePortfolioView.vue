@@ -133,8 +133,8 @@
                   class="flex h-36 items-center justify-center bg-slate-50"
                 >
                   <img
-                    v-if="template.preview_img"
-                    :src="template.preview_img"
+                    v-if="template.preview_image"
+                    :src="template.preview_image"
                     :alt="i18nStore.templateName(template)"
                     class="h-full w-full object-cover"
                   />
@@ -260,6 +260,8 @@ const loadTemplates = async () => {
     templates.value = Array.isArray(response.data)
       ? response.data
       : response.data.results || [];
+
+      console.log("TEMPLATES FROM API:", templates.value);
   } catch (err) {
     console.error("Failed to load templates:", err);
 
