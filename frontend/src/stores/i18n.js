@@ -126,8 +126,7 @@ const translations = {
         "The template currently used by your portfolio.",
       premium: "Premium",
       activeSubscription: "Premium access is active.",
-      createPortfolioFirst:
-        "Create a portfolio to see its template here.",
+      createPortfolioFirst: "Create a portfolio to see its template here.",
     },
 
     portfolio: {
@@ -268,6 +267,7 @@ const translations = {
       phone: "Phone",
       location: "Location",
       imageUrl: "Profile image URL",
+      imageUpload: "Upload profile image",
       jobPlaceholder: "e.g. Backend Developer",
       phonePlaceholder: "09xxxxxxxxx",
       locationPlaceholder: "e.g. Amsterdam, Netherlands",
@@ -822,6 +822,7 @@ const translations = {
       phone: "تلفن",
       location: "موقعیت مکانی",
       imageUrl: "آدرس تصویر پروفایل",
+      imageUpload: "بارگذاری تصویر پروفایل",
       jobPlaceholder: "مثلاً: توسعه‌دهنده بک‌اند",
       phonePlaceholder: "09xxxxxxxxx",
       locationPlaceholder: "مثلاً: آمستردام، هلند",

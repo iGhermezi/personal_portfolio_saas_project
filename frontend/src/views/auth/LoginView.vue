@@ -1,6 +1,6 @@
 <template>
   <div
-    class="min-h-screen bg-[#faf9ff] flex items-center justify-center px-6 bg-linear-130 from-purple-300 to-purple-600"
+    class="auth-page min-h-screen bg-[#faf9ff] flex items-center justify-center px-6 bg-linear-130 from-purple-300 to-purple-600"
   >
     <div
       class="w-full max-w-md rounded-3xl border border-violet-100 bg-white p-8 shadow-xl shadow-violet-100"

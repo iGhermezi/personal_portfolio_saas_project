@@ -40,63 +40,63 @@ const routes = [
     path: "/dashboard",
     name: "dashboard",
     component: () => import("../views/dashboard/DashboardView.vue"),
-    meta: { requiresAuth: true },
+    meta: { requiresAuth: true, themeScope: "dashboard" },
   },
   {
     path: "/dashboard/portfolio",
     name: "dashboard-portfolio",
     component: () => import("../views/portfolio/EditPortfolioView.vue"),
-    meta: { requiresAuth: true },
+    meta: { requiresAuth: true, themeScope: "dashboard" },
   },
   {
     path: "/profile",
     name: "profile",
     component: () => import("../views/account/ProfileView.vue"),
-    meta: { requiresAuth: true },
+    meta: { requiresAuth: true, themeScope: "dashboard" },
   },
   {
     path: "/account/security",
     name: "account-security",
     component: () => import("../views/account/AccountSecurityView.vue"),
-    meta: { requiresAuth: true },
+    meta: { requiresAuth: true, themeScope: "dashboard" },
   },
 
   {
     path: "/portfolio/create",
     name: "create-portfolio",
     component: CreatePortfolioView,
-    meta: { requiresAuth: true },
+    meta: { requiresAuth: true, themeScope: "dashboard" },
   },
   {
     path: "/portfolio/:id/setup",
     name: "portfolio-setup",
     component: () => import("../views/portfolio/PortfolioSetupView.vue"),
-    meta: { requiresAuth: true },
+    meta: { requiresAuth: true, themeScope: "dashboard" },
   },
   {
     path: "/portfolio/:id/edit",
     name: "edit-portfolio",
     component: () => import("../views/portfolio/EditPortfolioView.vue"),
-    meta: { requiresAuth: true },
+    meta: { requiresAuth: true, themeScope: "dashboard" },
   },
   {
     path: "/portfolio/:id/preview",
     name: "portfolio-preview",
     component: PortfolioPreviewView,
-    meta: { requiresAuth: true },
+    meta: { requiresAuth: true, themeScope: "dashboard" },
   },
 
   {
     path: "/templates",
     name: "templates",
     component: () => import("../views/dashboard/TemplatesView.vue"),
-    meta: { requiresAuth: true },
+    meta: { requiresAuth: true, themeScope: "dashboard" },
   },
   {
     path: "/upgrade",
     name: "upgrade",
     component: () => import("../views/dashboard/UpgradeView.vue"),
-    meta: { requiresAuth: true },
+    meta: { requiresAuth: true, themeScope: "dashboard" },
   },
 
   {

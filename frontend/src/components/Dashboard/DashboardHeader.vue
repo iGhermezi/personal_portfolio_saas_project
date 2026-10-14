@@ -24,7 +24,15 @@
       <div
         class="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-violet-100 text-sm font-bold text-violet-600 transition-colors group-hover:bg-violet-200"
       >
-        {{ initial }}
+        <img
+          v-if="profileImageUrl"
+          :src="profileImageUrl"
+          alt=""
+          class="h-full w-full object-cover"
+          @error="handleProfileImageError"
+        />
+
+        <span v-else>{{ initial }}</span>
       </div>
 
       <!-- User Info -->
@@ -32,9 +40,7 @@
         class="hidden min-w-0 sm:block"
         :class="i18nStore.isRTL ? 'text-right' : 'text-left'"
       >
-        <p
-          class="max-w-[130px] truncate text-sm font-semibold text-slate-800"
-        >
+        <p class="max-w-[130px] truncate text-sm font-semibold text-slate-800">
           {{ authStore.user?.username || i18nStore.t("common.user") }}
         </p>
 
@@ -47,7 +53,7 @@
 </template>
 
 <script setup>
-import { computed } from "vue";
+import { computed, ref } from "vue";
 
 import { useAuthStore } from "../../stores/auth";
 import { useI18nStore } from "../../stores/i18n";
@@ -61,4 +67,24 @@ const initial = computed(() => {
     i18nStore.t("common.user").charAt(0)
   );
 });
+
+const profileImageUrl = computed(
+  () =>
+    [authStore.user?.profile_image, authStore.user?.profile_image_url].find(
+      (imageUrl) => imageUrl && !failedProfileImages.value.includes(imageUrl),
+    ) || "",
+);
+const failedProfileImages = ref([]);
+
+const handleProfileImageError = () => {
+  if (
+    profileImageUrl.value &&
+    !failedProfileImages.value.includes(profileImageUrl.value)
+  ) {
+    failedProfileImages.value = [
+      ...failedProfileImages.value,
+      profileImageUrl.value,
+    ];
+  }
+};
 </script>

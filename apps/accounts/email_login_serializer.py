@@ -3,6 +3,8 @@ from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
+from .user_profile_serializer import UserProfileSerializer
+
 
 User = get_user_model()
 
@@ -40,6 +42,10 @@ class EmailLoginSerializer(TokenObtainPairSerializer):
             })
 
         refresh = self.get_token(user)
+        profile_data = UserProfileSerializer(
+            user,
+            context=self.context,
+        ).data
 
         return {
             'refresh': str(refresh),
@@ -50,5 +56,7 @@ class EmailLoginSerializer(TokenObtainPairSerializer):
                 'username': user.username,
                 'email_verified': user.email_verified,
                 'has_active_subscription': user.has_active_subscription,
+                'profile_image': profile_data['profile_image'],
+                'profile_image_url': profile_data['profile_image_url'],
 }
         }

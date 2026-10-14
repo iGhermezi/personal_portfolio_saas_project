@@ -1,122 +1,134 @@
 @import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
 
-/* Keep the existing light design untouched. Tailwind's existing violet/slate
-   palette remains the source of truth; these rules only provide its dark
-   counterpart when <html class="dark"> is active. */
-
-*{
+* {
   font-family: 'Vazirmatn';
 }
-html.dark .bg-white:not(.portfolio-template-root *) {
+
+.theme-scope {
+  color-scheme: light;
+}
+
+.theme-scope.dark {
+  color-scheme: dark;
+  background-color: #100b1c;
+}
+
+/* Dark palette overrides are limited to routes opted into the dashboard theme. */
+.theme-scope.dark .bg-white:not(.portfolio-template-root *) {
   background-color: #171124 !important;
 }
 
-html.dark .bg-\[\#faf9ff\]:not(.portfolio-template-root *) {
+.theme-scope.dark .bg-\[\#faf9ff\]:not(.portfolio-template-root *) {
   background-color: #100b1c !important;
 }
 
-html.dark .bg-slate-50:not(.portfolio-template-root *) {
+.theme-scope.dark .bg-slate-50:not(.portfolio-template-root *) {
   background-color: #1d1728 !important;
 }
 
-html.dark .bg-slate-100:not(.portfolio-template-root *) {
+.theme-scope.dark .bg-slate-100:not(.portfolio-template-root *) {
   background-color: #272032 !important;
 }
 
-html.dark .bg-violet-50:not(.portfolio-template-root *) {
+.theme-scope.dark .bg-violet-50:not(.portfolio-template-root *) {
   background-color: #211630 !important;
 }
 
-html.dark .bg-violet-100:not(.portfolio-template-root *) {
+.theme-scope.dark .bg-violet-100:not(.portfolio-template-root *) {
   background-color: #2a1b3d !important;
 }
 
-html.dark .bg-violet-200:not(.portfolio-template-root *) {
+.theme-scope.dark .bg-violet-200:not(.portfolio-template-root *) {
   background-color: #3a2852 !important;
 }
 
-html.dark .border-white:not(.portfolio-template-root *) {
+.theme-scope.dark .border-white:not(.portfolio-template-root *) {
   border-color: #332842 !important;
 }
 
-html.dark .border-slate-100:not(.portfolio-template-root *) {
+.theme-scope.dark .border-slate-100:not(.portfolio-template-root *) {
   border-color: #2a2236 !important;
 }
 
-html.dark .border-slate-200:not(.portfolio-template-root *) {
+.theme-scope.dark .border-slate-200:not(.portfolio-template-root *) {
   border-color: #3a3048 !important;
 }
 
-html.dark .border-violet-50:not(.portfolio-template-root *) {
+.theme-scope.dark .border-violet-50:not(.portfolio-template-root *) {
   border-color: #2d2140 !important;
 }
 
-html.dark .border-violet-100:not(.portfolio-template-root *) {
+.theme-scope.dark .border-violet-100:not(.portfolio-template-root *) {
   border-color: #3b2853 !important;
 }
 
-html.dark .border-violet-300:not(.portfolio-template-root *) {
+.theme-scope.dark .border-violet-300:not(.portfolio-template-root *) {
   border-color: #8b62cf !important;
 }
 
-html.dark .text-slate-900:not(.portfolio-template-root *) {
+.theme-scope.dark .text-slate-900:not(.portfolio-template-root *) {
   color: #f5f1f8 !important;
 }
 
-html.dark .text-slate-800:not(.portfolio-template-root *) {
+.theme-scope.dark .text-slate-800:not(.portfolio-template-root *) {
   color: #eee8f4 !important;
 }
 
-html.dark .text-slate-700:not(.portfolio-template-root *) {
+.theme-scope.dark .text-slate-700:not(.portfolio-template-root *) {
   color: #d8cfdf !important;
 }
 
-html.dark .text-slate-600:not(.portfolio-template-root *) {
+.theme-scope.dark .text-slate-600:not(.portfolio-template-root *) {
   color: #bcb0c8 !important;
 }
 
-html.dark .text-slate-500:not(.portfolio-template-root *) {
+.theme-scope.dark .text-slate-500:not(.portfolio-template-root *) {
   color: #a99caf !important;
 }
 
-html.dark .text-slate-400:not(.portfolio-template-root *) {
+.theme-scope.dark .text-slate-400:not(.portfolio-template-root *) {
   color: #95879f !important;
 }
 
-html.dark .hover\:bg-slate-50:hover:not(.portfolio-template-root *) {
+.theme-scope.dark .hover\:bg-slate-50:hover:not(.portfolio-template-root *) {
   background-color: #241c30 !important;
 }
 
-html.dark .hover\:bg-violet-50:hover:not(.portfolio-template-root *) {
+.theme-scope.dark .hover\:bg-violet-50:hover:not(.portfolio-template-root *) {
   background-color: #2a1b3d !important;
 }
 
-html.dark .hover\:bg-violet-100:hover:not(.portfolio-template-root *) {
+.theme-scope.dark .hover\:bg-violet-100:hover:not(.portfolio-template-root *) {
   background-color: #352348 !important;
 }
 
-html.dark .focus\:bg-white:focus:not(.portfolio-template-root *) {
+.theme-scope.dark .focus\:bg-white:focus:not(.portfolio-template-root *) {
   background-color: #21182f !important;
 }
 
-html.dark input:not(.portfolio-template-root input),
-html.dark textarea:not(.portfolio-template-root textarea),
-html.dark select:not(.portfolio-template-root select) {
+.theme-scope.dark input:not(.portfolio-template-root input),
+.theme-scope.dark textarea:not(.portfolio-template-root textarea),
+.theme-scope.dark select:not(.portfolio-template-root select) {
   color: #f5f1f8;
 }
 
-html.dark input:not(.portfolio-template-root input)::placeholder,
-html.dark textarea:not(.portfolio-template-root textarea)::placeholder {
+.theme-scope.dark input:not(.portfolio-template-root input)::placeholder,
+.theme-scope.dark textarea:not(.portfolio-template-root textarea)::placeholder {
   color: #81758b;
 }
 
-html.dark .shadow-violet-100:not(.portfolio-template-root *) {
+.theme-scope.dark .shadow-violet-100:not(.portfolio-template-root *) {
   --tw-shadow-color: rgb(75 47 104 / 0.35) !important;
 }
 
-html.dark .bg-linear-130:not(.portfolio-template-root *),
-html.dark .bg-linear-210:not(.portfolio-template-root *) {
+.theme-scope.dark .bg-linear-130:not(.portfolio-template-root *),
+.theme-scope.dark .bg-linear-210:not(.portfolio-template-root *) {
   background-image: linear-gradient(130deg, #241337, #4b2b70) !important;
+}
+
+.portfolio-template-root {
+  color-scheme: light;
 }
 
 html {
@@ -155,14 +167,4 @@ html[dir="rtl"] body {
 ::selection {
   background: #8b5cf6;
   color: white;
-}
-
-html.dark {
-  color-scheme: dark;
-}
-
-html.dark body {
-  transition:
-    background-color 0.3s ease,
-    color 0.3s ease;
 }

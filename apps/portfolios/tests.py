@@ -1,6 +1,16 @@
-from django.contrib.auth import get_user_model
+from io import BytesIO
+from pathlib import Path
+from tempfile import TemporaryDirectory
 
-from rest_framework.test import APITestCase
+from types import SimpleNamespace
+
+from django.contrib.auth import get_user_model
+from django.core.files.uploadedfile import SimpleUploadedFile
+from django.test import SimpleTestCase
+from django.test.utils import override_settings
+from PIL import Image
+
+from rest_framework.test import APIRequestFactory, APITestCase
 from rest_framework import status
 
 from .models import (
@@ -11,9 +21,67 @@ from .models import (
     Experience,
     SocialLink,
 )
+from .portfolio_serializer import PortfolioSerializer
 
 
 User = get_user_model()
+
+
+def uploaded_project_image(name):
+    image_buffer = BytesIO()
+    Image.new('RGB', (1, 1)).save(image_buffer, format='PNG')
+    return SimpleUploadedFile(
+        name,
+        image_buffer.getvalue(),
+        content_type='image/png',
+    )
+
+
+class PortfolioTemplatePreviewSerializerTests(SimpleTestCase):
+
+    def setUp(self):
+        request = APIRequestFactory().get('/api/portfolios/')
+        self.serializer = PortfolioSerializer(
+            context={'request': request}
+        )
+
+    def test_returns_preview_image_from_each_portfolios_template(self):
+        first_portfolio = SimpleNamespace(
+            template=SimpleNamespace(
+                preview_image=SimpleNamespace(
+                    url='/media/template_previews/first.jpg'
+                )
+            )
+        )
+        second_portfolio = SimpleNamespace(
+            template=SimpleNamespace(
+                preview_image=SimpleNamespace(
+                    url='/media/template_previews/second.jpg'
+                )
+            )
+        )
+
+        self.assertEqual(
+            self.serializer.get_template_preview_image(first_portfolio),
+            'http://testserver/media/template_previews/first.jpg',
+        )
+        self.assertEqual(
+            self.serializer.get_template_preview_image(second_portfolio),
+            'http://testserver/media/template_previews/second.jpg',
+        )
+
+    def test_returns_none_without_template_or_preview_image(self):
+        without_template = SimpleNamespace(template=None)
+        without_preview_image = SimpleNamespace(
+            template=SimpleNamespace(preview_image=None)
+        )
+
+        self.assertIsNone(
+            self.serializer.get_template_preview_image(without_template)
+        )
+        self.assertIsNone(
+            self.serializer.get_template_preview_image(without_preview_image)
+        )
 
 
 class PortfolioTests(APITestCase):
@@ -135,6 +203,103 @@ class PortfolioTests(APITestCase):
             project.portfolio,
             self.portfolio
         )
+
+    def test_user_can_upload_project_image_while_preserving_legacy_url(self):
+        legacy_image_url = 'https://example.com/project.png'
+
+        with TemporaryDirectory() as media_root:
+            with override_settings(MEDIA_ROOT=media_root):
+                response = self.client.post(
+                    f'/api/portfolios/{self.portfolio.id}/projects/',
+                    {
+                        'pro_name': 'Uploaded Project',
+                        'pro_description': 'Project with an uploaded image',
+                        'pro_image': legacy_image_url,
+                        'pro_image_file': uploaded_project_image(
+                            'uploaded-project.png'
+                        ),
+                        'pro_github_url': 'https://github.com/test/uploaded',
+                        'pro_techs': 'Django',
+                        'pro_live_demo_url': '',
+                        'pro_start': '2026-01-01',
+                        'pro_end': '',
+                    },
+                    format='multipart',
+                )
+
+                self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+                project = Project.objects.get(pro_name='Uploaded Project')
+                project.refresh_from_db()
+                self.assertEqual(project.pro_image, legacy_image_url)
+                self.assertTrue(
+                    Path(media_root, project.pro_image_file.name).is_file()
+                )
+                self.assertEqual(project.pro_end, None)
+
+    def test_user_can_update_project_image_file(self):
+        project = Project.objects.create(
+            portfolio=self.portfolio,
+            pro_name='Project to update',
+            pro_description='Existing project',
+            pro_image='https://example.com/legacy.png',
+            pro_github_url='https://github.com/test/update',
+            pro_techs='Django',
+            pro_live_demo_url=None,
+            pro_start='2026-01-01',
+            pro_end='2026-02-01',
+        )
+
+        with TemporaryDirectory() as media_root:
+            with override_settings(MEDIA_ROOT=media_root):
+                response = self.client.patch(
+                    f'/api/portfolios/{self.portfolio.id}/projects/{project.id}/',
+                    {
+                        'pro_image_file': uploaded_project_image(
+                            'updated-project.png'
+                        ),
+                        'pro_end': '',
+                    },
+                    format='multipart',
+                )
+
+                self.assertEqual(response.status_code, status.HTTP_200_OK)
+                project.refresh_from_db()
+                self.assertEqual(project.pro_end, None)
+                self.assertEqual(
+                    project.pro_image,
+                    'https://example.com/legacy.png',
+                )
+                self.assertTrue(
+                    Path(media_root, project.pro_image_file.name).is_file()
+                )
+
+    def test_user_cannot_upload_project_to_another_users_portfolio(self):
+        with TemporaryDirectory() as media_root:
+            with override_settings(MEDIA_ROOT=media_root):
+                response = self.client.post(
+                    f'/api/portfolios/{self.other_portfolio.id}/projects/',
+                    {
+                        'pro_name': 'Unauthorized Upload',
+                        'pro_github_url': 'https://github.com/test/unauthorized',
+                        'pro_techs': 'Django',
+                        'pro_start': '2026-01-01',
+                        'pro_image_file': uploaded_project_image(
+                            'unauthorized-project.png'
+                        ),
+                    },
+                    format='multipart',
+                )
+
+                self.assertEqual(
+                    response.status_code,
+                    status.HTTP_404_NOT_FOUND,
+                )
+                self.assertFalse(
+                    Project.objects.filter(
+                        portfolio=self.other_portfolio,
+                        pro_name='Unauthorized Upload',
+                    ).exists()
+                )
 
     def test_user_cannot_create_project_for_other_users_portfolio(self):
         data = {

@@ -25,7 +25,7 @@
 
         <router-link
           to="/dashboard"
-          class=" inline-flex items-center rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-sm font-medium text-slate-600 shadow-sm transition hover:border-violet-200 hover:bg-violet-50 hover:text-violet-600"
+          class="inline-flex items-center rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-sm font-medium text-slate-600 shadow-sm transition hover:border-violet-200 hover:bg-violet-50 hover:text-violet-600"
         >
           ← {{ i18nStore.t("profile.backToDashboard") }}
         </router-link>
@@ -52,11 +52,11 @@
               class="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-full bg-violet-100 text-xl font-bold text-violet-600"
             >
               <img
-                v-if="form.profile_image_url"
-                :src="form.profile_image_url"
+                v-if="displayedProfileImage"
+                :src="displayedProfileImage"
                 :alt="i18nStore.t('profile.imageAlt')"
                 class="h-full w-full object-cover"
-                @error="form.profile_image_url = ''"
+                @error="handleProfileImageError(displayedProfileImage)"
               />
 
               <span v-else>{{ initial }}</span>
@@ -184,6 +184,21 @@
                 type="text"
                 :placeholder="i18nStore.t('profile.imagePlaceholder')"
                 class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 outline-none transition focus:border-violet-300 focus:bg-white focus:ring-4 focus:ring-violet-100"
+                @input="serverProfileImage = ''"
+              />
+            </div>
+
+            <!-- Profile image upload -->
+            <div class="sm:col-span-2">
+              <label class="mb-2 block text-sm font-medium text-slate-700">
+                {{ i18nStore.t("profile.imageUpload") }}
+              </label>
+
+              <input
+                type="file"
+                accept="image/*"
+                class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 file:me-4 file:rounded-lg file:border-0 file:bg-violet-100 file:px-3 file:py-2 file:text-sm file:font-medium file:text-violet-700"
+                @change="selectProfileImage"
               />
             </div>
           </div>
@@ -196,9 +211,7 @@
               class="rounded-lg bg-violet-500 px-7 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-100 transition hover:bg-violet-600 disabled:cursor-not-allowed disabled:opacity-60"
             >
               {{
-                i18nStore.t(
-                  saving ? "profile.saving" : "profile.saveChanges",
-                )
+                i18nStore.t(saving ? "profile.saving" : "profile.saveChanges")
               }}
             </button>
 
@@ -216,7 +229,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed, onMounted } from "vue";
+import { ref, reactive, computed, onMounted, onBeforeUnmount } from "vue";
 import { useAuthStore } from "../../stores/auth";
 import api from "../../api/axios";
 import { useI18nStore } from "../../stores/i18n";
@@ -230,6 +243,10 @@ const loading = ref(true);
 const saving = ref(false);
 const errorMessage = ref("");
 const successMessage = ref("");
+const selectedProfileImage = ref(null);
+const profileImagePreviewUrl = ref("");
+const serverProfileImage = ref("");
+const failedProfileImages = ref([]);
 
 const email = ref("");
 
@@ -247,6 +264,52 @@ const initial = computed(() => {
   return (form.username || i18nStore.t("common.user")).charAt(0).toUpperCase();
 });
 
+const displayedProfileImage = computed(() => {
+  return (
+    [
+      profileImagePreviewUrl.value,
+      serverProfileImage.value,
+      form.profile_image_url,
+    ].find(
+      (imageUrl) => imageUrl && !failedProfileImages.value.includes(imageUrl),
+    ) || ""
+  );
+});
+
+const selectProfileImage = (event) => {
+  const file = event.target.files?.[0] || null;
+
+  if (profileImagePreviewUrl.value) {
+    URL.revokeObjectURL(profileImagePreviewUrl.value);
+  }
+
+  selectedProfileImage.value = file;
+  if (file) form.profile_image_url = "";
+  profileImagePreviewUrl.value = file ? URL.createObjectURL(file) : "";
+};
+
+const clearProfileImagePreview = () => {
+  if (profileImagePreviewUrl.value) {
+    URL.revokeObjectURL(profileImagePreviewUrl.value);
+  }
+
+  profileImagePreviewUrl.value = "";
+  selectedProfileImage.value = null;
+  failedProfileImages.value = [];
+};
+
+const handleProfileImageError = (imageUrl) => {
+  if (imageUrl && !failedProfileImages.value.includes(imageUrl)) {
+    failedProfileImages.value = [...failedProfileImages.value, imageUrl];
+  }
+};
+
+onBeforeUnmount(() => {
+  if (profileImagePreviewUrl.value) {
+    URL.revokeObjectURL(profileImagePreviewUrl.value);
+  }
+});
+
 onMounted(async () => {
   try {
     const response = await api.get("accounts/me/");
@@ -260,6 +323,7 @@ onMounted(async () => {
     form.phone = data.phone || "";
     form.location = data.location || "";
     form.profile_image_url = data.profile_image_url || "";
+    serverProfileImage.value = data.profile_image || "";
   } catch (error) {
     console.error("Failed to load profile:", error);
     errorMessage.value = i18nStore.t("profile.loadError");
@@ -274,9 +338,29 @@ const saveProfile = async () => {
   saving.value = true;
 
   try {
-    const response = await api.patch("accounts/me/", form);
+    let response;
+
+    if (selectedProfileImage.value) {
+      const formData = new FormData();
+
+      Object.entries(form).forEach(([key, value]) => {
+        formData.append(key, value);
+      });
+      formData.append("profile_image", selectedProfileImage.value);
+
+      response = await api.patch("accounts/me/", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+    } else {
+      response = await api.patch("accounts/me/", form);
+    }
 
     authStore.updateUser(response.data);
+    serverProfileImage.value = response.data.profile_image || "";
+    form.profile_image_url = response.data.profile_image_url || "";
+    clearProfileImagePreview();
 
     successMessage.value = i18nStore.t("profile.updateSuccess");
   } catch (error) {

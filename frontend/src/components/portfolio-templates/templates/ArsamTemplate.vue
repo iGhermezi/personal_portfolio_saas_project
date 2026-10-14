@@ -264,10 +264,11 @@
               class="relative flex h-48 items-center justify-center overflow-hidden bg-[#ffecef]"
             >
               <img
-                v-if="project.pro_image"
-                :src="project.pro_image"
+                v-if="projectImageSource(project)"
+                :src="projectImageSource(project)"
                 :alt="project.pro_name"
                 class="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                @error="handleProjectImageError(project)"
               />
 
               <div
@@ -427,8 +428,30 @@
 </template>
 
 <script setup>
+import { ref } from "vue";
 import { useI18nStore } from "../../../stores/i18n";
 
 const i18nStore = useI18nStore();
+const failedProjectImages = ref(new Set());
+
+const projectImageSource = (project) => {
+  return (
+    [project.pro_image_file, project.pro_image].find(
+      (imageUrl) =>
+        imageUrl && !failedProjectImages.value.has(`${project.id}:${imageUrl}`),
+    ) || ""
+  );
+};
+
+const handleProjectImageError = (project) => {
+  const imageUrl = projectImageSource(project);
+
+  if (imageUrl) {
+    const failedImages = new Set(failedProjectImages.value);
+    failedImages.add(`${project.id}:${imageUrl}`);
+    failedProjectImages.value = failedImages;
+  }
+};
+
 defineProps({ portfolio: { type: Object, required: true } });
 </script>

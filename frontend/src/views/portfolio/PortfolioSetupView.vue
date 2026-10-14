@@ -394,6 +394,15 @@
               class="mt-2 w-full resize-none rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-violet-300 focus:ring-4 focus:ring-violet-50"
             />
 
+            <input
+              ref="projectImageInput"
+              type="file"
+              accept="image/*"
+              aria-label="Project image file"
+              class="mt-4 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700 file:me-4 file:rounded-lg file:border-0 file:bg-violet-100 file:px-3 file:py-2 file:text-sm file:font-medium file:text-violet-700"
+              @change="projectImageFile = $event.target.files?.[0] || null"
+            />
+
             <button
               type="submit"
               :disabled="actionLoading"
@@ -595,6 +604,8 @@ const projectForm = reactive({
   pro_start: "",
   pro_end: "",
 });
+const projectImageFile = ref(null);
+const projectImageInput = ref(null);
 
 const socialForm = reactive({
   sl_github: "",
@@ -685,6 +696,19 @@ const resetProjectForm = () => {
   projectForm.pro_live_demo_url = "";
   projectForm.pro_start = "";
   projectForm.pro_end = "";
+  projectImageFile.value = null;
+  if (projectImageInput.value) projectImageInput.value.value = "";
+};
+
+const projectFormData = (payload, imageFile) => {
+  const formData = new FormData();
+
+  Object.entries(payload).forEach(([key, value]) => {
+    formData.append(key, value == null ? "" : String(value));
+  });
+  formData.append("pro_image_file", imageFile);
+
+  return formData;
 };
 
 const handleApiError = (err, fallback) => {
@@ -821,7 +845,7 @@ const addProject = async () => {
   actionLoading.value = true;
 
   try {
-    const response = await api.post(apiPaths.projects, {
+    const payload = {
       pro_name: projectForm.pro_name.trim(),
 
       pro_description: projectForm.pro_description.trim(),
@@ -837,7 +861,15 @@ const addProject = async () => {
       pro_start: projectForm.pro_start,
 
       pro_end: projectForm.pro_end || null,
-    });
+    };
+
+    const response = projectImageFile.value
+      ? await api.post(
+          apiPaths.projects,
+          projectFormData(payload, projectImageFile.value),
+          { headers: { "Content-Type": "multipart/form-data" } },
+        )
+      : await api.post(apiPaths.projects, payload);
 
     projects.value.push(response.data);
 

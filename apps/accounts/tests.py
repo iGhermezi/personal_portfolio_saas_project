@@ -158,6 +158,10 @@ class AccountsTests(AccountsAPITestCase):
     # =========================================================
 
     def test_user_can_login_with_email_and_password(self):
+        self.user.profile_image = 'profiles/login-avatar.png'
+        self.user.profile_image_url = 'https://example.com/avatar.png'
+        self.user.save(update_fields=['profile_image', 'profile_image_url'])
+
         data = {
             'email': 'test@example.com',
             'password': 'TestPassword123',
@@ -187,6 +191,15 @@ class AccountsTests(AccountsAPITestCase):
         self.assertIn(
             'user',
             response.data
+        )
+
+        self.assertEqual(
+            response.data['user']['profile_image'],
+            'http://testserver/media/profiles/login-avatar.png',
+        )
+        self.assertEqual(
+            response.data['user']['profile_image_url'],
+            'https://example.com/avatar.png',
         )
 
         self.assertEqual(

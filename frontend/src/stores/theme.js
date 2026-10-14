@@ -16,19 +16,11 @@ export const useThemeStore = defineStore('theme', {
       } else {
         this.isDark = false
       }
-
-      this.applyTheme()
-    },
-
-    applyTheme() {
-      document.documentElement.classList.toggle('dark', this.isDark)
-      document.documentElement.style.colorScheme = this.isDark ? 'dark' : 'light'
     },
 
     toggleTheme() {
       this.isDark = !this.isDark
       localStorage.setItem(STORAGE_KEY, this.isDark ? 'dark' : 'light')
-      this.applyTheme()
     },
   },
 })

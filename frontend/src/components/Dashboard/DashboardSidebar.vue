@@ -30,11 +30,7 @@
 
     <!-- Navigation -->
     <nav class="flex-1 px-3 py-6">
-      <div
-        v-for="item in navigation"
-        :key="item.name"
-        class="mb-2"
-      >
+      <div v-for="item in navigation" :key="item.name" class="mb-2">
         <router-link
           v-slot="{ isActive }"
           :to="item.to"
@@ -111,7 +107,7 @@
     </nav>
 
     <!-- Bottom Actions -->
-  <div class="shrink-0 border-t border-violet-50 p-3">
+    <div class="shrink-0 border-t border-violet-50 p-3">
       <!-- Profile -->
       <router-link
         to="/profile"
@@ -119,15 +115,20 @@
         :class="collapsed ? 'justify-center' : 'gap-4'"
       >
         <div
-          class="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-violet-100 text-sm font-bold text-violet-500"
+          class="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-md bg-violet-100 text-sm font-bold text-violet-500"
         >
-          {{ userInitial }}
+          <img
+            v-if="profileImageUrl"
+            :src="profileImageUrl"
+            alt=""
+            class="h-full w-full object-cover"
+            @error="handleProfileImageError"
+          />
+
+          <span v-else>{{ userInitial }}</span>
         </div>
 
-        <div
-          v-if="!collapsed"
-          class="min-w-0"
-        >
+        <div v-if="!collapsed" class="min-w-0">
           <p class="truncate text-sm font-semibold text-slate-800">
             {{ authStore.user?.username || i18nStore.t("common.user") }}
           </p>
@@ -247,8 +248,28 @@ const navigation = computed(() => [
 const userInitial = computed(
   () =>
     authStore.user?.username?.charAt(0)?.toUpperCase() ||
-    i18nStore.t("common.user").charAt(0)
+    i18nStore.t("common.user").charAt(0),
 );
+
+const profileImageUrl = computed(
+  () =>
+    [authStore.user?.profile_image, authStore.user?.profile_image_url].find(
+      (imageUrl) => imageUrl && !failedProfileImages.value.includes(imageUrl),
+    ) || "",
+);
+const failedProfileImages = ref([]);
+
+const handleProfileImageError = () => {
+  if (
+    profileImageUrl.value &&
+    !failedProfileImages.value.includes(profileImageUrl.value)
+  ) {
+    failedProfileImages.value = [
+      ...failedProfileImages.value,
+      profileImageUrl.value,
+    ];
+  }
+};
 
 const loadPortfolio = async () => {
   try {

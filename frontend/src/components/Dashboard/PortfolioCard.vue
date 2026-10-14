@@ -4,7 +4,18 @@
   >
     <!-- Preview -->
     <div class="relative h-[320px] overflow-hidden bg-violet-50">
-      <div class="absolute inset-8 rounded-2xl bg-white p-8 shadow-xl">
+      <img
+        v-if="hasTemplatePreview"
+        :src="portfolio.template_preview_image"
+        alt="Portfolio template preview"
+        class="absolute inset-0 h-full w-full object-cover"
+        @error="handlePreviewImageError"
+      />
+
+      <div
+        v-else
+        class="absolute inset-8 rounded-2xl bg-white p-8 shadow-xl"
+      >
         <div class="h-4 w-32 rounded-full bg-violet-200"></div>
 
         <div class="mt-6 h-8 w-64 rounded-lg bg-slate-100"></div>
@@ -78,6 +89,7 @@
 
 <script setup>
 import { computed } from "vue";
+import { ref } from "vue";
 import { useI18nStore } from "../../stores/i18n";
 
 const i18nStore = useI18nStore();
@@ -88,6 +100,17 @@ const props = defineProps({
     required: true,
   },
 });
+
+const failedPreviewImage = ref(null);
+const hasTemplatePreview = computed(() => {
+  const previewImage = props.portfolio.template_preview_image;
+
+  return Boolean(previewImage) && failedPreviewImage.value !== previewImage;
+});
+
+const handlePreviewImageError = () => {
+  failedPreviewImage.value = props.portfolio.template_preview_image;
+};
 
 const publicUrl = computed(() => {
   return `${window.location.origin}/portfolio/${props.portfolio.slug}`;

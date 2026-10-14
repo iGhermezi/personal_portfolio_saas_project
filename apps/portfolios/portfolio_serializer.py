@@ -11,7 +11,20 @@ from .models import (
 )
 
 
+class NullableDateField(serializers.DateField):
+    def to_internal_value(self, value):
+        if value == '':
+            return None
+
+        return super().to_internal_value(value)
+
+
 class ProjectSerializer(serializers.ModelSerializer):
+    pro_end = NullableDateField(
+        required=False,
+        allow_null=True,
+    )
+
     class Meta:
         model = Project
         fields = '__all__'
@@ -118,6 +131,7 @@ class SocialLinkSerializer(serializers.ModelSerializer):
 
 class PortfolioSerializer(serializers.ModelSerializer):
     template_key = serializers.SerializerMethodField()
+    template_preview_image = serializers.SerializerMethodField()
 
     projects = ProjectSerializer(
         many=True,
@@ -144,6 +158,18 @@ class PortfolioSerializer(serializers.ModelSerializer):
 
         return obj.template.template_key
 
+    def get_template_preview_image(self, obj):
+        if not obj.template or not obj.template.preview_image:
+            return None
+
+        image_url = obj.template.preview_image.url
+        request = self.context.get('request')
+
+        if request:
+            return request.build_absolute_uri(image_url)
+
+        return image_url
+
     class Meta:
         model = Portfolio
         fields = (
@@ -151,6 +177,7 @@ class PortfolioSerializer(serializers.ModelSerializer):
             'user',
             'template',
             'template_key',
+            'template_preview_image',
             'title',
             'slug',
             'bio',

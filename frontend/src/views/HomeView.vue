@@ -1,6 +1,6 @@
 <template>
   <div
-    class="min-h-screen overflow-x-hidden bg-white text-slate-900 transition-colors duration-300 dark:bg-[#100b1c] dark:text-slate-100"
+    class="landing-page min-h-screen overflow-x-hidden bg-white text-slate-900 transition-colors duration-300 dark:bg-[#100b1c] dark:text-slate-100"
   >
     <!-- ========================================================= -->
     <!-- NAVBAR -->

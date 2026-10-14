@@ -1,6 +1,9 @@
 <template>
   <div
-    class="min-h-screen bg-[#faf9ff] text-slate-900 transition-colors duration-300 dark:bg-[#100b1c] dark:text-slate-100"
+    class="theme-scope min-h-screen bg-[#faf9ff] text-slate-900 transition-colors duration-300"
+    :class="{
+      dark: themeStore.isDark && route.meta.themeScope === 'dashboard',
+    }"
   >
     <router-view />
 
@@ -66,11 +69,15 @@
 
 <script setup>
 import { onMounted } from "vue";
+import { useRoute } from "vue-router";
 
 import { useI18nStore } from "./stores/i18n";
+import { useThemeStore } from "./stores/theme";
 import { useUiStore } from "./stores/ui";
 
+const route = useRoute();
 const i18nStore = useI18nStore();
+const themeStore = useThemeStore();
 const uiStore = useUiStore();
 
 onMounted(() => {

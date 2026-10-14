@@ -774,6 +774,15 @@
                   />
                 </div>
 
+                <input
+                  ref="projectImageInput"
+                  type="file"
+                  accept="image/*"
+                  aria-label="Project image file"
+                  class="mt-4 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700 file:me-4 file:rounded-lg file:border-0 file:bg-violet-100 file:px-3 file:py-2 file:text-sm file:font-medium file:text-violet-700"
+                  @change="projectImageFile = $event.target.files?.[0] || null"
+                />
+
                 <button
                   type="button"
                   :disabled="actionLoading"
@@ -884,6 +893,14 @@
                         class="mt-1.5 w-full resize-none rounded-lg border border-slate-200 px-3.5 py-2.5 text-sm outline-none focus:border-violet-400 focus:ring-2 focus:ring-violet-100"
                       />
                     </div>
+
+                    <input
+                      type="file"
+                      accept="image/*"
+                      aria-label="Project image file"
+                      class="mt-4 w-full rounded-xl border border-slate-200 px-4 py-3 text-sm text-slate-700 file:me-4 file:rounded-lg file:border-0 file:bg-violet-100 file:px-3 file:py-2 file:text-sm file:font-medium file:text-violet-700"
+                      @change="setEditProjectImageFile(project.id, $event)"
+                    />
 
                     <div class="mt-4 flex gap-2">
                       <button
@@ -1266,6 +1283,9 @@ const projectForm = reactive({
   pro_start: "",
   pro_end: "",
 });
+const projectImageFile = ref(null);
+const projectImageInput = ref(null);
+const editProjectImageFiles = reactive({});
 
 const socialForm = reactive({
   sl_github: "",
@@ -1279,6 +1299,17 @@ const apiPaths = {
   experiences: `/portfolios/${portfolioId}/experiences/`,
   projects: `/portfolios/${portfolioId}/projects/`,
   social: `/portfolios/${portfolioId}/social-links/`,
+};
+
+const projectFormData = (payload, imageFile) => {
+  const formData = new FormData();
+
+  Object.entries(payload).forEach(([key, value]) => {
+    formData.append(key, value == null ? "" : String(value));
+  });
+  formData.append("pro_image_file", imageFile);
+
+  return formData;
 };
 
 const getList = async (key) => {
@@ -1589,7 +1620,7 @@ const addProject = async () => {
   actionLoading.value = true;
 
   try {
-    const response = await api.post(apiPaths.projects, {
+    const payload = {
       pro_name: projectForm.pro_name.trim(),
       pro_description: projectForm.pro_description.trim(),
       pro_image: projectForm.pro_image.trim() || null,
@@ -1598,7 +1629,15 @@ const addProject = async () => {
       pro_live_demo_url: projectForm.pro_live_demo_url.trim() || null,
       pro_start: projectForm.pro_start,
       pro_end: projectForm.pro_end || null,
-    });
+    };
+
+    const response = projectImageFile.value
+      ? await api.post(
+          apiPaths.projects,
+          projectFormData(payload, projectImageFile.value),
+          { headers: { "Content-Type": "multipart/form-data" } },
+        )
+      : await api.post(apiPaths.projects, payload);
 
     projects.value.push(response.data);
 
@@ -1612,6 +1651,8 @@ const addProject = async () => {
       pro_start: "",
       pro_end: "",
     });
+    projectImageFile.value = null;
+    if (projectImageInput.value) projectImageInput.value.value = "";
   } catch (err) {
     handleApiError(err, i18nStore.t("portfolio.unableAddProject"));
   } finally {
@@ -1622,7 +1663,12 @@ const addProject = async () => {
 const startEdit = (type, item) => {
   editing[type] = item.id;
   editForms[type][item.id] = JSON.parse(JSON.stringify(item));
+  if (type === "projects") editProjectImageFiles[item.id] = null;
   error.value = null;
+};
+
+const setEditProjectImageFile = (projectId, event) => {
+  editProjectImageFiles[projectId] = event.target.files?.[0] || null;
 };
 
 const cancelEdit = (type) => {
@@ -1630,6 +1676,7 @@ const cancelEdit = (type) => {
 
   if (id) {
     delete editForms[type][id];
+    if (type === "projects") delete editProjectImageFiles[id];
   }
 
   editing[type] = null;
@@ -1716,7 +1763,18 @@ const saveEdit = async (type, id) => {
   actionLoading.value = true;
 
   try {
-    const response = await api.patch(`${apiPaths[type]}${id}/`, payloads[type]);
+    const projectImageFile =
+      type === "projects" ? editProjectImageFiles[id] : null;
+    const requestData = projectImageFile
+      ? projectFormData(payloads[type], projectImageFile)
+      : payloads[type];
+    const response = await api.patch(
+      `${apiPaths[type]}${id}/`,
+      requestData,
+      projectImageFile
+        ? { headers: { "Content-Type": "multipart/form-data" } }
+        : undefined,
+    );
 
     const collections = {
       skills,
