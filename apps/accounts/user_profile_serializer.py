@@ -17,12 +17,10 @@ class UserProfileSerializer(serializers.ModelSerializer):
             'job_title',
             'phone',
             'location',
-            'email_verified',
             'has_active_subscription',
-            )
+        )
         read_only_fields = (
             'id',
             'email',
-            'email_verified',
             'has_active_subscription',
-            )
+        )

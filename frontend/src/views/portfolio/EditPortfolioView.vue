@@ -388,7 +388,9 @@
                   <div v-else>
                     <div class="grid gap-4 md:grid-cols-2">
                       <Field
-                        v-model="editForms.experiences[experience.id].ex_company"
+                        v-model="
+                          editForms.experiences[experience.id].ex_company
+                        "
                         :label="i18nStore.t('portfolio.company')"
                       />
 
@@ -417,9 +419,7 @@
                     </div>
 
                     <div class="mt-4">
-                      <label
-                        class="block text-sm font-semibold text-slate-700"
-                      >
+                      <label class="block text-sm font-semibold text-slate-700">
                         {{ i18nStore.t("portfolio.description") }}
                       </label>
 
@@ -665,9 +665,7 @@
                     />
 
                     <div>
-                      <label
-                        class="block text-sm font-semibold text-slate-700"
-                      >
+                      <label class="block text-sm font-semibold text-slate-700">
                         {{ i18nStore.t("portfolio.level") }}
                       </label>
 
@@ -806,8 +804,7 @@
                         <p class="mt-1 text-xs text-slate-400">
                           {{ project.pro_start }} →
                           {{
-                            project.pro_end ||
-                            i18nStore.t("portfolio.present")
+                            project.pro_end || i18nStore.t("portfolio.present")
                           }}
                         </p>
                       </div>
@@ -847,9 +844,7 @@
                       />
 
                       <Field
-                        v-model="
-                          editForms.projects[project.id].pro_github_url
-                        "
+                        v-model="editForms.projects[project.id].pro_github_url"
                         :label="i18nStore.t('portfolio.githubUrl')"
                       />
 
@@ -879,16 +874,12 @@
                     </div>
 
                     <div class="mt-4">
-                      <label
-                        class="block text-sm font-semibold text-slate-700"
-                      >
+                      <label class="block text-sm font-semibold text-slate-700">
                         {{ i18nStore.t("portfolio.description") }}
                       </label>
 
                       <textarea
-                        v-model="
-                          editForms.projects[project.id].pro_description
-                        "
+                        v-model="editForms.projects[project.id].pro_description"
                         rows="3"
                         class="mt-1.5 w-full resize-none rounded-lg border border-slate-200 px-3.5 py-2.5 text-sm outline-none focus:border-violet-400 focus:ring-2 focus:ring-violet-100"
                       />
@@ -1048,18 +1039,13 @@
                     class="relative flex h-36 items-center justify-center overflow-hidden bg-slate-50"
                   >
                     <img
-                      v-if="template.preview_img"
-                      :src="template.preview_img"
+                      v-if="template.preview_image"
+                      :src="template.preview_image"
                       :alt="i18nStore.templateName(template)"
                       class="h-full w-full object-cover transition duration-200 group-hover:scale-[1.02]"
                     />
 
-                    <span
-                      v-else
-                      class="text-3xl text-violet-300"
-                    >
-                      ✦
-                    </span>
+                    <span v-else class="text-3xl text-violet-300"> ✦ </span>
 
                     <div
                       v-if="!template.can_use"
@@ -1073,10 +1059,7 @@
                     </div>
 
                     <div
-                      v-if="
-                        template.can_use &&
-                        basic.template === template.id
-                      "
+                      v-if="template.can_use && basic.template === template.id"
                       class="absolute right-3 top-3 flex h-7 w-7 items-center justify-center rounded-full bg-violet-600 text-xs font-bold text-white shadow-sm"
                     >
                       ✓
@@ -1733,10 +1716,7 @@ const saveEdit = async (type, id) => {
   actionLoading.value = true;
 
   try {
-    const response = await api.patch(
-      `${apiPaths[type]}${id}/`,
-      payloads[type],
-    );
+    const response = await api.patch(`${apiPaths[type]}${id}/`, payloads[type]);
 
     const collections = {
       skills,
@@ -1768,9 +1748,7 @@ const deleteItem = async (type, id) => {
       projects,
     };
 
-    const index = collections[type].value.findIndex(
-      (item) => item.id === id,
-    );
+    const index = collections[type].value.findIndex((item) => item.id === id);
 
     if (index !== -1) {
       collections[type].value.splice(index, 1);

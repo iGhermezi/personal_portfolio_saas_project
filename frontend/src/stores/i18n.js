@@ -114,6 +114,20 @@ const translations = {
         "Review your portfolio information and make sure your latest work is displayed.",
 
       continue: "Continue",
+
+      publicationStatus: "Publication status",
+      published: "Published",
+      unpublished: "Unpublished",
+      portfolioPublic: "Your portfolio is publicly available.",
+      portfolioNotPublic: "Your portfolio is not publicly available yet.",
+      currentTemplate: "Current template",
+      noTemplate: "No template",
+      currentTemplateDescription:
+        "The template currently used by your portfolio.",
+      premium: "Premium",
+      activeSubscription: "Premium access is active.",
+      createPortfolioFirst:
+        "Create a portfolio to see its template here.",
     },
 
     portfolio: {
@@ -609,16 +623,6 @@ const translations = {
 
       continue: "ادامه",
 
-      publicationStatus: "Publication Status",
-      published: "Published",
-      unpublished: "Unpublished",
-      portfolioPublic: "Your portfolio is publicly available.",
-      portfolioNotPublic: "Your portfolio is not publicly available yet.",
-      currentTemplate: "Current Template",
-      noTemplate: "No template",
-      currentTemplateDescription:
-        "The template currently used by your portfolio.",
-
       publicationStatus: "وضعیت انتشار",
       published: "منتشر شده",
       unpublished: "منتشر نشده",
@@ -628,6 +632,10 @@ const translations = {
       noTemplate: "بدون قالب",
       currentTemplateDescription:
         "قالبی که در حال حاضر برای پورتفولیوی شما استفاده می‌شود.",
+      premium: "ویژه",
+      activeSubscription: "دسترسی ویژه فعال است.",
+      createPortfolioFirst:
+        "ابتدا پورتفولیویی بسازید تا قالب آن را اینجا ببینید.",
     },
 
     auth: {
@@ -1022,7 +1030,9 @@ export const useI18nStore = defineStore("i18n", {
         translations[state.language]?.templates?.catalog?.[
           template?.template_key
         ]?.name ??
+        translations.en.templates.catalog[template?.template_key]?.name ??
         template?.name ??
+        template?.template_key ??
         ""
       );
     },
@@ -1032,6 +1042,8 @@ export const useI18nStore = defineStore("i18n", {
         translations[state.language]?.templates?.catalog?.[
           template?.template_key
         ]?.description ??
+        translations.en.templates.catalog[template?.template_key]
+          ?.description ??
         template?.description ??
         ""
       );

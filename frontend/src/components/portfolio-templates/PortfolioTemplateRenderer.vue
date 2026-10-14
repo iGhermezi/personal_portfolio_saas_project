@@ -7,6 +7,8 @@
 <script setup>
 import { computed } from "vue";
 
+
+import ArsamTemplate from "./templates/ArsamTemplate.vue";
 import TemplateOne from "./templates/TemplateOne.vue";
 import TemplateTwo from "./templates/TemplateTwo.vue";
 import TemplateThree from "./templates/TemplateThree.vue";
@@ -22,8 +24,7 @@ const props = defineProps({
 });
 
 const templateMap = {
-  arsam: TemplateOne,
-  template_1: TemplateOne,
+  arsam: ArsamTemplate,
   template_2: TemplateTwo,
   template_3: TemplateThree,
   template_4: TemplateFour,

@@ -15,6 +15,7 @@ from django.utils.http import urlsafe_base64_encode
 from rest_framework import generics, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 
 from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -193,10 +194,29 @@ class LoginView(TokenObtainPairView):
 class UserProfileView(generics.RetrieveUpdateAPIView):
     permission_classes = (permissions.IsAuthenticated,)
     serializer_class = UserProfileSerializer
-    parser_classes = (MultiPartParser, FormParser)
+    parser_classes = (JSONParser, MultiPartParser, FormParser)
 
     def get_object(self):
         return self.request.user
+
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        allowed_data = {}
+
+        for field in self.get_serializer().fields:
+            if field in request.data:
+                allowed_data[field] = request.data[field]
+
+        serializer = self.get_serializer(
+            instance,
+            data=allowed_data,
+            partial=partial,
+            context={'request': request},
+        )
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+        return Response(serializer.data)
 
 
 class ChangePasswordView(generics.GenericAPIView):

@@ -1,7 +1,7 @@
 from rest_framework import generics, permissions, serializers
 from rest_framework.exceptions import NotFound
 from rest_framework.response import Response
-from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 
 
 from .models import (
@@ -25,7 +25,7 @@ from .portfolio_serializer import (
 class PortfolioListCreateView(generics.ListCreateAPIView):
     serializer_class = PortfolioSerializer
     permission_classes = (permissions.IsAuthenticated,)
-    parser_classes = (MultiPartParser, FormParser)
+    parser_classes = (JSONParser, MultiPartParser, FormParser)
 
     def get_queryset(self):
         return Portfolio.objects.filter(
@@ -43,12 +43,31 @@ class PortfolioListCreateView(generics.ListCreateAPIView):
 class PortfolioDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = PortfolioSerializer
     permission_classes = (permissions.IsAuthenticated,)
-    parser_classes = (MultiPartParser, FormParser)
+    parser_classes = (JSONParser, MultiPartParser, FormParser)
 
     def get_queryset(self):
         return Portfolio.objects.filter(
             user=self.request.user
         )
+
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        allowed_data = {}
+
+        for field in self.get_serializer().fields:
+            if field in request.data:
+                allowed_data[field] = request.data[field]
+
+        serializer = self.get_serializer(
+            instance,
+            data=allowed_data,
+            partial=partial,
+            context={'request': request},
+        )
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+        return Response(serializer.data)
 
 
 class PublicPortfolioDetailView(generics.RetrieveAPIView):
@@ -62,7 +81,7 @@ class PublicPortfolioDetailView(generics.RetrieveAPIView):
 class ProjectListCreateView(generics.ListCreateAPIView):
     serializer_class = ProjectSerializer
     permission_classes = (permissions.IsAuthenticated,)
-    parser_classes = (MultiPartParser, FormParser)
+    parser_classes = (JSONParser, MultiPartParser, FormParser)
 
     def get_queryset(self):
         return Project.objects.filter(
@@ -83,11 +102,23 @@ class ProjectListCreateView(generics.ListCreateAPIView):
             portfolio=portfolio
         )
 
+    def create(self, request, *args, **kwargs):
+        allowed_data = {}
+        for field in self.get_serializer().fields:
+            if field in request.data:
+                allowed_data[field] = request.data[field]
+
+        serializer = self.get_serializer(data=allowed_data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=201, headers=headers)
+
 
 class ProjectDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ProjectSerializer
     permission_classes = (permissions.IsAuthenticated,)
-    parser_classes = (MultiPartParser, FormParser)
+    parser_classes = (JSONParser, MultiPartParser, FormParser)
 
     def get_queryset(self):
         return Project.objects.filter(
@@ -236,6 +267,13 @@ class SocialLinkCreateView(generics.CreateAPIView):
         serializer.save(
             portfolio=portfolio
         )
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=201, headers=headers)
 
 class SocialLinkDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = SocialLinkSerializer

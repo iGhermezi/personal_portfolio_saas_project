@@ -10,7 +10,7 @@ TEMPLATES = [
             'A playful strawberry-kawaii portfolio with soft pastel '
             'cards and cute details.'
         ),
-        'preview_img': '',
+        
         'access_level': PortfolioTemplate.ACCESS_PREMIUM,
     },
     {
@@ -20,7 +20,7 @@ TEMPLATES = [
             'A clean dark portfolio with modern typography, '
             'subtle borders and violet accents.'
         ),
-        'preview_img': '',
+        
         'access_level': PortfolioTemplate.ACCESS_FREE,
     },
     {
@@ -30,7 +30,7 @@ TEMPLATES = [
             'A bold brutalist portfolio with expressive typography, '
             'strong borders and playful composition.'
         ),
-        'preview_img': '',
+        
         'access_level': PortfolioTemplate.ACCESS_PREMIUM,
     },
     {
@@ -40,7 +40,7 @@ TEMPLATES = [
             'An elegant editorial portfolio inspired by magazine '
             'layouts and refined typography.'
         ),
-        'preview_img': '',
+        
         'access_level': PortfolioTemplate.ACCESS_PREMIUM,
     },
     {
@@ -50,14 +50,14 @@ TEMPLATES = [
             'A developer-focused portfolio inspired by terminal '
             'interfaces and code editors.'
         ),
-        'preview_img': '',
+        
         'access_level': PortfolioTemplate.ACCESS_PREMIUM,
     },
 
     {
     "name": "Emerald Signature",
     "description": "A dark creative portfolio with an elegant emerald accent.",
-    "preview_img": "",
+    
     "template_key": "template_6",
     "access_level": PortfolioTemplate.ACCESS_VERIFIED,
     "is_active": True,
@@ -77,7 +77,6 @@ class Command(BaseCommand):
                 defaults={
                     'name': template_data['name'],
                     'description': template_data['description'],
-                    'preview_img': template_data['preview_img'],
                     'access_level': template_data['access_level'],
                     'is_active': True,
                 },

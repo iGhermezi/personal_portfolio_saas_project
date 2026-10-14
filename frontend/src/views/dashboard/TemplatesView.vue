@@ -53,8 +53,8 @@
               class="relative flex h-44 items-center justify-center overflow-hidden bg-violet-50"
             >
               <img
-                v-if="template.preview_img"
-                :src="template.preview_img"
+                v-if="template.preview_image"
+                :src="template.preview_image"
                 :alt="i18nStore.templateName(template)"
                 class="h-full w-full object-cover"
               />
